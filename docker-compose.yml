@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cfh-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cfh
+      POSTGRES_PASSWORD: cfh_local_pw
+      POSTGRES_DB: computer_fix_hub
+    ports:
+      - "5432:5432"
+    volumes:
+      - cfh_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cfh -d computer_fix_hub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cfh_pgdata:

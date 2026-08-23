@@ -1,0 +1,18 @@
+{
+    "common": {
+        "appName": "computer-fix-hub"
+    },
+    "auth": {
+        "signIn": "เข้าสู่ระบบ",
+        "signingIn": "กำลังเข้าสู่ระบบ...",
+        "email": "อีเมล",
+        "password": "รหัสผ่าน",
+        "invalidCredentials": "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
+    },
+    "dashboard": {
+        "greeting": "สวัสดี {name}",
+        "email": "อีเมล",
+        "role": "บทบาท",
+        "signOut": "ออกจากระบบ"
+    }
+}
