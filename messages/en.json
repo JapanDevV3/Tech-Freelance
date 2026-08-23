@@ -1,0 +1,18 @@
+{
+    "common": {
+        "appName": "computer-fix-hub"
+    },
+    "auth": {
+        "signIn": "Sign in",
+        "signingIn": "Signing in...",
+        "email": "Email",
+        "password": "Password",
+        "invalidCredentials": "Invalid email or password"
+    },
+    "dashboard": {
+        "greeting": "Hi {name}",
+        "email": "Email",
+        "role": "Role",
+        "signOut": "Sign out"
+    }
+}
