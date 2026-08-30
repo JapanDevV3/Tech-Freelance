@@ -23,3 +23,14 @@ export async function createService(userId: string, input: CreateServiceInput) {
 
     return created;
 }
+
+export async function listActiveServices() {
+    return db.query.services.findMany({
+        where: eq(services.status, 'active'),
+        orderBy: (s, { desc }) => [desc(s.createdAt)],
+        limit: 50,
+        with: {
+            technician: { columns: { displayName: true } }
+        }
+    })
+}
