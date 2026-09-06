@@ -2,16 +2,16 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { Noto_Sans_Thai } from 'next/font/google';
-import { Inter } from 'next/font/google';
+import { Roboto_Mono } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { ThemeProvider } from '@/components/theme-provider';
 import '../globals.css';
 
 const thaiFont = Noto_Sans_Thai({ subsets: ['thai', 'latin'], display: 'swap' });
-const enFont = Inter({ subsets: ['latin'], display: 'swap' });
+const enFont = Roboto_Mono({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'computer-fix-hub',
+  title: 'TechLance',
   description: 'รับซ่อม/ประกอบคอมพิวเตอร์',
 };
 

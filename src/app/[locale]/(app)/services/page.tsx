@@ -1,14 +1,14 @@
 import { listActiveServices } from '@/services/catalog.service';
 import { formatBaht } from '@/lib/format';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Container } from '@/components/layout/container';
 
 export default async function ServicesPage() {
     const services = await listActiveServices();
 
     return (
-        <div className="max-w-2xl mx-auto mt-16 px-4">
+        <Container size="md">
             <h1 className="text-2xl font-semibold mb-6">บริการทั้งหมด</h1>
-
             {services.length === 0 ? (
                 <p className="text-muted-foreground">ยังไม่มีบริการ</p>
             ) : (
@@ -29,6 +29,6 @@ export default async function ServicesPage() {
                     ))}
                 </div>
             )}
-        </div>
+        </Container>
     );
 }

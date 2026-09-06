@@ -15,7 +15,6 @@ export function Header({ user }: { user: HeaderUser }) {
     const t = useTranslations('nav');
     const pathname = usePathname();
 
-    // nav ขับด้วย "ข้อมูล" ไม่ใช่ JSX ซ้ำๆ -> เพิ่ม/ลดเมนูตาม role ได้ในที่เดียว
     const items: NavItem[] = [
         { href: '/', label: t('home') },
         { href: '/services', label: t('services') },
@@ -27,8 +26,8 @@ export function Header({ user }: { user: HeaderUser }) {
 
     return (
         <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur">
-            <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-5">
-                {/* โลโก้ */}
+            <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
+                {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
                         T
