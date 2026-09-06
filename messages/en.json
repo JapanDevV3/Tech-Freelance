@@ -14,5 +14,14 @@
         "email": "Email",
         "role": "Role",
         "signOut": "Sign out"
+    },
+    "nav": {
+        "home": "Home",
+        "services": "Services",
+        "dashboard": "Dashboard",
+        "newService": "New service",
+        "profile": "Profile",
+        "signIn": "Sign in",
+        "signOut": "Sign out"
     }
 }

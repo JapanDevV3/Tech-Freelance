@@ -53,7 +53,7 @@ export default function LoginPage() {
                             <Label htmlFor="password">{t('password')}</Label>
                             <Input id="password" name="password" type="password" required />
                         </div>
-                        {error && <p className="text-sm text-red-500">{t('invalidCredentials')}</p>}
+                        {error && <p className="text-sm text-destructive">{t('invalidCredentials')}</p>}
                         <Button type="submit" disabled={loading} className="w-full">
                             {loading ? t('signingIn') : t('signIn')}
                         </Button>
