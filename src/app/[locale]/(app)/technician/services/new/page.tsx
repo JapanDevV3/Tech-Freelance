@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getMyProfile } from "@/services/technician.service";
-import { ServiceForm } from "@/components/technician/service-form";
+import { ServiceForm } from "@/components/services/service-form";
 import { Container } from "@/components/layout/container";
 
 export default async function NewServicePage() {

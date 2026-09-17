@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { Moon, Sun } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Sun03Icon, Moon02Icon } from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
 
 export function ThemeToggle() {
@@ -15,13 +16,9 @@ export function ThemeToggle() {
 
     const isDark = resolvedTheme === 'dark';
     return (
-        <Button
-            variant="outline"
-            size="icon"
-            aria-label="สลับธีม"
-            onClick={() => setTheme(isDark ? 'light' : 'dark')}
-        >
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        <Button variant="outline" size="icon" aria-label="Toggle theme"
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}>
+            <HugeiconsIcon icon={isDark ? Sun03Icon : Moon02Icon} strokeWidth={2} />
         </Button>
     );
 }

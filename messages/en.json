@@ -52,5 +52,58 @@
         "heroCustomerSub": "Find the right technician for your job",
         "heroTechSub": "Manage your services and incoming jobs",
         "postService": "Post a new service"
+    },
+    "services": {
+        "searchPlaceholder": "Search services, e.g. install Windows, PC build",
+        "found": "Found {count} services",
+        "filters": "Filters",
+        "priceFrom": "From",
+        "by": "by",
+        "emptyTitle": "No services yet",
+        "emptySub": "Check back again soon",
+        "sortNewest": "Newest",
+        "sortPriceAsc": "Price: low→high",
+        "sortPriceDesc": "Price: high→low"
+    },
+    "serviceForm": {
+        "name": "Service name",
+        "namePlaceholder": "Install Windows + full drivers",
+        "description": "Details",
+        "descriptionPlaceholder": "Describe the scope, what the customer gets...",
+        "mode": "Service mode",
+        "modeRemote": "Remote",
+        "modeOnsite": "On-site",
+        "price": "Starting price (THB)",
+        "submit": "Publish service",
+        "saving": "Saving...",
+        "saved": "Published ✓",
+        "saveFailed": "Save failed",
+        "serviceCategory": {
+            "_label": "Category",
+            "all": "All",
+            "install_windows": "Install Windows",
+            "build_pc": "PC Build",
+            "network": "Network",
+            "software": "Software",
+            "other": "Other"
+        }
+    },
+    "serviceFilters": {
+        "filters": "Filters",
+        "_label": "Category",
+        "all": "All",
+        "install_windows": "Install Windows",
+        "build_pc": "PC Build",
+        "network": "Network",
+        "software": "Software",
+        "other": "Other",
+        "price_range": "Price Range",
+        "max" : "Max"
+    },
+    "techProfile": {
+        "bio": "About you",
+        "bioPlaceholder": "Your repair/build experience...",
+        "saved": "Saved ✓",
+        "saveFailed": "Save failed"
     }
 }

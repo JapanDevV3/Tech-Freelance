@@ -52,5 +52,58 @@
         "heroCustomerSub": "หาช่างที่ใช่สำหรับงานของคุณ",
         "heroTechSub": "จัดการบริการและดูงานที่เข้ามา",
         "postService": "ลงบริการใหม่"
+    },
+    "services": {
+         "searchPlaceholder": "ค้นหาบริการ เช่น ลง Windows, ประกอบเครื่อง",
+        "found": "พบ {count} บริการ",
+        "filters": "ตัวกรอง",
+        "priceFrom": "เริ่มต้น",
+        "by": "โดย",
+        "emptyTitle": "ยังไม่มีบริการ",
+        "emptySub": "กลับมาดูใหม่เร็วๆ นี้",
+        "sortNewest": "ใหม่ล่าสุด",
+        "sortPriceAsc": "ราคาต่ำ→สูง",
+        "sortPriceDesc": "ราคาสูง→ต่ำ"
+    },
+    "serviceForm": {
+        "name": "ชื่อบริการ",
+        "namePlaceholder": "ลง Windows + ไดรเวอร์ครบ",
+        "description": "รายละเอียด",
+        "descriptionPlaceholder": "อธิบายขอบเขตงาน สิ่งที่ลูกค้าจะได้รับ...",
+        "mode": "รูปแบบบริการ",
+        "modeRemote": "รีโมท",
+        "modeOnsite": "ถึงที่ (ออนไซต์)",
+        "price": "ราคาเริ่มต้น (บาท)",
+        "submit": "ลงบริการ",
+        "saving": "กำลังบันทึก...",
+        "saved": "ลงบริการแล้ว ✓",
+        "saveFailed": "บันทึกไม่สำเร็จ",
+        "serviceCategory": {
+            "_label": "หมวดหมู่",
+            "all": "ทั้งหมด",
+            "install_windows": "ลง Windows",
+            "build_pc": "ประกอบเครื่อง",
+            "network": "เครือข่าย",
+            "software": "ซอฟต์แวร์",
+            "other": "อื่นๆ"
+        }
+    },
+    "serviceFilters": {
+        "filters": "ตัวกรอง",
+        "_label": "หมวดหมู่",
+        "all": "ทั้งหมด",
+        "install_windows": "ลง Windows",
+        "build_pc": "ประกอบเครื่อง",
+        "network": "เครือข่าย",
+        "software": "ซอฟต์แวร์",
+        "other": "อื่นๆ",
+        "price_range": "ช่วงราคา",
+        "max" : "สูงสุด"
+    },
+    "techProfile": {
+        "bio": "แนะนำตัว",
+        "bioPlaceholder": "ประสบการณ์ซ่อม/ประกอบคอม...",
+        "saved": "บันทึกแล้ว ✓",
+        "saveFailed": "บันทึกไม่สำเร็จ"
     }
 }

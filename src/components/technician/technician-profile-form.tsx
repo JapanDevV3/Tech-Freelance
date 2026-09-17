@@ -5,18 +5,22 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useTranslations } from 'next-intl';
+import { Textarea } from '@/components/ui/textarea';
 
 type Props = { initial: { displayName: string; bio: string; skills: string[] } };
 
 export function TechnicianProfileForm({ initial }: Props) {
+    const t = useTranslations('techProfile');
     const router = useRouter();
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const [status, setStatus] = useState<'idle' | 'ok' | 'error'>('idle');
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setSaving(true);
-        setMessage('');
+        setStatus('idle');
 
         const form = new FormData(e.currentTarget);
         const skills = (form.get('skills') as string)
@@ -33,7 +37,7 @@ export function TechnicianProfileForm({ initial }: Props) {
         });
 
         setSaving(false);
-        setMessage(res.ok ? 'บันทึกแล้ว ✓' : 'บันทึกไม่สำเร็จ');
+        res.ok ? (setStatus('ok'), setMessage(t('saved'))) : (setStatus('error'), setMessage(t('saveFailed')))
         if (res.ok) router.refresh();
     }
 
@@ -44,8 +48,8 @@ export function TechnicianProfileForm({ initial }: Props) {
                 <Input id="displayName" name="displayName" defaultValue={initial.displayName} required />
             </div>
             <div className="grid gap-2">
-                <Label htmlFor="bio">แนะนำตัว</Label>
-                <Input id="bio" name="bio" defaultValue={initial.bio} />
+                <Label htmlFor="bio">{t('bio')}</Label>
+                <Textarea id="bio" name="bio" defaultValue={initial.bio} rows={4} placeholder={t('bioPlaceholder')} />
             </div>
             <div className="grid gap-2">
                 <Label htmlFor="skills">ทักษะ (คั่นด้วย ,)</Label>
@@ -53,7 +57,9 @@ export function TechnicianProfileForm({ initial }: Props) {
                     placeholder="ลง windows, ประกอบเครื่อง, เน็ตเวิร์ก" />
             </div>
             <Button type="submit" disabled={saving}>{saving ? 'กำลังบันทึก...' : 'บันทึก'}</Button>
-            {message && <p className="text-sm text-muted-foreground">{message}</p>}
+            {status !== 'idle' && (
+                <p className={status === 'ok' ? 'text-sm text-primary' : 'text-sm text-destructive'}>{message}</p>
+            )}
         </form>
     );
 }

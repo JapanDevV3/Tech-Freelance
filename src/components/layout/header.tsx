@@ -6,6 +6,7 @@ import { Link, usePathname } from '@/i18n/navigation';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { LanguageToggle } from '@/components/language-toggle';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { AvatarDropdown } from '@/components/avatar-dropdown';
 
 type HeaderUser = { name?: string | null; role: 'customer' | 'technician' } | null;
 
@@ -43,11 +44,10 @@ export function Header({ user }: { user: HeaderUser }) {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                                    active
-                                        ? 'bg-accent text-foreground'
-                                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-                                }`}
+                                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${active
+                                    ? 'bg-accent text-foreground'
+                                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                                    }`}
                             >
                                 {item.label}
                             </Link>
@@ -60,15 +60,9 @@ export function Header({ user }: { user: HeaderUser }) {
                 {/* actions */}
                 <LanguageToggle />
                 <ThemeToggle />
-
-                {user ? (
-                    <div className="flex items-center gap-3 pl-1">
-                        <span className="hidden text-sm text-muted-foreground sm:inline">{user.name}</span>
-                        <Button variant="outline" size="sm" onClick={() => signOut({ callbackUrl: '/login' })}>
-                            {t('signOut')}
-                        </Button>
-                    </div>
-                ) : (
+                
+                {user ? <AvatarDropdown role={user?.role}></AvatarDropdown>
+                : (
                     <Link href="/login" className={buttonVariants({ size: 'sm' })}>
                         {t('signIn')}
                     </Link>
