@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { registerSchema } from "@/lib/validations/auth";
-import { registerUser } from "@/services/auth.service";
+import { registerUser, EmailTakenError } from "@/services/auth.service";
 
 export async function POST(req: Request) {
     try {
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
                 { status: 422 },
             );
         }
-        if (err instanceof Error && err.message === 'EMAIL_TAKEN') {
+        if (err instanceof EmailTakenError) {
             return NextResponse.json(
                 { error: { code: 'EMAIL_TAKEN', message: 'Email existed' } },
                 { status: 409 },

@@ -29,6 +29,9 @@ export function ServiceForm() {
         setStatus('idle');
         const form = e.currentTarget;
         const data = new FormData(form);
+        // The clicked submit button's name/value ("status") rides along in
+        // FormData automatically — that's how we tell publish from draft apart.
+        const publishStatus = (data.get('status') as 'active' | 'draft' | null) ?? 'active';
 
         const res = await fetch('/api/v1/services', {
             method: 'POST',
@@ -39,12 +42,13 @@ export function ServiceForm() {
                 mode,                                  // from state
                 category,
                 priceBaht: data.get('priceBaht'),
+                status: publishStatus,
             }),
         });
 
         setSaving(false);
         if (res.ok) {
-            setStatus('ok'); setMessage(t('saved'));
+            setStatus('ok'); setMessage(publishStatus === 'draft' ? t('savedDraft') : t('saved'));
             form.reset(); setMode('remote'); router.refresh();
         } else {
             const body = await res.json().catch(() => null);
@@ -58,12 +62,24 @@ export function ServiceForm() {
             <div className="grid gap-2">
                 <Label htmlFor="title">{t('name')}</Label>
                 <Input id="title" name="title" required placeholder={t('namePlaceholder')} />
+                <p className="text-xs text-muted-foreground">{t('nameHint')}</p>
             </div>
 
-            <div className="grid gap-2">
-                <Label htmlFor="description">{t('description')}</Label>
-                {/* was a single-line Input — now multi-line */}
-                <Textarea id="description" name="description" required rows={5} placeholder={t('descriptionPlaceholder')} />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className='grid gap-2'>
+                    <Label>{t('serviceCategory._label')}</Label>
+                    <Select value={category} onValueChange={(val) => setCategory(val as ServiceCategory)} items={categoryItems}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            {SERVICE_CATEGORIES.map((category) => <SelectItem key={category} value={category}>{t(`serviceCategory.${category}`)}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <div className="grid gap-2">
+                    <Label htmlFor="priceBaht">{t('price')}</Label>
+                    <Input id="priceBaht" name="priceBaht" type="number" min="1" required placeholder="500" />
+                </div>
             </div>
 
             <div className="grid gap-2">
@@ -78,22 +94,20 @@ export function ServiceForm() {
                 </Select>
             </div>
 
-            <div className='grid gap-2'>
-                <Label>{t('serviceCategory._label')}</Label>
-                <Select value={category} onValueChange={(val) => setCategory(val as ServiceCategory)} items={categoryItems}>
-                    <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                        {SERVICE_CATEGORIES.map((category) => <SelectItem key={category} value={category}>{t(`serviceCategory.${category}`)}</SelectItem>)}
-                    </SelectContent>
-                </Select>
-            </div>
-
             <div className="grid gap-2">
-                <Label htmlFor="priceBaht">{t('price')}</Label>
-                <Input id="priceBaht" name="priceBaht" type="number" min="1" required placeholder="500" />
+                <Label htmlFor="description">{t('description')}</Label>
+                {/* was a single-line Input — now multi-line */}
+                <Textarea id="description" name="description" required rows={5} placeholder={t('descriptionPlaceholder')} />
             </div>
 
-            <Button type="submit" disabled={saving}>{saving ? t('saving') : t('submit')}</Button>
+            <div className="flex flex-wrap gap-2">
+                <Button type="submit" name="status" value="active" disabled={saving}>
+                    {saving ? t('saving') : t('submit')}
+                </Button>
+                <Button type="submit" name="status" value="draft" variant="outline" disabled={saving}>
+                    {t('saveDraft')}
+                </Button>
+            </div>
 
             {/* success vs error now visually distinct (was always muted gray) */}
             {status !== 'idle' && (

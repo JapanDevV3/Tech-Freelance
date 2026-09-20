@@ -7,6 +7,7 @@ export const createServiceSchema = z.object({
     mode: z.enum(['remote', 'onsite']).default('remote'),
     category: z.enum(SERVICE_CATEGORIES).default('other'),
     priceBaht: z.coerce.number().positive('The price must be greater than 0').max(1_000_000),
+    status: z.enum(['draft', 'active']).default('active'),
 });
 
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;

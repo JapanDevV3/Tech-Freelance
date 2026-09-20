@@ -1,14 +1,14 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { LanguageToggle } from '@/components/language-toggle';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { AvatarDropdown } from '@/components/avatar-dropdown';
+import { UserRole } from "@/types/next-auth";
 
-type HeaderUser = { name?: string | null; role: 'customer' | 'technician' } | null;
+type HeaderUser = { name?: string | null; role: UserRole } | null;
 
 type NavItem = { href: string; label: string };
 
@@ -22,6 +22,12 @@ export function Header({ user }: { user: HeaderUser }) {
         ...(user ? [{ href: '/dashboard', label: t('dashboard') }] : []),
         ...(user?.role === 'technician'
             ? [{ href: '/technician/services/new', label: t('newService') }]
+            : []),
+        ...(user?.role === 'customer'
+            ? [
+                { href: '/orders', label: t('orders') },
+                { href: '/favorites', label: t('favorites') },
+            ]
             : []),
     ];
 
@@ -63,7 +69,7 @@ export function Header({ user }: { user: HeaderUser }) {
                 
                 {user ? <AvatarDropdown role={user?.role}></AvatarDropdown>
                 : (
-                    <Link href="/login" className={buttonVariants({ size: 'sm' })}>
+                    <Link href="/auth/login" className={buttonVariants({ size: 'sm' })}>
                         {t('signIn')}
                     </Link>
                 )}

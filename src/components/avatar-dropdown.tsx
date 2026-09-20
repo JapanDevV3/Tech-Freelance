@@ -24,7 +24,8 @@ type avatarDropdownProps = {
 
 export function AvatarDropdown({role} : avatarDropdownProps) {
     const t = useTranslations('nav');
-    const profileLink = role === 'customer' ? '/profile' : '/technician/profile';
+    const profileLink = role === 'customer' ? '/account' : '/technician/profile';
+    const profileLabel = role === 'customer' ? t('account') : t('profile');
 
     return (
         <DropdownMenu>
@@ -32,11 +33,11 @@ export function AvatarDropdown({role} : avatarDropdownProps) {
                 <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
                 <AvatarFallback>CN</AvatarFallback>
             </Avatar></Button>} />
-            <DropdownMenuContent className="w-32">
+            <DropdownMenuContent className="w-40">
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
                         <Link href={profileLink}>
-                            {t('profile')}
+                            {profileLabel}
                         </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>

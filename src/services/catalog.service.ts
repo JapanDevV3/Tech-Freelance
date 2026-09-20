@@ -22,11 +22,18 @@ export async function createService(userId: string, input: CreateServiceInput) {
         mode: input.mode,
         category: input.category,
         basePriceAmount: Math.round(input.priceBaht * 100),
-        status: 'active',
+        status: input.status,
     })
         .returning();
 
     return created;
+}
+
+export async function listServicesByTechnician(technicianId: string) {
+    return db.query.services.findMany({
+        where: eq(services.technicianId, technicianId),
+        orderBy: desc(services.createdAt),
+    });
 }
 
 export async function listActiveServices(filters: ServiceFilters = {}) {
@@ -63,4 +70,13 @@ export async function listActiveServices(filters: ServiceFilters = {}) {
             technician: { columns: { displayName: true } }
         }
     })
+}
+
+export async function getServiceById(id: string) {
+    return db.query.services.findFirst({
+        where: eq(services.id, id),
+        with: {
+            technician: { columns: { id: true, displayName: true, bio: true } }
+        }
+    });
 }

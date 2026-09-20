@@ -48,7 +48,7 @@ export default async function ServicesPage({
                     ) : (
                         <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
                             {services.map((s) => (
-                                <ServiceCard key={s.id} href="/services" title={s.title} description={s.description}
+                                <ServiceCard key={s.id} href={`/services/${s.id}`} title={s.title} description={s.description}
                                     basePriceAmount={s.basePriceAmount} technicianName={s.technician.displayName}
                                     labels={{ priceFrom: t('priceFrom'), by: t('by') }} />
                             ))}
