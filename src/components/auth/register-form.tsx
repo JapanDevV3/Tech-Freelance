@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
@@ -8,54 +7,61 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { UserRole } from "@/types/next-auth";
+import { useForm } from 'react-hook-form';
+import { registerFormSchema, RegisterFormValues } from '@/lib/validations/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export function RegisterForm() {
     const t = useTranslations('auth');
+    const tv = useTranslations('validation');
     const router = useRouter();
-    const [role, setRole] = useState<UserRole>('customer');
-    const [saving, setSaving] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setError(null);
+    const {
+        register,
+        handleSubmit,
+        watch,
+        setValue,
+        setError,
+        formState: { errors, isSubmitting }
+    } = useForm<RegisterFormValues>({
+        resolver: zodResolver(registerFormSchema),
+        defaultValues: { name: '', email: '', password: '', confirmPassword: '', role: 'customer' },
+    })
 
-        const form = new FormData(e.currentTarget);
-        const password = form.get('password') as string;
-        const confirmPassword = form.get('confirmPassword') as string;
-        if (password !== confirmPassword) {
-            setError(t('passwordMismatch'));
-            return;
-        }
+    const role = watch('role'); // role is a button group, not a native input
 
-        setSaving(true);
+    async function onSubmit(values: RegisterFormValues) {
         const res = await fetch('/api/v1/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                name: form.get('name'),
-                email: form.get('email'),
-                password,
-                role,
+                name: values.name,
+                email: values.email,
+                password: values.password,
+                role: values.role,
             }),
-        });
-        setSaving(false);
+        })
 
         if (res.ok) {
             router.push('/auth/login');
             return;
         }
+
         const body = await res.json().catch(() => null);
-        setError(body?.error?.code === 'EMAIL_TAKEN' ? t('emailTaken') : t('registerFailed'));
+        if (body?.error?.code === 'EMAIL_TAKEN') {
+            setError('email', { message: 'emailTaken' }); // attach to the field, not a banner
+        } else {
+            setError('root', { message: 'registerFailed' });
+        }
     }
 
     const roles: { value: UserRole; title: string; desc: string }[] = [
         { value: 'customer', title: t('roleCustomer'), desc: t('roleCustomerDesc') },
         { value: 'technician', title: t('roleTechnician'), desc: t('roleTechnicianDesc') },
-    ];
+    ]
 
     return (
-        <form onSubmit={handleSubmit} className="grid gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4" noValidate>
             <div className="grid gap-2">
                 <Label>{t('iAm')}</Label>
                 <div className="grid grid-cols-2 gap-2">
@@ -63,7 +69,7 @@ export function RegisterForm() {
                         <button
                             key={r.value}
                             type="button"
-                            onClick={() => setRole(r.value)}
+                            onClick={() => setValue('role', r.value, { shouldValidate: true })}
                             className={cn(
                                 'rounded-lg border p-3 text-left transition-colors',
                                 role === r.value ? 'border-primary bg-accent-soft' : 'border-border hover:bg-accent',
@@ -80,29 +86,39 @@ export function RegisterForm() {
 
             <div className="grid gap-2">
                 <Label htmlFor="name">{t('name')}</Label>
-                <Input id="name" name="name" required placeholder={t('namePlaceholder')} />
+                <Input id="name" autoComplete="name" placeholder={t('namePlaceholder')} {...register('name')} />
+                {errors.name && <p className="text-sm text-destructive">{tv(errors.name.message!)}</p>}
             </div>
 
             <div className="grid gap-2">
                 <Label htmlFor="email">{t('email')}</Label>
-                <Input id="email" name="email" type="email" required placeholder="you@email.com" />
+                <Input id="email" type="email" autoComplete="email" placeholder="you@email.com" {...register('email')} />
+                {errors.email && (
+                    <p className="text-sm text-destructive">
+                        {/* server error 'emailTaken' lives in `auth`, zod keys in `validation` */}
+                        {errors.email.message === 'emailTaken' ? t('emailTaken') : tv(errors.email.message!)}
+                    </p>
+                )}
             </div>
 
             <div className="grid gap-2">
                 <Label htmlFor="password">{t('password')}</Label>
-                <Input id="password" name="password" type="password" required minLength={8} placeholder={t('passwordPlaceholder')} />
-                <p className="text-xs text-muted-foreground">{t('passwordHint')}</p>
+                <Input id="password" type="password" autoComplete="new-password" placeholder={t('passwordPlaceholder')} {...register('password')} />
+                {errors.password
+                    ? <p className="text-sm text-destructive">{tv(errors.password.message!)}</p>
+                    : <p className="text-xs text-muted-foreground">{t('passwordHint')}</p>}
             </div>
 
             <div className="grid gap-2">
                 <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
-                <Input id="confirmPassword" name="confirmPassword" type="password" required placeholder={t('confirmPasswordPlaceholder')} />
+                <Input id="confirmPassword" type="password" autoComplete="new-password" placeholder={t('confirmPasswordPlaceholder')} {...register('confirmPassword')} />
+                {errors.confirmPassword && <p className="text-sm text-destructive">{tv(errors.confirmPassword.message!)}</p>}
             </div>
 
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {errors.root && <p className="text-sm text-destructive">{t('registerFailed')}</p>}
 
-            <Button type="submit" disabled={saving} className="w-full">
-                {saving ? t('creatingAccount') : t('createAccount')}
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+                {isSubmitting ? t('creatingAccount') : t('createAccount')}
             </Button>
 
             <p className="text-center text-sm text-muted-foreground">

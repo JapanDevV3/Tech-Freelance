@@ -116,7 +116,7 @@
         "postService": "ลงบริการใหม่"
     },
     "services": {
-         "searchPlaceholder": "ค้นหาบริการ เช่น ลง Windows, ประกอบเครื่อง",
+        "searchPlaceholder": "ค้นหาบริการ เช่น ลง Windows, ประกอบเครื่อง",
         "found": "พบ {count} บริการ",
         "filters": "ตัวกรอง",
         "priceFrom": "เริ่มต้น",
@@ -167,7 +167,7 @@
         "software": "ซอฟต์แวร์",
         "other": "อื่นๆ",
         "price_range": "ช่วงราคา",
-        "max" : "สูงสุด"
+        "max": "สูงสุด"
     },
     "favorites": {
         "title": "ช่างที่บันทึกไว้",
@@ -391,5 +391,14 @@
         "saving": "กำลังบันทึก...",
         "saved": "บันทึกแล้ว ✓",
         "saveFailed": "บันทึกไม่สำเร็จ"
+    },
+    "validation": {
+        "email": "กรุณากรอกอีเมลที่ถูกต้อง",
+        "passwordRequired": "กรุณากรอกรหัสผ่าน",
+        "passwordMin": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร",
+        "passwordMax": "รหัสผ่านต้องมีความยาวไม่เกิน 72 ตัวอักษร",
+        "nameRequired": "กรุณากรอกชื่อ",
+        "nameMax": "ชื่อยาวเกินไป",
+        "passwordMismatch": "รหัสผ่านไม่ตรงกัน"
     }
 }

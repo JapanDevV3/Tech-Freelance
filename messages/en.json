@@ -22,7 +22,6 @@
         "passwordHint": "Should include letters and numbers",
         "confirmPassword": "Confirm password",
         "confirmPasswordPlaceholder": "Re-enter your password",
-        "passwordMismatch": "Passwords don't match",
         "createAccount": "Create account",
         "creatingAccount": "Creating account...",
         "alreadyHaveAccount": "Already have an account?",
@@ -167,7 +166,7 @@
         "software": "Software",
         "other": "Other",
         "price_range": "Price Range",
-        "max" : "Max"
+        "max": "Max"
     },
     "favorites": {
         "title": "Saved technicians",
@@ -391,5 +390,14 @@
         "saving": "Saving...",
         "saved": "Saved ✓",
         "saveFailed": "Save failed"
+    },
+    "validation": {
+        "email": "Please enter a valid email",
+        "passwordRequired": "Password is required",
+        "passwordMin": "At least 8 characters",
+        "passwordMax": "At most 72 characters",
+        "nameRequired": "Name is required",
+        "nameMax": "Name is too long",
+        "passwordMismatch": "Passwords do not match"
     }
 }

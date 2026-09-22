@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { Noto_Sans_Thai } from 'next/font/google';
+import { Noto_Sans_Thai, Roboto } from 'next/font/google';
 import { Roboto_Mono } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { ThemeProvider } from '@/components/theme-provider';
 import '../globals.css';
 
 const thaiFont = Noto_Sans_Thai({ subsets: ['thai', 'latin'], display: 'swap' });
-const enFont = Roboto_Mono({ subsets: ['latin'], display: 'swap' });
+const enFont = Roboto({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'TechLance',
