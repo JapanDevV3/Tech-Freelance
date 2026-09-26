@@ -1,36 +1,113 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛠️ Tech-Freelance
 
-## Getting Started
+> A freelance marketplace connecting customers with independent technicians for computer repair, assembly, and remote support.
 
-First, run the development server:
+![Status](https://img.shields.io/badge/status-in%20development-yellow)
+![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+> 🚧 **This project is under active development.** Features are being built incrementally — see the [progress checklist](#-features) and [roadmap](#-roadmap) below.
+
+**🔗 Live Demo:** _coming soon_ &nbsp;·&nbsp; **🎥 Demo Video:** _coming soon_
+
+<!-- Uncomment once deployed
+**Test accounts** (Stripe runs in test mode)
+| Role | Email | Password |
+|------|-------|----------|
+| Customer | customer@demo.com | demo1234 |
+| Technician | tech@demo.com | demo1234 |
+
+![Home page](docs/screenshots/home.png)
+-->
+
+---
+
+## 📌 Problem & Solution
+
+**Problem:** When a computer breaks, it's hard to find a trustworthy technician. Pricing is often unclear, and people usually have to carry their machine to a shop.
+
+**Solution:** Customers post a job, technicians submit offers, both sides communicate through real-time chat, and payment is held in escrow until the job is confirmed complete. The platform is **remote-support first**, so many issues can be solved without an on-site visit.
+
+## ✨ Features
+
+- [x] Authentication with separate **Customer** and **Technician** roles
+- [ ] Job posting and technician bidding
+- [ ] Real-time chat via WebSocket
+- [ ] Escrow payments with **Stripe Connect** — technicians are paid once the customer confirms completion
+- [ ] Ratings and reviews
+- [ ] Technician dashboard (earnings, active jobs)
+
+<!-- Tick [x] only for features that are actually working -->
+
+## 🧰 Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui |
+| Backend | Next.js Route Handlers / Server Actions, WebSocket |
+| Database | PostgreSQL (Neon / Supabase), Drizzle ORM |
+| Payments | Stripe Connect (test mode) |
+| DevOps | Docker, GitHub Actions, Vercel |
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart LR
+  U[Browser] --> N[Next.js App]
+  N --> DB[(PostgreSQL)]
+  N --> S[Stripe Connect]
+  S -- webhooks --> N
+  N <--> WS[WebSocket Server]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Database schema: _ERD coming soon_ (`docs/erd.png`)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 💡 Technical Highlights
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<!-- Fill these in as you build — explain the problem, your approach, and why -->
+- **Escrow payment flow** — Stripe Connect with webhook handling, including idempotency to prevent duplicate processing.
+- **Real-time chat** — _TBD_
+- **Role-based access control** — _TBD_
+- **CI/CD** — lint, type-check, and build run on every pull request via GitHub Actions.
 
-## Learn More
+## 🚀 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
+- Node.js 20+
+- PostgreSQL (local, Docker, or Neon/Supabase)
+- Stripe account (test mode)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+git clone https://github.com/JapanDevV3/Tech-Freelance.git
+cd Tech-Freelance
+cp .env.example .env.local   # fill in DATABASE_URL, STRIPE_SECRET_KEY, etc.
+npm install
+npm run dev
+```
 
-## Deploy on Vercel
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<!-- Add once available:
+npm run db:migrate
+docker compose up -d
+-->
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗺️ Roadmap
+
+- [ ] Core MVP: auth, job posting, bidding
+- [ ] Real-time chat
+- [ ] Stripe Connect escrow payments
+- [ ] Reviews and technician dashboard
+- [ ] Docker setup and CI pipeline
+- [ ] Deploy to Vercel
+- [ ] Email notifications
+- [ ] On-site appointment booking
+- [ ] Admin panel
+
+## 👤 Author
+
+**Nattasit Sukprasert (Japan)** — Full-stack Developer, Bangkok
+[LinkedIn](https://linkedin.com/in/nattasit-sukprasert) · [Email](mailto:develop0131997@gmail.com)
