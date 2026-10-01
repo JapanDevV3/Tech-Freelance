@@ -19,7 +19,7 @@
         "name": "Full name",
         "namePlaceholder": "e.g. Somchai Jaidee",
         "passwordPlaceholder": "At least 8 characters",
-        "passwordHint": "Should include letters and numbers",
+        "passwordHint": "Must include at least one letter and one number",
         "confirmPassword": "Confirm password",
         "confirmPasswordPlaceholder": "Re-enter your password",
         "createAccount": "Create account",
@@ -153,8 +153,23 @@
             "build_pc": "PC Build",
             "network": "Network",
             "software": "Software",
-            "other": "Other"
-        }
+            "other": "Other",
+            "_placeholder": "Select a category"
+        },
+        "duration": "Duration",
+        "durationOptions": {
+            "same_day": "Same day",
+            "days_1_2": "1–2 days",
+            "days_3_5": "3–5 days",
+            "week_plus": "1 week or more"
+        },
+        "serviceArea": "Service area",
+        "serviceAreaPlaceholder": "e.g. Bangkok and vicinity",
+        "images": "Portfolio images",
+        "imagesDrop": "Drag files here, or click to upload",
+        "imagesHint": "Up to {max} images · max {sizeMb}MB each · JPG/PNG/WebP",
+        "imagesCover": "Cover",
+        "imagesRemove": "Remove {name}"
     },
     "serviceFilters": {
         "filters": "Filters",
@@ -341,6 +356,7 @@
         "by": "by",
         "viewProfile": "View profile",
         "priceFrom": "Starting from",
+        "modeLabel": "Service mode",
         "mode": {
             "remote": "Remote",
             "onsite": "On-site"
@@ -389,15 +405,52 @@
         "save": "Save profile",
         "saving": "Saving...",
         "saved": "Saved ✓",
-        "saveFailed": "Save failed"
+        "saveFailed": "Save failed",
+        "phone": "Phone",
+        "phonePrivateHint": "Only shown to customers who have an order with you",
+        "serviceArea": "Service area",
+        "serviceAreaPlaceholder": "e.g. Bangkok and vicinity",
+        "experience": "Experience",
+        "experienceUnit": "years"
     },
     "validation": {
         "email": "Please enter a valid email",
         "passwordRequired": "Password is required",
         "passwordMin": "At least 8 characters",
-        "passwordMax": "At most 72 characters",
+        "passwordMax": "Password is too long",
         "nameRequired": "Name is required",
         "nameMax": "Name is too long",
-        "passwordMismatch": "Passwords do not match"
+        "passwordMismatch": "Passwords do not match",
+        "invalid": "Invalid value",
+        "passwordLetter": "Must include at least one letter",
+        "passwordNumber": "Must include at least one number",
+        "serviceTitleRequired": "Please enter a service name",
+        "serviceTitleMax": "Service name is too long (max 120 characters)",
+        "categoryRequired": "Please choose a category",
+        "priceInvalid": "Please enter a price",
+        "pricePositive": "Price must be greater than 0",
+        "priceMax": "Price is too high (max ฿1,000,000)",
+        "durationRequired": "Please choose a duration",
+        "serviceAreaRequired": "Please enter your service area for on-site work",
+        "serviceAreaMax": "Service area is too long",
+        "serviceDescriptionRequired": "Please describe the service",
+        "serviceDescriptionMax": "Description is too long (max 2,000 characters)",
+        "imagesMax": "Up to 5 images",
+        "imageType": "Only JPG, PNG or WebP images are allowed",
+        "imageSize": "Image file is too large",
+        "imageUploadFailed": "Image upload failed, please try again",
+        "imageInvalid": "Image could not be verified, please upload again",
+        "noProfile": "Please create your technician profile first",
+        "saveFailed": "Save failed, please try again",
+        "displayNameRequired": "Please enter a business or technician name",
+        "displayNameMax": "Name is too long (max 80 characters)",
+        "bioMax": "Too long (max 500 characters)",
+        "phoneInvalid": "Invalid phone number (e.g. 089-765-4321)",
+        "experienceInvalid": "Enter a number of years from 0 to 60"
+    },
+    "avatar": {
+        "change": "Change photo",
+        "uploading": "Uploading...",
+        "hint": "JPG/PNG/WebP · max {sizeMb}MB"
     }
 }

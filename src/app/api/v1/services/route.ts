@@ -22,6 +22,11 @@ export async function POST(req: Request) {
         if (err instanceof Error && err.message === 'NO_PROFILE') {
             return NextResponse.json({ error: { code: 'NO_PROFILE', message: 'Please create a technician profile first.' } }, { status: 409 });
         }
+
+        if (err instanceof Error && err.message === 'INVALID_IMAGE') {
+            return NextResponse.json({ error: { code: 'VALIDATION_ERROR', details: [{ path: ['imageKeys'], message: 'imageInvalid' }] } }, { status: 422 });
+        }
+
         console.error(err);
         return NextResponse.json({ error: { code: 'INTERNAL', message: 'An error occurred.' } }, { status: 500 });
     }

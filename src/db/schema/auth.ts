@@ -7,6 +7,7 @@ export const users = pgTable('users', {
     passwordHash: text('password_hash').notNull(),
     name: text('name').notNull(),
     role: userRole('role').notNull().default('customer'),
+    avatarKey: text('avatar_key'), // storage key, never a URL — see lib/storage
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
 })

@@ -1,94 +1,184 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useTranslations } from 'next-intl';
 import { Textarea } from '@/components/ui/textarea';
+import { FieldError } from '@/components/ui/field-error';
 import { cn } from '@/lib/utils';
-import { SERVICE_CATEGORIES, type ServiceCategory } from '@/lib/service-categories';
+import { SERVICE_CATEGORIES } from '@/lib/service-categories';
+import { applyServerErrors } from '@/lib/forms/apply-server-errors';
+import { profileSchema, type ProfileFormValues, type ProfileInput } from '@/lib/validations/technician';
 
-type Props = { initial: { displayName: string; bio: string; skills: string[] } };
+const FORM_FIELDS = ['displayName', 'phone', 'serviceArea', 'experienceYears', 'skills', 'bio'] as const;
 
-function isServiceCategory(value: string): value is ServiceCategory {
-    return (SERVICE_CATEGORIES as readonly string[]).includes(value);
-}
+type Props = { initial: ProfileFormValues };
 
 export function TechnicianProfileForm({ initial }: Props) {
     const t = useTranslations('techProfile');
     const tCategory = useTranslations('serviceForm.serviceCategory');
     const router = useRouter();
-    const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState('');
-    const [status, setStatus] = useState<'idle' | 'ok' | 'error'>('idle');
-    const [skills, setSkills] = useState<ServiceCategory[]>(initial.skills.filter(isServiceCategory));
+    const [saved, setSaved] = useState(false);
 
-    function toggleSkill(category: ServiceCategory) {
-        setSkills((prev) => prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]);
-    }
+    // <Input, Context, Output>: the schema transforms (e.g. phone → digits only),
+    // so the submit handler receives the parsed output, not the raw form values.
+    const {
+        register,
+        control,
+        handleSubmit,
+        reset,
+        setError,
+        formState: { errors, isSubmitting, isDirty },
+    } = useForm<ProfileFormValues, unknown, ProfileInput>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: initial,
+    });
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setSaving(true);
-        setStatus('idle');
-
-        const form = new FormData(e.currentTarget);
-
+    const onSubmit = handleSubmit(async (values) => {
+        setSaved(false);
         const res = await fetch('/api/v1/technician/profile', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                displayName: form.get('displayName'),
-                bio: form.get('bio'),
-                skills,
-            }),
+            body: JSON.stringify(values),
         });
 
-        setSaving(false);
-        res.ok ? (setStatus('ok'), setMessage(t('saved'))) : (setStatus('error'), setMessage(t('saveFailed')))
-        if (res.ok) router.refresh();
-    }
+        if (res.ok) {
+            // Saved values become the new baseline (isDirty → false). RHF ignores
+            // defaultValues changes after mount, so router.refresh() can't fight the
+            // form — the old `key` remount workaround is no longer needed.
+            reset(values);
+            setSaved(true);
+            router.refresh();
+            return;
+        }
+
+        const body = await res.json().catch(() => null);
+        if (!applyServerErrors(body, setError, FORM_FIELDS)) setError('root', { message: 'saveFailed' });
+    });
 
     return (
-        <form onSubmit={handleSubmit} className="grid gap-4">
-            <div className="grid gap-2">
-                <Label htmlFor="displayName">{t('displayName')}</Label>
-                <Input id="displayName" name="displayName" defaultValue={initial.displayName} placeholder={t('displayNamePlaceholder')} required />
-            </div>
-            <div className="grid gap-2">
-                <Label>{t('skills')}</Label>
-                <div className="flex flex-wrap gap-2">
-                    {SERVICE_CATEGORIES.map((category) => (
-                        <button
-                            key={category}
-                            type="button"
-                            aria-pressed={skills.includes(category)}
-                            onClick={() => toggleSkill(category)}
-                            className={cn(
-                                'rounded-full border px-3 py-1 text-xs font-medium transition-colors',
-                                skills.includes(category)
-                                    ? 'border-primary bg-accent-soft text-primary'
-                                    : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
-                            )}
-                        >
-                            {tCategory(category)}
-                        </button>
-                    ))}
+        <form onSubmit={onSubmit} className="grid gap-4" noValidate>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="grid content-start gap-2">
+                    <Label htmlFor="displayName">{t('displayName')}</Label>
+                    <Input
+                        id="displayName"
+                        placeholder={t('displayNamePlaceholder')}
+                        aria-invalid={!!errors.displayName}
+                        {...register('displayName')}
+                    />
+                    <FieldError message={errors.displayName?.message} />
                 </div>
-                <p className="text-xs text-muted-foreground">{t('skillsHint')}</p>
+
+                <div className="grid content-start gap-2">
+                    <Label htmlFor="phone">{t('phone')}</Label>
+                    <Input
+                        id="phone"
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        placeholder="08X-XXX-XXXX"
+                        aria-invalid={!!errors.phone}
+                        {...register('phone')}
+                    />
+                    {errors.phone
+                        ? <FieldError message={errors.phone.message} />
+                        : <p className="text-xs text-muted-foreground">{t('phonePrivateHint')}</p>}
+                </div>
+
+                <div className="grid content-start gap-2">
+                    <Label htmlFor="serviceArea">{t('serviceArea')}</Label>
+                    <Input
+                        id="serviceArea"
+                        placeholder={t('serviceAreaPlaceholder')}
+                        aria-invalid={!!errors.serviceArea}
+                        {...register('serviceArea')}
+                    />
+                    <FieldError message={errors.serviceArea?.message} />
+                </div>
+
+                <div className="grid content-start gap-2">
+                    <Label htmlFor="experienceYears">{t('experience')}</Label>
+                    <div className="flex items-center gap-2">
+                        <Input
+                            id="experienceYears"
+                            type="number"
+                            min="0"
+                            max="60"
+                            inputMode="numeric"
+                            aria-invalid={!!errors.experienceYears}
+                            // Optional number: empty → null. (valueAsNumber would give NaN,
+                            // which is right for required fields like price, wrong here.)
+                            {...register('experienceYears', {
+                                setValueAs: (v: unknown) => (v === '' || v == null ? null : Number(v)),
+                            })}
+                        />
+                        <span className="text-sm text-muted-foreground">{t('experienceUnit')}</span>
+                    </div>
+                    <FieldError message={errors.experienceYears?.message} />
+                </div>
             </div>
+
+            <div className="grid gap-2">
+                <Label id="skills-label">{t('skills')}</Label>
+                <Controller
+                    control={control}
+                    name="skills"
+                    render={({ field }) => (
+                        <div role="group" aria-labelledby="skills-label" className="flex flex-wrap gap-2">
+                            {SERVICE_CATEGORIES.map((category) => {
+                                const selected = field.value.includes(category);
+                                return (
+                                    <button
+                                        key={category}
+                                        type="button"
+                                        aria-pressed={selected}
+                                        onClick={() => field.onChange(
+                                            selected
+                                                ? field.value.filter((c) => c !== category)
+                                                : [...field.value, category],
+                                        )}
+                                        className={cn(
+                                            'rounded-full border px-3 py-1 text-xs font-medium transition-colors',
+                                            selected
+                                                ? 'border-primary bg-accent-soft text-primary'
+                                                : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
+                                        )}
+                                    >
+                                        {tCategory(category)}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
+                />
+                <p className="text-xs text-muted-foreground">{t('skillsHint')}</p>
+                <FieldError message={errors.skills?.message} />
+            </div>
+
             <div className="grid gap-2">
                 <Label htmlFor="bio">{t('bio')}</Label>
-                <Textarea id="bio" name="bio" defaultValue={initial.bio} rows={4} placeholder={t('bioPlaceholder')} />
+                <Textarea
+                    id="bio"
+                    rows={4}
+                    placeholder={t('bioPlaceholder')}
+                    aria-invalid={!!errors.bio}
+                    {...register('bio')}
+                />
+                <FieldError message={errors.bio?.message} />
             </div>
-            <Button type="submit" disabled={saving} className="justify-self-start">
-                {saving ? t('saving') : t('save')}
+
+            <FieldError message={errors.root?.message} />
+
+            <Button type="submit" disabled={isSubmitting || !isDirty} className="justify-self-start">
+                {isSubmitting ? t('saving') : t('save')}
             </Button>
-            {status !== 'idle' && (
-                <p className={status === 'ok' ? 'text-sm text-primary' : 'text-sm text-destructive'}>{message}</p>
-            )}
+            {saved && !isDirty && <p className="text-sm text-primary">{t('saved')}</p>}
         </form>
     );
 }

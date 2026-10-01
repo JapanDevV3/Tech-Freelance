@@ -9,31 +9,27 @@ export async function getMyProfile(userId: string) {
     });
 }
 
+// Atomic upsert: a single INSERT ... ON CONFLICT (user_id) DO UPDATE.
+// The previous select-then-insert raced when two saves arrived together
+// (both saw "no profile", the second insert hit the unique constraint → 500).
 export async function upsertMyProfile(userId: string, input: ProfileInput) {
-    const existing = await getMyProfile(userId);
+    const values = {
+        displayName: input.displayName,
+        phone: input.phone || null,
+        serviceArea: input.serviceArea || null,
+        experienceYears: input.experienceYears,
+        skills: input.skills,
+        bio: input.bio || null,
+    };
 
-    if (existing) {
-        const [updated] = await db.update(technicianProfiles).set({
-            displayName: input.displayName,
-            bio: input.bio || null,
-            skills: input.skills ?? [],
-            updatedAt: new Date(),
-        })
-        .where(eq(technicianProfiles.userId, userId))
-        .returning();
-
-        return updated;
-    }
-
-    const [created] = await db
+    const [profile] = await db
         .insert(technicianProfiles)
-        .values({
-            userId,
-            displayName: input.displayName,
-            bio: input.bio || null,
-            skills: input.skills ?? [],
+        .values({ userId, ...values })
+        .onConflictDoUpdate({
+            target: technicianProfiles.userId, // relies on UNIQUE(user_id)
+            set: { ...values, updatedAt: new Date() },
         })
         .returning();
 
-        return created;
+    return profile;
 }

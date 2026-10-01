@@ -19,7 +19,7 @@
         "name": "ชื่อ-นามสกุล",
         "namePlaceholder": "เช่น สมชาย ใจดี",
         "passwordPlaceholder": "อย่างน้อย 8 ตัวอักษร",
-        "passwordHint": "ควรมีตัวอักษรและตัวเลขผสมกัน",
+        "passwordHint": "ต้องมีตัวอักษรและตัวเลขอย่างน้อยอย่างละ 1 ตัว",
         "confirmPassword": "ยืนยันรหัสผ่าน",
         "confirmPasswordPlaceholder": "พิมพ์รหัสผ่านอีกครั้ง",
         "passwordMismatch": "รหัสผ่านไม่ตรงกัน",
@@ -154,8 +154,23 @@
             "build_pc": "ประกอบเครื่อง",
             "network": "เครือข่าย",
             "software": "ซอฟต์แวร์",
-            "other": "อื่นๆ"
-        }
+            "other": "อื่นๆ",
+            "_placeholder": "เลือกหมวดหมู่"
+        },
+        "duration": "ระยะเวลา",
+        "durationOptions": {
+            "same_day": "ภายในวัน",
+            "days_1_2": "1-2 วัน",
+            "days_3_5": "3-5 วัน",
+            "week_plus": "1 สัปดาห์ขึ้นไป"
+        },
+        "serviceArea": "พื้นที่ให้บริการ",
+        "serviceAreaPlaceholder": "เช่น กรุงเทพฯ และปริมณฑล",
+        "images": "รูปภาพผลงาน",
+        "imagesDrop": "ลากไฟล์มาวาง หรือคลิกเพื่ออัปโหลด",
+        "imagesHint": "สูงสุด {max} รูป · ไฟล์ละไม่เกิน {sizeMb}MB · JPG/PNG/WebP",
+        "imagesCover": "ปก",
+        "imagesRemove": "ลบ {name}"
     },
     "serviceFilters": {
         "filters": "ตัวกรอง",
@@ -342,6 +357,7 @@
         "by": "โดย",
         "viewProfile": "ดูโปรไฟล์",
         "priceFrom": "เริ่มต้น",
+        "modeLabel": "รูปแบบบริการ",
         "mode": {
             "remote": "รีโมท",
             "onsite": "ถึงที่ (ออนไซต์)"
@@ -390,15 +406,52 @@
         "save": "บันทึกโปรไฟล์",
         "saving": "กำลังบันทึก...",
         "saved": "บันทึกแล้ว ✓",
-        "saveFailed": "บันทึกไม่สำเร็จ"
+        "saveFailed": "บันทึกไม่สำเร็จ",
+        "phone": "เบอร์โทร",
+        "phonePrivateHint": "แสดงให้ลูกค้าเห็นเฉพาะเมื่อมีออเดอร์กับคุณ",
+        "serviceArea": "พื้นที่ให้บริการ",
+        "serviceAreaPlaceholder": "เช่น กรุงเทพฯ และปริมณฑล",
+        "experience": "ประสบการณ์",
+        "experienceUnit": "ปี"
     },
     "validation": {
         "email": "กรุณากรอกอีเมลที่ถูกต้อง",
         "passwordRequired": "กรุณากรอกรหัสผ่าน",
         "passwordMin": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร",
-        "passwordMax": "รหัสผ่านต้องมีความยาวไม่เกิน 72 ตัวอักษร",
+        "passwordMax": "รหัสผ่านยาวเกินไป",
         "nameRequired": "กรุณากรอกชื่อ",
         "nameMax": "ชื่อยาวเกินไป",
-        "passwordMismatch": "รหัสผ่านไม่ตรงกัน"
+        "passwordMismatch": "รหัสผ่านไม่ตรงกัน",
+        "invalid": "ข้อมูลไม่ถูกต้อง",
+        "passwordLetter": "ต้องมีตัวอักษรอย่างน้อย 1 ตัว",
+        "passwordNumber": "ต้องมีตัวเลขอย่างน้อย 1 ตัว",
+        "serviceTitleRequired": "กรุณากรอกชื่อบริการ",
+        "serviceTitleMax": "ชื่อบริการยาวเกินไป (สูงสุด 120 ตัวอักษร)",
+        "categoryRequired": "กรุณาเลือกหมวดหมู่",
+        "priceInvalid": "กรุณากรอกราคา",
+        "pricePositive": "ราคาต้องมากกว่า 0",
+        "priceMax": "ราคาสูงเกินไป (สูงสุด ฿1,000,000)",
+        "durationRequired": "กรุณาเลือกระยะเวลา",
+        "serviceAreaRequired": "กรุณาระบุพื้นที่ให้บริการสำหรับงานออนไซต์",
+        "serviceAreaMax": "พื้นที่ให้บริการยาวเกินไป",
+        "serviceDescriptionRequired": "กรุณากรอกรายละเอียดบริการ",
+        "serviceDescriptionMax": "รายละเอียดยาวเกินไป (สูงสุด 2,000 ตัวอักษร)",
+        "imagesMax": "อัปโหลดได้สูงสุด 5 รูป",
+        "imageType": "รองรับเฉพาะไฟล์ JPG, PNG หรือ WebP",
+        "imageSize": "ไฟล์รูปใหญ่เกินไป",
+        "imageUploadFailed": "อัปโหลดรูปไม่สำเร็จ กรุณาลองใหม่",
+        "imageInvalid": "ตรวจสอบรูปไม่ผ่าน กรุณาอัปโหลดใหม่",
+        "noProfile": "กรุณาสร้างโปรไฟล์ช่างก่อน",
+        "saveFailed": "บันทึกไม่สำเร็จ กรุณาลองใหม่",
+        "displayNameRequired": "กรุณากรอกชื่อธุรกิจหรือชื่อช่าง",
+        "displayNameMax": "ชื่อยาวเกินไป (สูงสุด 80 ตัวอักษร)",
+        "bioMax": "ยาวเกินไป (สูงสุด 500 ตัวอักษร)",
+        "phoneInvalid": "เบอร์โทรไม่ถูกต้อง (เช่น 089-765-4321)",
+        "experienceInvalid": "กรอกจำนวนปีระหว่าง 0–60"
+    },
+    "avatar": {
+        "change": "เปลี่ยนรูป",
+        "uploading": "กำลังอัปโหลด...",
+        "hint": "JPG/PNG/WebP · ไม่เกิน {sizeMb}MB"
     }
 }

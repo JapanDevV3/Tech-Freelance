@@ -1,5 +1,5 @@
 import { db } from "../db/client";
-import { users } from "../db/schema";
+import { technicianProfiles, users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import type { RegisterInput } from "../lib/validations/auth";
@@ -32,18 +32,32 @@ export async function registerUser(input: RegisterInput) {
     const passwordHash = await bcrypt.hash(input.password, BCRYPT_COST);
 
     try {
-        const [user] = await db.insert(users).values({
-            email: input.email,
-            passwordHash,
-            name: input.name,
-            role: input.role,
-        }).returning({
-            id: users.id,
-            email: users.email,
-            name: users.name,
-            role: users.role,
+        // `users` is the identity/login table for every role. Role-specific data lives
+        // in its own table — a technician account is only usable with a profile, so
+        // both rows are created atomically: either both exist or neither does.
+        return await db.transaction(async (tx) => {
+            const [user] = await tx.insert(users).values({
+                email: input.email,
+                passwordHash,
+                name: input.name,
+                role: input.role,
+            }).returning({
+                id: users.id,
+                email: users.email,
+                name: users.name,
+                role: users.role,
+            });
+
+            if (user.role === 'technician') {
+                // Defaults to the account name; the technician edits it on /technician/profile
+                await tx.insert(technicianProfiles).values({
+                    userId: user.id,
+                    displayName: user.name,
+                });
+            }
+
+            return user;
         });
-        return user;
     } catch (err) {
         // The users_email_unique index is the source of truth for "email taken"
         if (isUniqueViolation(err)) throw new EmailTakenError();

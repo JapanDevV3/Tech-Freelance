@@ -1,7 +1,7 @@
 import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { getMyProfile } from '@/services/technician.service';
-import { listActiveServices } from '@/services/catalog.service';
+import { listActiveServices, listServicesByTechnician } from '@/services/catalog.service';
 import { Container } from '@/components/layout/container';
 import { StatCard } from '@/components/ui/stat-card';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -34,10 +34,11 @@ export default async function DashboardPage({ params }: DashboardProps) {
 async function TechnicianDashboard({ userId, userName }: { userId: string; userName: string }) {
     const t = await getTranslations('dashboard.technician');
     const profile = await getMyProfile(userId);
-    const allServices = await listActiveServices();
-    // No technicianId filter on listActiveServices yet — match on the profile's
-    // own display name, which is unique per technician in practice.
-    const myServices = profile ? allServices.filter((s) => s.technician.displayName === profile.displayName) : [];
+    // Filter by technician id, never by display name: names aren't unique
+    // (and new profiles default to the account name, e.g. many "สมชาย").
+    const myServices = profile
+        ? (await listServicesByTechnician(profile.id)).filter((s) => s.status === 'active')
+        : [];
     const incomingRequests = MOCK_ORDERS.filter((o) => o.status === 'quoted' || o.status === 'awaiting_response').slice(0, 2);
     const monthlyRevenueBaht = 0; // no completed-orders backend yet to sum real revenue from
 

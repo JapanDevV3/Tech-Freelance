@@ -15,6 +15,7 @@ export default async function NewServicePage({ params }: NewServicePageProps) {
 
     // Don't have profile. Redirect to create profile.
     const profile = await getMyProfile(session.user.id);
+    console.log('profile', profile);
     if (!profile) {
         redirect({ href: '/technician/profile', locale });
         return;

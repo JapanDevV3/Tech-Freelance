@@ -93,7 +93,7 @@ export default async function ServiceDetailPage({
 
                     <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-sm">
                         <div className="flex items-center justify-between">
-                            <dt className="text-muted-foreground">{t('mode')}</dt>
+                            <dt className="text-muted-foreground">{t('modeLabel')}</dt>
                             <dd className="font-medium text-foreground">{t(`mode.${service.mode}`)}</dd>
                         </div>
                     </dl>
