@@ -15,6 +15,34 @@
       "when": 1787492874110,
       "tag": "0001_square_micromacro",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789309858757,
+      "tag": "0002_great_human_fly",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790865777228,
+      "tag": "0003_thin_firedrake",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790867002032,
+      "tag": "0004_nebulous_newton_destine",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790868121727,
+      "tag": "0005_backfill_technician_profiles",
+      "breakpoints": true
     }
   ]
 }
