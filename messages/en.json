@@ -27,8 +27,7 @@
         "alreadyHaveAccount": "Already have an account?",
         "emailTaken": "This email is already registered",
         "registerFailed": "Registration failed, please try again",
-        "tooManyAttempts": "Too many sign-in attempts. Please wait 15 minutes and try again.",
-        "tooManyRequests": "Too many requests. Please try again later."
+        "tooManyAttempts": "Too many sign-in attempts. Please wait 15 minutes and try again."
     },
     "dashboard": {
         "technician": {
@@ -148,12 +147,11 @@
         "saved": "Published ✓",
         "savedDraft": "Draft saved ✓",
         "saveFailed": "Save failed",
-        "tooManyRequests": "Too many requests. Please try again later.",
         "serviceCategory": {
             "_label": "Category",
             "all": "All",
             "install_windows": "Install Windows",
-            "build_pc": "PC Build",
+            "build_pc": "PC Build", 
             "network": "Network",
             "software": "Software",
             "other": "Other",
@@ -452,7 +450,8 @@
         "displayNameMax": "Name is too long (max 80 characters)",
         "bioMax": "Too long (max 500 characters)",
         "phoneInvalid": "Invalid phone number (e.g. 089-765-4321)",
-        "experienceInvalid": "Enter a number of years from 0 to 60"
+        "experienceInvalid": "Enter a number of years from 0 to 60",
+        "tooManyRequests": "Too many requests. Please try again later."
     },
     "avatar": {
         "change": "Change photo",

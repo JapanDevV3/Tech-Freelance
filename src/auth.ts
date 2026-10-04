@@ -28,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     rateLimit('loginEmail', hashIdentifier(email)),
                 ]);
 
-                if(!byIp.success || !byEmail.success) throw new RateLimitedSignin();
+                if (!byIp.success || !byEmail.success) throw new RateLimitedSignin();
 
                 return verifyCredentials(email, password);
             },

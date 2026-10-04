@@ -6,6 +6,8 @@ export async function uploadImage(purpose: UploadPurpose, file: File): Promise<s
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ purpose, contentType: file.type, size: file.size }),
     });
+
+    if (res.status === 429) throw new Error('RATE_LIMITED');
     if (!res.ok) throw new Error('UPLOAD_TARGET_FAILED');
     const { data } = (await res.json()) as { data: { key: string; uploadUrl: string; headers: Record<string, string> } };
 

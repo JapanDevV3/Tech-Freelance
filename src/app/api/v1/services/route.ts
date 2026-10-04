@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     if (!session) return NextResponse.json({ error: { code: 'UNAUTHENTICATED', message: 'Unauthentication' } }, { status: 401 });
     if (session.user.role !== 'technician') return NextResponse.json({ error: { code: 'FORBIDDEN', message: 'Technician Only' } }, { status: 403 })
 
-    const limit = await rateLimit('createService', session.user.id);        // หรือ 'createService'
+    const limit = await rateLimit('createService', session.user.id);
     if (!limit.success) return rateLimitResponse(limit);
 
     try {

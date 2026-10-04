@@ -15,7 +15,7 @@ import { ImageDropzone } from '@/components/services/image-dropzone';
 import { SERVICE_CATEGORIES, SERVICE_DURATIONS } from '@/lib/service-categories';
 import { serviceFormSchema, type ServiceFormValues } from '@/lib/validations/service';
 import { uploadImage } from '@/lib/uploads/client';
-import { applyServerErrors } from '@/lib/forms/apply-server-errors';
+import { applyServerErrors, rootErrorKey } from '@/lib/forms/apply-server-errors';
 
 type PublishStatus = 'active' | 'draft';
 
@@ -53,8 +53,9 @@ export function ServiceForm() {
         let imageKeys: string[];
         try {
             imageKeys = await Promise.all(images.map((f) => uploadImage('serviceImage', f)));
-        } catch {
-            setError('images', { message: 'imageUploadFailed' });
+        } catch (err) {
+            const rateLimited = err instanceof Error && err.message === 'RATE_LIMITED';
+            setError('images', { message: rateLimited ? 'tooManyRequests' : 'imageUploadFailed' });
             return;
         }
 
@@ -74,7 +75,9 @@ export function ServiceForm() {
         const body = await res.json().catch(() => null);
         // Server field `imageKeys` corresponds to the form's `images`
         if (applyServerErrors(body, setError, FORM_FIELDS, { imageKeys: 'images' })) return;
-        setError('root', { message: body?.error?.code === 'NO_PROFILE' ? 'noProfile' : 'saveFailed' });
+        setError('root', {
+            message: rootErrorKey(body, body?.error?.code === 'NO_PROFILE' ? 'noProfile' : 'saveFailed'),
+        });
     });
 
     return (
