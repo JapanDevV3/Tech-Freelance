@@ -110,7 +110,7 @@ export async function listActiveServices(filters: ServiceFilters = {}) {
     return rows.map(withCoverUrl)
 }
 
-export async function getServiceById(id: string) {
+export const getServiceById = cache (async (id: string) => {
     const row = await db.query.services.findFirst({
         where: eq(services.id, id),
         with: {
@@ -123,4 +123,4 @@ export async function getServiceById(id: string) {
     const { images, ...service } = row;
 
     return { ...service, imageUrls: toImageUrls(images) };
-}
+})

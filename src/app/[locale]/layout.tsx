@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { Noto_Sans_Thai, Roboto } from 'next/font/google';
-import { Roboto_Mono } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { ThemeProvider } from '@/components/theme-provider';
 import '../globals.css';

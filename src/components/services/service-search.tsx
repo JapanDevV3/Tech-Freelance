@@ -5,9 +5,9 @@ import { Input } from '@/components/ui/input';
 import { useFilters } from '@/hooks/use-filters';
 
 export function ServiceSearch({ placeholder }: { placeholder: string }) {
-    const { get, setParam } = useFilters();
+    const { get } = useFilters();
     const [value, setValue] = useState(get('q') ?? '');
-    const [isPending, startTransition] = useTransition();
+    const [isPending] = useTransition();
     const mounted = useRef(false);
 
     // Debounce: wait 350ms after the user stops typing before navigating,

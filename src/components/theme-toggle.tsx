@@ -1,17 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Sun03Icon, Moon02Icon } from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
+import { useSyncExternalStore } from 'react';
+
+const noopSubscribe = () => () => {};
+
+// false during SSR + hydration, true once on the client — no setState-in-effect, no mismatch
+function useIsClient() {
+    return useSyncExternalStore(noopSubscribe, () => true, () => false);
+}
 
 export function ThemeToggle() {
     const { resolvedTheme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => setMounted(true), []);
+    const mounted = useIsClient();
 
-    // ก่อน client mount เรายังไม่รู้ธีมจริง → โชว์ปุ่มเปล่าไว้ก่อน กัน hydration mismatch
     if (!mounted) return <Button variant="outline" size="icon" aria-label="สลับธีม" />;
 
     const isDark = resolvedTheme === 'dark';
