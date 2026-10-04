@@ -372,7 +372,10 @@
         "hireButton": "จ้างช่างคนนี้",
         "askFirst": "สอบถามก่อนจ้าง",
         "escrowNote": "เงินของคุณถูกพักไว้อย่างปลอดภัย จะโอนให้ช่างเมื่อคุณยืนยันว่างานเสร็จ",
-        "similarServices": "บริการที่คล้ายกัน"
+        "similarServices": "บริการที่คล้ายกัน",
+        "durationLabel": "ระยะเวลา",
+        "areaLabel": "พื้นที่",
+        "showImage": "ดูรูปที่ {index} จาก {total}"
     },
     "technicianProfile": {
         "back": "กลับ",

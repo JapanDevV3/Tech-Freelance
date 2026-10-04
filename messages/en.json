@@ -371,7 +371,10 @@
         "hireButton": "Hire this technician",
         "askFirst": "Ask before hiring",
         "escrowNote": "Your money is held safely and only released once you confirm the job is done",
-        "similarServices": "Similar services"
+        "similarServices": "Similar services",
+        "durationLabel": "Duration",
+        "areaLabel": "Service area",
+        "showImage": "Show image {index} of {total}"
     },
     "technicianProfile": {
         "back": "Back",

@@ -11,6 +11,7 @@ import { formatBaht } from '@/lib/format';
 import { findTechnician } from '@/lib/mock/marketplace';
 import Image from 'next/image';
 import { auth } from '@/auth';
+import { ServiceGallery } from '@/components/services/service-gallery';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -31,14 +32,16 @@ export default async function ServiceDetailPage({
     const session = await auth();
     const isOwner = session?.user.id === service.technician.userId;
 
-    if(service.status !== 'active' && !isOwner) notFound();
-
+    if (service.status !== 'active' && !isOwner) notFound();
+    
     // Reviews aren't wired to a backend yet — layer the same curated reviews the
     // technician profile page uses so the two pages feel consistent.
     const technicianRef = findTechnician(service.technician.displayName);
     const similar = (await listActiveServices({ category: service.category }))
         .filter((s) => s.id !== service.id)
         .slice(0, 3);
+
+    const tDuration = await getTranslations('serviceForm.durationOptions');
 
     return (
         <Container size="xl" gutter="lg">
@@ -49,17 +52,7 @@ export default async function ServiceDetailPage({
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
                 {/* ---- Main column ---- */}
                 <div>
-                    <div className="relative aspect-video w-full overflow-hidden bg-sunken">
-                        {service.coverUrl && (
-                            <Image
-                                src={service.coverUrl}
-                                alt={service.title}
-                                fill
-                                sizes="(min-width: 1024px) 860px, 100vw"
-                                className="object-cover"
-                            />
-                        )}
-                    </div>
+                    <ServiceGallery images={service.imageUrls} title={service.title} />
 
                     <Badge variant="outline" className="mt-6">{t(`category.${service.category}`)}</Badge>
                     <h1 className="mt-2 text-2xl font-bold text-foreground text-balance">{service.title}</h1>
@@ -109,10 +102,20 @@ export default async function ServiceDetailPage({
                     <p className="mt-1 text-3xl font-bold text-foreground">{formatBaht(service.basePriceAmount)}</p>
 
                     <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-sm">
+                        <div className="flex items-center justify-between gap-4">
+                            <dt className="text-muted-foreground">{t('durationLabel')}</dt>
+                            <dd className="font-medium text-foreground">{tDuration(service.duration)}</dd>
+                        </div>
                         <div className="flex items-center justify-between">
                             <dt className="text-muted-foreground">{t('modeLabel')}</dt>
                             <dd className="font-medium text-foreground">{t(`mode.${service.mode}`)}</dd>
                         </div>
+                        {service.mode === 'onsite' && service.serviceArea && (
+                            <div className="flex items-start justify-between gap-4">
+                                <dt className="shrink-0 text-muted-foreground">{t('areaLabel')}</dt>
+                                <dd className="text-right font-medium text-foreground">{service.serviceArea}</dd>
+                            </div>
+                        )}
                     </dl>
 
                     <Button className="mt-5 w-full">{t('hireButton')}</Button>
@@ -148,5 +151,8 @@ export async function generateMetadata({ params }: { params: Promise<{ serviceId
     const { serviceId } = await params;
     if (!UUID_RE.test(serviceId)) return {};
     const service = await getServiceById(serviceId);
+
+    // Never put a draft's title into <title> — the page itself 404s for non-owners
+    if (!service || service.status !== 'active') return {};
     return { title: service?.title };
 }

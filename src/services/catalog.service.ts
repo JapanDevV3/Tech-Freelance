@@ -6,10 +6,24 @@ import { ServiceCategory } from "@/lib/service-categories";
 import { isOwnedKey } from "@/lib/uploads/keys";
 import { getStorage } from "@/lib/storage";
 import { UPLOAD_PURPOSES } from "@/lib/uploads/constants";
+import { cache } from "react";
 
+type ImageRow = { storageKey: string };
 
 export type ServiceSort = 'newest' | 'price_asc' | 'price_desc';
 export type ServiceFilters = { q?: string; category?: ServiceCategory; maxPrice?: number; sort?: ServiceSort };
+
+/* Helper */
+// Single place that turns storage keys into URLs for the active driver
+function toImageUrls(images: ImageRow[]) {
+    const storage = getStorage();
+    return images.map((img) => storage.publicUrl(img.storageKey));
+}
+
+function withCoverUrl<T extends { images: ImageRow[] }>({ images, ...rest }: T) {
+    return { ...rest, coverUrl: toImageUrls(images)[0] ?? null }
+
+}
 
 export async function createService(userId: string, input: CreateServiceInput) {
     const profile = await db.query.technicianProfiles.findFirst({ where: eq(technicianProfiles.userId, userId) });
@@ -47,7 +61,6 @@ export async function createService(userId: string, input: CreateServiceInput) {
 }
 
 export async function listServicesByTechnician(technicianId: string) {
-    const storage = getStorage();
     const rows = await db.query.services.findMany({
         where: eq(services.technicianId, technicianId),
         orderBy: desc(services.createdAt),
@@ -55,17 +68,12 @@ export async function listServicesByTechnician(technicianId: string) {
             images: { columns: { storageKey: true }, orderBy: (img, { asc }) => [asc(img.position)], limit: 1 }
         }
     });
-    
-    return rows.map(({ images, ...service }) => ({
-        ...service,
-        coverUrl: images[0] ? storage.publicUrl(images[0].storageKey) : null,
-    }))
+
+    return rows.map(withCoverUrl)
 }
 
 export async function listActiveServices(filters: ServiceFilters = {}) {
-
     const where: SQL[] = [eq(services.status, 'active')];
-    const storage = getStorage();
 
     if (filters.q) {
         where.push(
@@ -99,28 +107,20 @@ export async function listActiveServices(filters: ServiceFilters = {}) {
         }
     })
 
-    return rows.map(({ images, ...service }) => ({
-        ...service,
-        coverUrl: images[0] ? storage.publicUrl(images[0].storageKey) : null,
-    }))
+    return rows.map(withCoverUrl)
 }
 
 export async function getServiceById(id: string) {
-    const storage = getStorage();
     const row = await db.query.services.findFirst({
         where: eq(services.id, id),
         with: {
             technician: { columns: { id: true, userId: true, displayName: true, bio: true } },
-            images: { columns: { storageKey: true }, orderBy: (img, { asc }) => [asc(img.position)], limit: 1 },
+            images: { columns: { storageKey: true }, orderBy: (img, { asc }) => [asc(img.position)] },
         }
     });
 
     if (!row) return null;
-
     const { images, ...service } = row;
 
-    return {
-        ...service,
-        coverUrl: images[0] ? storage.publicUrl(images[0].storageKey) : null,
-    };
+    return { ...service, imageUrls: toImageUrls(images) };
 }
