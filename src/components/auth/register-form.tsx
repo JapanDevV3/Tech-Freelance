@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { UserRole } from "@/types/next-auth";
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { registerFormSchema, RegisterFormValues } from '@/lib/validations/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -19,7 +19,7 @@ export function RegisterForm() {
     const {
         register,
         handleSubmit,
-        watch,
+        control, 
         setValue,
         setError,
         formState: { errors, isSubmitting }
@@ -27,8 +27,9 @@ export function RegisterForm() {
         resolver: zodResolver(registerFormSchema),
         defaultValues: { name: '', email: '', password: '', confirmPassword: '', role: 'customer' },
     })
-
-    const role = watch('role'); // role is a button group, not a native input
+    
+    // A real hook: subscribes to just this field, safe for the React Compiler
+    const role = useWatch({ control, name: 'role' });
 
     async function onSubmit(values: RegisterFormValues) {
         const res = await fetch('/api/v1/auth/register', {
