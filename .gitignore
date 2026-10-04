@@ -43,3 +43,5 @@ next-env.d.ts
 
 # local uploads (STORAGE_DRIVER=local)
 /storage/
+
+.claude/
