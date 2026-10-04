@@ -1,10 +1,10 @@
 // index.ts — the only module the rest of the app imports
 import 'server-only';
 import { createHmac } from 'node:crypto';
-import { NextResponse } from 'next/server';
 import { memoryLimiter } from './memory';
 import { createUpstashLimiter } from './upstash';
 import type { RateLimitName, RateLimiter, RateLimitResult } from './rules';
+import { apiError } from '@/lib/api/errors';
 
 let limiter: RateLimiter | undefined;
 
@@ -52,8 +52,7 @@ export function getClientIp(req: Request): string {
 
 export function rateLimitResponse(result: RateLimitResult) {
     const retryAfter = Math.max(1, Math.ceil((result.resetAt - Date.now()) / 1000));
-    return NextResponse.json(
-        { error: { code: 'RATE_LIMITED', message: 'Too many requests' } },
-        { status: 429, headers: { 'Retry-After': String(retryAfter) } },
-    );
+    return apiError('RATE_LIMITED', 429, {
+        headers: { 'Retry-After': String(retryAfter) },
+    });
 }

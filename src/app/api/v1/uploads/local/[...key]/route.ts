@@ -5,27 +5,30 @@ import path from 'node:path';
 import { Readable, Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
-import { auth } from '@/auth';
+
 import { isLocalStorage } from '@/lib/storage';
 import { resolveLocalPath } from '@/lib/storage/local';
 import { contentTypeFromKey, isOwnedKey, purposeOfKey } from '@/lib/uploads/keys';
 import { UPLOAD_PURPOSES } from '@/lib/uploads/constants';
+import { requireApiSession } from '@/lib/api/guard';
+import { apiError } from '@/lib/api/errors';
 
 export async function PUT(req: Request, ctx: RouteContext<'/api/v1/uploads/local/[...key]'>) {
-    if (!isLocalStorage()) return new NextResponse(null, { status: 404 });
+    if (!isLocalStorage()) return apiError('NOT_FOUND', 404);
 
-    const session = await auth();
-    if (!session) return NextResponse.json({ error: { code: 'UNAUTHENTICATED' } }, { status: 401 });
+    const guard = await requireApiSession();
+    if (!guard.ok) return guard.response;
+    const { session } = guard;
 
     const key = (await ctx.params).key.join('/');
     const purpose = purposeOfKey(key);
     if (!purpose || !isOwnedKey(key, purpose, session.user.id)) {
-        return NextResponse.json({ error: { code: 'FORBIDDEN' } }, { status: 403 });
+        return apiError('FORBIDDEN', 403);
     }
     if (req.headers.get('content-type') !== contentTypeFromKey(key)) {
-        return NextResponse.json({ error: { code: 'UNSUPPORTED_MEDIA_TYPE' } }, { status: 415 });
+        return apiError('UNSUPPORTED_MEDIA_TYPE', 415);
     }
-    if (!req.body) return NextResponse.json({ error: { code: 'EMPTY_BODY' } }, { status: 400 });
+    if (!req.body) return apiError('EMPTY_BODY', 400);
 
     const max = UPLOAD_PURPOSES[purpose].maxBytes;
     const dest = resolveLocalPath(key);
@@ -47,10 +50,11 @@ export async function PUT(req: Request, ctx: RouteContext<'/api/v1/uploads/local
         return new NextResponse(null, { status: 200 });
     } catch (err) {
         await unlink(tmp).catch(() => undefined);
+        
         if (err instanceof Error && err.message === 'TOO_LARGE') {
-            return NextResponse.json({ error: { code: 'PAYLOAD_TOO_LARGE' } }, { status: 413 });
+            return apiError('PAYLOAD_TOO_LARGE', 413);
         }
         console.error(err);
-        return NextResponse.json({ error: { code: 'INTERNAL' } }, { status: 500 });
+        return apiError('INTERNAL', 500);
     }
 }
