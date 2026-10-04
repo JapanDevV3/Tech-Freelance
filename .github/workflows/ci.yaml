@@ -44,7 +44,7 @@ jobs:
       - name: Lint
         run: npm run lint -- --max-warnings=0
       - name: Typecheck
-        run: npx tsc --noEmit
+        run: npm run typecheck
       - name: Migrations apply on a fresh database
         run: npm run db:migrate
       - name: Build
