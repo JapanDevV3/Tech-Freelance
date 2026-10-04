@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { registerSchema } from "@/lib/validations/auth";
 import { registerUser, EmailTakenError } from "@/services/auth.service";
+import { getClientIp, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+    const limit = await rateLimit('register', getClientIp(req));
+    if (!limit.success) return rateLimitResponse(limit);
+
     try {
         const body = await req.json();
         const input = registerSchema.parse(body);

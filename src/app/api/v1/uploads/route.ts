@@ -4,6 +4,7 @@ import { auth } from '@/auth';
 import { getStorage } from '@/lib/storage';
 import { buildKey } from '@/lib/uploads/keys';
 import { IMAGE_CONTENT_TYPES, UPLOAD_PURPOSES } from '@/lib/uploads/constants';
+import { rateLimit, rateLimitResponse } from '@/lib/rate-limit';
 
 const bodySchema = z.object({
     purpose: z.enum(Object.keys(UPLOAD_PURPOSES) as [keyof typeof UPLOAD_PURPOSES]),
@@ -14,6 +15,9 @@ const bodySchema = z.object({
 export async function POST(req: Request) {
     const session = await auth();
     if (!session) return NextResponse.json({ error: { code: 'UNAUTHENTICATED' } }, { status: 401 });
+
+    const limit = await rateLimit('upload', session.user.id);
+    if (!limit.success) return rateLimitResponse(limit);
 
     try {
         const { purpose, contentType, size } = bodySchema.parse(await req.json());

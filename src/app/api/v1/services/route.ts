@@ -3,11 +3,15 @@ import { ZodError } from "zod";
 import { auth } from "@/auth";
 import { createServiceSchema } from "@/lib/validations/service";
 import { createService } from "@/services/catalog.service";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
     const session = await auth();
     if (!session) return NextResponse.json({ error: { code: 'UNAUTHENTICATED', message: 'Unauthentication' } }, { status: 401 });
     if (session.user.role !== 'technician') return NextResponse.json({ error: { code: 'FORBIDDEN', message: 'Technician Only' } }, { status: 403 })
+
+    const limit = await rateLimit('createService', session.user.id);        // หรือ 'createService'
+    if (!limit.success) return rateLimitResponse(limit);
 
     try {
         const body = await req.json();

@@ -26,7 +26,9 @@
         "creatingAccount": "Creating account...",
         "alreadyHaveAccount": "Already have an account?",
         "emailTaken": "This email is already registered",
-        "registerFailed": "Registration failed, please try again"
+        "registerFailed": "Registration failed, please try again",
+        "tooManyAttempts": "Too many sign-in attempts. Please wait 15 minutes and try again.",
+        "tooManyRequests": "Too many requests. Please try again later."
     },
     "dashboard": {
         "technician": {
@@ -146,6 +148,7 @@
         "saved": "Published ✓",
         "savedDraft": "Draft saved ✓",
         "saveFailed": "Save failed",
+        "tooManyRequests": "Too many requests. Please try again later.",
         "serviceCategory": {
             "_label": "Category",
             "all": "All",

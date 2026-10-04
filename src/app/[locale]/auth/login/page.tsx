@@ -30,8 +30,8 @@ export default function LoginPage() {
         const res = await signIn('credentials', { ...values, redirect: false });
         if (res?.error) {
             // Generic — never reveal which field was wrong (anti-enumeration)
-            setError('root', { message: 'invalidCredentials' });
-            return;
+            setError('root', { message: res.code === 'rate_limited' ? 'tooManyAttempts' : 'invalidCredentials' });
+    return;
         }
         router.push('/dashboard');
     }
@@ -54,7 +54,7 @@ export default function LoginPage() {
                         <Input id="password" type="password" autoComplete="current-password" {...register('password')} />
                         {errors.password && <p className="text-sm text-destructive">{tv(errors.password.message!)}</p>}
                     </div>
-                    {errors.root && <p className="text-sm text-destructive">{t('invalidCredentials')}</p>}
+                    {errors.root && <p className="text-sm text-destructive">{t(errors.root.message!)}</p>}
                     <Button type="submit" disabled={isSubmitting} className="w-full">
                         {isSubmitting ? t('signingIn') : t('signIn')}
                     </Button>

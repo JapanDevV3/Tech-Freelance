@@ -10,6 +10,7 @@ import { UserRole } from "@/types/next-auth";
 import { useForm, useWatch } from 'react-hook-form';
 import { registerFormSchema, RegisterFormValues } from '@/lib/validations/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { rootErrorKey } from '@/lib/forms/apply-server-errors';
 
 export function RegisterForm() {
     const t = useTranslations('auth');
@@ -19,7 +20,7 @@ export function RegisterForm() {
     const {
         register,
         handleSubmit,
-        control, 
+        control,
         setValue,
         setError,
         formState: { errors, isSubmitting }
@@ -27,7 +28,7 @@ export function RegisterForm() {
         resolver: zodResolver(registerFormSchema),
         defaultValues: { name: '', email: '', password: '', confirmPassword: '', role: 'customer' },
     })
-    
+
     // A real hook: subscribes to just this field, safe for the React Compiler
     const role = useWatch({ control, name: 'role' });
 
@@ -52,7 +53,7 @@ export function RegisterForm() {
         if (body?.error?.code === 'EMAIL_TAKEN') {
             setError('email', { message: 'emailTaken' }); // attach to the field, not a banner
         } else {
-            setError('root', { message: 'registerFailed' });
+            setError('root', { message: rootErrorKey(body, 'registerFailed') })
         }
     }
 
@@ -116,7 +117,7 @@ export function RegisterForm() {
                 {errors.confirmPassword && <p className="text-sm text-destructive">{tv(errors.confirmPassword.message!)}</p>}
             </div>
 
-            {errors.root && <p className="text-sm text-destructive">{t('registerFailed')}</p>}
+            {errors.root && <p className="text-sm text-destructive">{t(errors.root.message!)}</p>}
 
             <Button type="submit" disabled={isSubmitting} className="w-full">
                 {isSubmitting ? t('creatingAccount') : t('createAccount')}

@@ -3,6 +3,8 @@ import type { FieldValues, Path, UseFormSetError } from 'react-hook-form';
 type ApiIssue = { path?: (string | number)[]; message: string };
 type ApiErrorBody = { error?: { code?: string; details?: ApiIssue[] } } | null;
 
+const ROOT_ERROR_KEYS: Record<string, string> = { RATE_LIMITED: 'tooManyRequests' };
+
 /**
  * Maps our API's VALIDATION_ERROR details onto react-hook-form fields.
  * Server messages are the same i18n keys as the client zod schemas,
@@ -27,4 +29,9 @@ export function applyServerErrors<T extends FieldValues>(
         else setError('root', { message: 'saveFailed' });
     }
     return true;
+}
+
+// Known API error codes → specific root message; anything else → the form's fallback
+export function rootErrorKey(body: ApiErrorBody, fallback: string) {
+    return ROOT_ERROR_KEYS[body?.error?.code ?? ''] ?? fallback;
 }
