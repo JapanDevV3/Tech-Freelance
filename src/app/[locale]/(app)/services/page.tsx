@@ -50,6 +50,7 @@ export default async function ServicesPage({
                             {services.map((s) => (
                                 <ServiceCard key={s.id} href={`/services/${s.id}`} title={s.title} description={s.description}
                                     basePriceAmount={s.basePriceAmount} technicianName={s.technician.displayName}
+                                    coverUrl={s.coverUrl}
                                     labels={{ priceFrom: t('priceFrom'), by: t('by') }} />
                             ))}
                         </div>

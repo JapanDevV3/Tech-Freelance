@@ -1,6 +1,7 @@
 import { Link } from '@/i18n/navigation';
 import { formatBaht } from '@/lib/format';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 
 type ServiceCardProps = {
     href: string;
@@ -9,6 +10,7 @@ type ServiceCardProps = {
     basePriceAmount: number; // stored in satang; formatted inside this component
     technicianName: string;
     labels: { priceFrom: string; by: string };
+    coverUrl?: string | null;
 };
 
 export function ServiceCard({
@@ -18,12 +20,23 @@ export function ServiceCard({
     basePriceAmount,
     technicianName,
     labels,
+    coverUrl,
 }: ServiceCardProps) {
     return (
         // Whole card is a single link target; `group` lets children react to hover.
         <Link href={href} className="group block">
             <Card className="h-full transition-colors group-hover:border-primary">
-                <div className="aspect-video w-full bg-sunken" />
+                <div className="relative aspect-video w-full overflow-hidden bg-sunken">
+                    {coverUrl && (
+                        <Image
+                            src={coverUrl}
+                            alt="" // decorative: the title right below already describes the card
+                            fill
+                            sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"
+                            className="object-cover"
+                        />
+                    )}
+                </div>
                 <CardHeader>
                     <CardTitle>
                         <span className="line-clamp-2 text-base font-semibold">{title}</span>

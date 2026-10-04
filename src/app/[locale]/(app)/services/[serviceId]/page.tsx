@@ -9,6 +9,8 @@ import { RatingStars } from '@/components/ui/rating-stars';
 import { ServiceCard } from '@/components/services/service-card';
 import { formatBaht } from '@/lib/format';
 import { findTechnician } from '@/lib/mock/marketplace';
+import Image from 'next/image';
+import { auth } from '@/auth';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -26,6 +28,11 @@ export default async function ServiceDetailPage({
     ]);
     if (!service) notFound();
 
+    const session = await auth();
+    const isOwner = session?.user.id === service.technician.userId;
+
+    if(service.status !== 'active' && !isOwner) notFound();
+
     // Reviews aren't wired to a backend yet — layer the same curated reviews the
     // technician profile page uses so the two pages feel consistent.
     const technicianRef = findTechnician(service.technician.displayName);
@@ -42,7 +49,17 @@ export default async function ServiceDetailPage({
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
                 {/* ---- Main column ---- */}
                 <div>
-                    <div className="aspect-video w-full rounded-xl bg-sunken" />
+                    <div className="relative aspect-video w-full overflow-hidden bg-sunken">
+                        {service.coverUrl && (
+                            <Image
+                                src={service.coverUrl}
+                                alt={service.title}
+                                fill
+                                sizes="(min-width: 1024px) 860px, 100vw"
+                                className="object-cover"
+                            />
+                        )}
+                    </div>
 
                     <Badge variant="outline" className="mt-6">{t(`category.${service.category}`)}</Badge>
                     <h1 className="mt-2 text-2xl font-bold text-foreground text-balance">{service.title}</h1>
@@ -113,6 +130,7 @@ export default async function ServiceDetailPage({
                                 key={s.id}
                                 href={`/services/${s.id}`}
                                 title={s.title}
+                                coverUrl={s.coverUrl}
                                 description={s.description}
                                 basePriceAmount={s.basePriceAmount}
                                 technicianName={s.technician.displayName}

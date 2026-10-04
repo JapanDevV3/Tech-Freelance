@@ -110,6 +110,7 @@ export default async function HomePage() {
                   key={s.id}
                   href={`/services/${s.id}`}
                   title={s.title}
+                  coverUrl={s.coverUrl}
                   description={s.description}
                   basePriceAmount={s.basePriceAmount}
                   technicianName={s.technician.displayName}

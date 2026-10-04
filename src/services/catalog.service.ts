@@ -7,6 +7,7 @@ import { isOwnedKey } from "@/lib/uploads/keys";
 import { getStorage } from "@/lib/storage";
 import { UPLOAD_PURPOSES } from "@/lib/uploads/constants";
 
+
 export type ServiceSort = 'newest' | 'price_asc' | 'price_desc';
 export type ServiceFilters = { q?: string; category?: ServiceCategory; maxPrice?: number; sort?: ServiceSort };
 
@@ -46,15 +47,25 @@ export async function createService(userId: string, input: CreateServiceInput) {
 }
 
 export async function listServicesByTechnician(technicianId: string) {
-    return db.query.services.findMany({
+    const storage = getStorage();
+    const rows = await db.query.services.findMany({
         where: eq(services.technicianId, technicianId),
         orderBy: desc(services.createdAt),
+        with: {
+            images: { columns: { storageKey: true }, orderBy: (img, { asc }) => [asc(img.position)], limit: 1 }
+        }
     });
+    
+    return rows.map(({ images, ...service }) => ({
+        ...service,
+        coverUrl: images[0] ? storage.publicUrl(images[0].storageKey) : null,
+    }))
 }
 
 export async function listActiveServices(filters: ServiceFilters = {}) {
 
     const where: SQL[] = [eq(services.status, 'active')];
+    const storage = getStorage();
 
     if (filters.q) {
         where.push(
@@ -69,30 +80,47 @@ export async function listActiveServices(filters: ServiceFilters = {}) {
         where.push(lte(services.basePriceAmount, filters.maxPrice * 100)); // baht → satang
     }
 
-    if(filters.category){
+    if (filters.category) {
         where.push(eq(services.category, filters.category));
     }
 
-    const orderBy = 
+    const orderBy =
         filters.sort === 'price_asc' ? asc(services.basePriceAmount)
-        : filters.sort === 'price_desc' ? desc(services.basePriceAmount)
-        : desc(services.createdAt);
+            : filters.sort === 'price_desc' ? desc(services.basePriceAmount)
+                : desc(services.createdAt);
 
-    return db.query.services.findMany({
+    const rows = await db.query.services.findMany({
         where: and(...where),
         orderBy,
         limit: 50,
         with: {
-            technician: { columns: { displayName: true } }
+            technician: { columns: { displayName: true } },
+            images: { columns: { storageKey: true }, orderBy: (img, { asc }) => [asc(img.position)], limit: 1 },
         }
     })
+
+    return rows.map(({ images, ...service }) => ({
+        ...service,
+        coverUrl: images[0] ? storage.publicUrl(images[0].storageKey) : null,
+    }))
 }
 
 export async function getServiceById(id: string) {
-    return db.query.services.findFirst({
+    const storage = getStorage();
+    const row = await db.query.services.findFirst({
         where: eq(services.id, id),
         with: {
-            technician: { columns: { id: true, displayName: true, bio: true } }
+            technician: { columns: { id: true, userId: true, displayName: true, bio: true } },
+            images: { columns: { storageKey: true }, orderBy: (img, { asc }) => [asc(img.position)], limit: 1 },
         }
     });
+
+    if (!row) return null;
+
+    const { images, ...service } = row;
+
+    return {
+        ...service,
+        coverUrl: images[0] ? storage.publicUrl(images[0].storageKey) : null,
+    };
 }

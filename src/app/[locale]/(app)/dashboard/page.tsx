@@ -71,7 +71,7 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
                     ) : (
                         <div>
                             {myServices.map((s) => (
-                                <OrderRow key={s.id} href={`/services/${s.id}`} title={s.title} subtitle={t('published')} priceBaht={s.basePriceAmount / 100} />
+                                <OrderRow key={s.id} href={`/services/${s.id}`} title={s.title} subtitle={t('published')} coverUrl={s.coverUrl} priceBaht={s.basePriceAmount / 100} />
                             ))}
                         </div>
                     )}
@@ -181,6 +181,7 @@ async function CustomerDashboard({ userName }: { userName: string }) {
                                 key={s.id}
                                 href={`/services/${s.id}`}
                                 title={s.title}
+                                coverUrl={s.coverUrl}
                                 description={s.description}
                                 basePriceAmount={s.basePriceAmount}
                                 technicianName={s.technician.displayName}
