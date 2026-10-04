@@ -9,7 +9,6 @@ import { RatingStars } from '@/components/ui/rating-stars';
 import { ServiceCard } from '@/components/services/service-card';
 import { formatBaht } from '@/lib/format';
 import { findTechnician } from '@/lib/mock/marketplace';
-import Image from 'next/image';
 import { auth } from '@/auth';
 import { ServiceGallery } from '@/components/services/service-gallery';
 
@@ -33,7 +32,7 @@ export default async function ServiceDetailPage({
     const isOwner = session?.user.id === service.technician.userId;
 
     if (service.status !== 'active' && !isOwner) notFound();
-    
+
     // Reviews aren't wired to a backend yet — layer the same curated reviews the
     // technician profile page uses so the two pages feel consistent.
     const technicianRef = findTechnician(service.technician.displayName);
@@ -106,7 +105,7 @@ export default async function ServiceDetailPage({
                             <dt className="text-muted-foreground">{t('durationLabel')}</dt>
                             <dd className="font-medium text-foreground">{tDuration(service.duration)}</dd>
                         </div>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-4">
                             <dt className="text-muted-foreground">{t('modeLabel')}</dt>
                             <dd className="font-medium text-foreground">{t(`mode.${service.mode}`)}</dd>
                         </div>
@@ -154,5 +153,5 @@ export async function generateMetadata({ params }: { params: Promise<{ serviceId
 
     // Never put a draft's title into <title> — the page itself 404s for non-owners
     if (!service || service.status !== 'active') return {};
-    return { title: service?.title };
+    return { title: service.title };
 }
