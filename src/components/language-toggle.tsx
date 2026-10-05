@@ -15,7 +15,7 @@ export function LanguageToggle() {
         <Button
             variant="outline"
             size="sm"
-            onClick={() => router.replace(pathname, { locale: nextLocale })}
+            onClick={() => router.replace(pathname + window.location.search, { locale: nextLocale })}
         >
             {locale === 'th' ? 'EN' : 'ไทย'}
         </Button>
