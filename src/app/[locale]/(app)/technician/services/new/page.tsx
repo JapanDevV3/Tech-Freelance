@@ -11,7 +11,7 @@ type NewServicePageProps = {
 
 export default async function NewServicePage({ params }: NewServicePageProps) {
     const { locale } = await params;
-    const session = await requireRole(locale, 'technician');
+    const session = await requireRole(locale, 'technician', '/technician/services/new');
 
     // Don't have profile. Redirect to create profile.
     const profile = await getMyProfile(session.user.id);

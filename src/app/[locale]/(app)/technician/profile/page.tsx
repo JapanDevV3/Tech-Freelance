@@ -16,7 +16,7 @@ type TechnicianProfileProps = {
 
 export default async function TechnicianProfilePage({ params }: TechnicianProfileProps) {
     const { locale } = await params;
-    const session = await requireRole(locale, 'technician');
+    const session = await requireRole(locale, 'technician', '/technician/profile');
 
     const t = await getTranslations('techProfile');
     const [profile, avatarKey] = await Promise.all([

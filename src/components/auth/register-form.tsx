@@ -11,8 +11,11 @@ import { useForm, useWatch } from 'react-hook-form';
 import { registerFormSchema, RegisterFormValues } from '@/lib/validations/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { rootErrorKey } from '@/lib/forms/apply-server-errors';
+import { DEFAULT_CALLBACK_PATH } from '@/lib/callback-url';
 
-export function RegisterForm() {
+type RegisterFormProps = { callbackPath: string };
+
+export function RegisterForm({ callbackPath }: RegisterFormProps) {
     const t = useTranslations('auth');
     const tv = useTranslations('validation');
     const router = useRouter();
@@ -45,7 +48,7 @@ export function RegisterForm() {
         })
 
         if (res.ok) {
-            router.push('/auth/login');
+            router.push({ pathname: '/auth/login', query: callbackPath === DEFAULT_CALLBACK_PATH ? {} : { callbackUrl: callbackPath } });
             return;
         }
 
@@ -125,7 +128,7 @@ export function RegisterForm() {
 
             <p className="text-center text-sm text-muted-foreground">
                 {t('alreadyHaveAccount')}{' '}
-                <Link href="/auth/login" className="font-medium text-primary hover:underline">
+                <Link href={{ pathname: '/auth/login', query: { callbackUrl: callbackPath } }} className="font-medium text-primary hover:underline">
                     {t('signIn')}
                 </Link>
             </p>

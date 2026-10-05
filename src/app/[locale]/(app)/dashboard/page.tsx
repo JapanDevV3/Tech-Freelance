@@ -18,7 +18,7 @@ type DashboardProps = { params: Promise<{ locale: string }> };
 
 export default async function DashboardPage({ params }: DashboardProps) {
     const { locale } = await params;
-    const session = await requireSession(locale);
+    const session = await requireSession(locale, '/dashboard');
 
     return session.user.role === 'technician'
         ? <TechnicianDashboard userId={session.user.id} userName={session.user.name ?? ''} />
