@@ -128,7 +128,7 @@ export function RegisterForm({ callbackPath }: RegisterFormProps) {
 
             <p className="text-center text-sm text-muted-foreground">
                 {t('alreadyHaveAccount')}{' '}
-                <Link href={{ pathname: '/auth/login', query: { callbackUrl: callbackPath } }} className="font-medium text-primary hover:underline">
+                <Link href={{ pathname: '/auth/login', query: callbackPath === DEFAULT_CALLBACK_PATH ? {} : { callbackUrl: callbackPath } }} className="font-medium text-primary hover:underline">
                     {t('signIn')}
                 </Link>
             </p>

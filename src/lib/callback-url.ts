@@ -32,7 +32,7 @@ export function toSafeCallbackPath(raw: string | null | undefined): string {
 
     // Check what we actually emit: '..' normalisation ('/..//x') and locale
     // stripping ('/th//x') can both turn a same-origin path into '//x'.
-    if(result.startsWith('//')) return DEFAULT_CALLBACK_PATH;
+    if (result.startsWith('//')) return DEFAULT_CALLBACK_PATH;
 
     return result;
 }

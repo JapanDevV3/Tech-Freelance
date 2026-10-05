@@ -45,6 +45,8 @@ jobs:
         run: npm run lint -- --max-warnings=0
       - name: Typecheck
         run: npm run typecheck
+      - name: Test
+        run: npm run test
       - name: Migrations apply on a fresh database
         run: npm run db:migrate
       - name: Build
