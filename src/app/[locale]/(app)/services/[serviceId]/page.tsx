@@ -11,6 +11,7 @@ import { formatBaht } from '@/lib/format';
 import { findTechnician } from '@/lib/mock/marketplace';
 import { auth } from '@/auth';
 import { ServiceGallery } from '@/components/services/service-gallery';
+import { isUuid } from '@/lib/ids';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -20,7 +21,7 @@ export default async function ServiceDetailPage({
     params: Promise<{ serviceId: string }>;
 }) {
     const { serviceId } = await params;
-    if (!UUID_RE.test(serviceId)) notFound();
+    if (isUuid(serviceId)) notFound();
 
     const [t, service] = await Promise.all([
         getTranslations('serviceDetail'),
@@ -148,7 +149,7 @@ export default async function ServiceDetailPage({
 
 export async function generateMetadata({ params }: { params: Promise<{ serviceId: string }> }) {
     const { serviceId } = await params;
-    if (!UUID_RE.test(serviceId)) return {};
+    if (isUuid(serviceId)) return {};
     const service = await getServiceById(serviceId);
 
     // Never put a draft's title into <title> — the page itself 404s for non-owners
