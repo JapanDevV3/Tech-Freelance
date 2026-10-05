@@ -1,6 +1,6 @@
 import { db } from "@/db/client";
 import { serviceImages, services, technicianProfiles } from "@/db/schema";
-import { eq, and, or, ilike, lte, asc, desc, type SQL } from 'drizzle-orm';
+import { eq, and, or, ilike, lte, asc, desc, type SQL, isNull, inArray } from 'drizzle-orm';
 import type { CreateServiceInput } from '@/lib/validations/service';
 import { ServiceCategory } from "@/lib/service-categories";
 import { isOwnedKey } from "@/lib/uploads/keys";
@@ -22,7 +22,16 @@ function toImageUrls(images: ImageRow[]) {
 
 function withCoverUrl<T extends { images: ImageRow[] }>({ images, ...rest }: T) {
     return { ...rest, coverUrl: toImageUrls(images)[0] ?? null }
+}
 
+// Every read of `services` must exclude soft-deleted rows — keep the filter in ONE place
+const notDeleted = isNull(services.deletedAt);
+
+export class ServiceNotFoundError extends Error {
+    constructor() {
+        super('SERVICE_NOT_FOUND');
+        this.name = 'ServiceNotFoundError';
+    }
 }
 
 export async function createService(userId: string, input: CreateServiceInput) {
@@ -62,7 +71,7 @@ export async function createService(userId: string, input: CreateServiceInput) {
 
 export async function listServicesByTechnician(technicianId: string) {
     const rows = await db.query.services.findMany({
-        where: eq(services.technicianId, technicianId),
+        where: and(eq(services.technicianId, technicianId), notDeleted),
         orderBy: desc(services.createdAt),
         with: {
             images: { columns: { storageKey: true }, orderBy: (img, { asc }) => [asc(img.position)], limit: 1 }
@@ -73,7 +82,7 @@ export async function listServicesByTechnician(technicianId: string) {
 }
 
 export async function listActiveServices(filters: ServiceFilters = {}) {
-    const where: SQL[] = [eq(services.status, 'active')];
+    const where: SQL[] = [eq(services.status, 'active'), notDeleted];
 
     if (filters.q) {
         where.push(
@@ -112,7 +121,7 @@ export async function listActiveServices(filters: ServiceFilters = {}) {
 
 export const getServiceById = cache (async (id: string) => {
     const row = await db.query.services.findFirst({
-        where: eq(services.id, id),
+        where: and(eq(services.id, id), notDeleted),
         with: {
             technician: { columns: { id: true, userId: true, displayName: true, bio: true } },
             images: { columns: { storageKey: true }, orderBy: (img, { asc }) => [asc(img.position)] },
@@ -124,3 +133,24 @@ export const getServiceById = cache (async (id: string) => {
 
     return { ...service, imageUrls: toImageUrls(images) };
 })
+
+// Ownership lives in the service layer (design §9, layer 2).
+// The check and the write are ONE statement: no window between "is it yours?" and "update it".
+// "Doesn't exist", "not yours" and "already deleted" all match 0 rows → NotFound.
+export async function softDeleteService(userId: string, serviceId: string) {
+    const myProfileId = db
+        .select({ id: technicianProfiles.id })
+        .from(technicianProfiles)
+        .where(eq(technicianProfiles.userId, userId));
+
+    const now = new Date();
+    const [deleted] = await db
+        .update(services)
+        .set({ deletedAt: now, updatedAt: now })
+        .where(and(eq(services.id, serviceId), inArray(services.technicianId, myProfileId), notDeleted))
+        .returning({ id: services.id });
+
+    if (!deleted) throw new ServiceNotFoundError();
+    // Images + files are kept on purpose: future orders reference this service.
+    // A purge job hard-deletes old soft-deleted rows and calls storage.remove().
+}
