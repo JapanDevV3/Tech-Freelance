@@ -13,8 +13,6 @@ import { auth } from '@/auth';
 import { ServiceGallery } from '@/components/services/service-gallery';
 import { isUuid } from '@/lib/ids';
 
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 export default async function ServiceDetailPage({
     params,
 }: {
