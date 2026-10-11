@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { IMAGE_CONTENT_TYPES, SERVICE_IMAGE_MAX_COUNT, UPLOAD_PURPOSES } from '@/lib/uploads/constants';
-import { FormImage } from '@/lib/validations/service';
+import type { FormImage } from '@/lib/validations/service';
 
 type Props = { value: FormImage[]; onChange: (files: FormImage[]) => void; onBlur: () => void; invalid?: boolean; describedBy?: string };
 
@@ -54,7 +54,6 @@ export function ImageDropzone({ value, onChange, onBlur, invalid, describedBy }:
                                 // eslint-disable-next-line @next/next/no-img-element -- tiny preview, same as Thumb
                                 ? <img src={img.url} alt="" className="size-full object-cover" />
                                 : <Thumb file={img.file} alt={img.file.name} />}
-                            {/* cover badge unchanged */}
                             {i === 0 && (
                                 <span className="absolute left-1 top-1 rounded bg-primary px-1.5 text-[10px] font-medium text-primary-foreground">{t('imagesCover')}</span>
                             )}

@@ -16,9 +16,11 @@ import { SERVICE_CATEGORIES, SERVICE_DURATIONS } from '@/lib/service-categories'
 import { serviceFormSchema, type ServiceFormValues } from '@/lib/validations/service';
 import { uploadImage } from '@/lib/uploads/client';
 import { applyServerErrors, rootErrorKey } from '@/lib/forms/apply-server-errors';
+import type { serviceStatus } from '@/db/schema';
 
+type ServiceStatus = (typeof serviceStatus.enumValues)[number];
 type PublishStatus = 'active' | 'draft';
-type EditableService = { id: string; status: 'active' | 'draft' | 'paused' | 'archived'; values: ServiceFormValues }
+type EditableService = { id: string; status: ServiceStatus; values: ServiceFormValues }
 
 const FORM_FIELDS = ['title', 'category', 'priceBaht', 'duration', 'mode', 'serviceArea', 'description', 'images'] as const;
 
@@ -35,7 +37,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
     const [savedAs, setSavedAs] = useState<PublishStatus | null>(null);
 
     const { register, control, handleSubmit, reset, setError, formState: { errors, isSubmitting } } =
-        useForm<ServiceFormValues>({ resolver: zodResolver(serviceFormSchema), defaultValues: DEFAULT_VALUES });
+        useForm<ServiceFormValues>({ resolver: zodResolver(serviceFormSchema), defaultValues: service?.values ?? DEFAULT_VALUES });
 
     // useWatch (not watch()) — subscribes to one field and plays well with the React Compiler
     const mode = useWatch({ control, name: 'mode' });
@@ -181,7 +183,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
                 <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : primaryLabel}</Button>
                 <Button type="button" variant="outline" disabled={isSubmitting} onClick={save(secondary)}>{secondaryLabel}</Button>
             </div>
-            {savedAs && <p className="text-sm text-primary">{savedAs === secondary ? t('savedDraft') : t('saved')}</p>}
+            {savedAs && <p className="text-sm text-primary">{savedAs === 'draft' ? t('savedDraft') : t('saved')}</p>}
         </form>
     );
 }
