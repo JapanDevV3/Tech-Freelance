@@ -3,6 +3,7 @@ import { technicianProfiles, users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import type { RegisterInput } from "../lib/validations/auth";
+import { isUniqueViolation } from "@/db/errors";
 
 // Precomputed bcrypt hash (cost 12) of a fixed non-password string.
 // Comparing against this when the email is unknown keeps login response time
@@ -16,16 +17,6 @@ export class EmailTakenError extends Error {
         super('EMAIL_TAKEN');
         this.name = 'EmailTakenError';
     }
-}
-
-// Postgres unique_violation = SQLSTATE 23505.
-// drizzle-orm 0.45 wraps the driver error in DrizzleQueryError and keeps the
-// original pg error on `.cause`; check both to be version-proof.
-function isUniqueViolation(err: unknown): boolean {
-    const code =
-        (err as { code?: string })?.code ??
-        (err as { cause?: { code?: string } })?.cause?.code;
-    return code === '23505';
 }
 
 export async function registerUser(input: RegisterInput) {

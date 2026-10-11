@@ -7,6 +7,8 @@ import { isOwnedKey } from "@/lib/uploads/keys";
 import { getStorage } from "@/lib/storage";
 import { UPLOAD_PURPOSES } from "@/lib/uploads/constants";
 import { cache } from "react";
+import { profileIdOf } from "./technician.service";
+import { isUniqueViolation } from "@/db/errors";
 
 type ImageRow = { storageKey: string };
 
@@ -26,6 +28,21 @@ function withCoverUrl<T extends { images: ImageRow[] }>({ images, ...rest }: T) 
 
 // Every read of `services` must exclude soft-deleted rows — keep the filter in ONE place
 const notDeleted = isNull(services.deletedAt);
+
+const ownedBy = (userId: string) => inArray(services.technicianId, profileIdOf(userId))
+
+function toServiceColumns(input: CreateServiceInput) {
+    return {
+        title: input.title,
+        description: input.description,
+        category: input.category,
+        mode: input.mode,
+        duration: input.duration,
+        serviceArea: input.mode === 'onsite' ? input.serviceArea : null,
+        basePriceAmount: Math.round(input.priceBaht * 100),
+        status: input.status,
+    }
+}
 
 export class ServiceNotFoundError extends Error {
     constructor() {
@@ -49,14 +66,7 @@ export async function createService(userId: string, input: CreateServiceInput) {
     return db.transaction(async (tx) => {
         const [created] = await tx.insert(services).values({
             technicianId: profile.id,
-            title: input.title,
-            description: input.description,
-            category: input.category,
-            mode: input.mode,
-            duration: input.duration,
-            serviceArea: input.mode === 'onsite' ? input.serviceArea : null, // don't store stale area
-            basePriceAmount: Math.round(input.priceBaht * 100),
-            status: input.status,
+            ...toServiceColumns(input)
         }).returning();
 
         if (keys.length) {
@@ -119,7 +129,7 @@ export async function listActiveServices(filters: ServiceFilters = {}) {
     return rows.map(withCoverUrl)
 }
 
-export const getServiceById = cache (async (id: string) => {
+export const getServiceById = cache(async (id: string) => {
     const row = await db.query.services.findFirst({
         where: and(eq(services.id, id), notDeleted),
         with: {
@@ -138,19 +148,89 @@ export const getServiceById = cache (async (id: string) => {
 // The check and the write are ONE statement: no window between "is it yours?" and "update it".
 // "Doesn't exist", "not yours" and "already deleted" all match 0 rows → NotFound.
 export async function softDeleteService(userId: string, serviceId: string) {
-    const myProfileId = db
-        .select({ id: technicianProfiles.id })
-        .from(technicianProfiles)
-        .where(eq(technicianProfiles.userId, userId));
-
     const now = new Date();
     const [deleted] = await db
         .update(services)
         .set({ deletedAt: now, updatedAt: now })
-        .where(and(eq(services.id, serviceId), inArray(services.technicianId, myProfileId), notDeleted))
+        .where(and(eq(services.id, serviceId), ownedBy(userId), notDeleted))
         .returning({ id: services.id });
 
     if (!deleted) throw new ServiceNotFoundError();
     // Images + files are kept on purpose: future orders reference this service.
     // A purge job hard-deletes old soft-deleted rows and calls storage.remove().
+}
+
+// Pure → unit-testable. Order of `next` is the new display order (index 0 = cover).
+export function diffImageKeys(current: string[], next: string[]) {
+    const cur = new Set(current);
+    const nxt = new Set(next);
+    return {
+        added: next.filter((key) => !cur.has(key)),
+        removed: current.filter((key) => !nxt.has(key)),
+    }
+}
+
+// Edit page needs storage KEYs (to send back) + URLs (to preview); getServiceById only has URLs.
+export async function getServiceForEdit(userId: string, serviceId: string) {
+    const row = await db.query.services.findFirst({
+        where: and(eq(services.id, serviceId), notDeleted, ownedBy(userId)),
+        with: { images: { columns: { storageKey: true }, orderBy: (img, { asc }) => asc(img.position) } },
+    });
+
+    if (!row) return null;
+    const storage = getStorage();
+    return { ...row, images: row.images.map((i) => ({ key: i.storageKey, url: storage.publicUrl(i.storageKey) })) }
+}
+
+export async function updateService(userId: string, serviceId: string, input: CreateServiceInput) {
+    const current = await db.query.services.findFirst({
+        where: and(eq(services.id, serviceId), notDeleted, ownedBy(userId)),
+        columns: { id: true },
+        with: { images: { columns: { storageKey: true, contentType: true, sizeBytes: true } } },
+    });
+
+    if(!current) throw new ServiceNotFoundError();
+
+    const keys = [...new Set(input.imageKeys)];
+    const { added, removed } = diffImageKeys(current.images.map((i) => i.storageKey), keys);
+    
+    // Verify only NEW keys (existing ones were verified when first attached) — outside the tx
+    if (added.some((k) => !isOwnedKey(k, 'serviceImage', userId))) throw new Error('INVALID_IMAGE');
+    const storage = getStorage();
+    const heads = new Map(await Promise.all(added.map(async (k) => [k, await storage.head(k)] as const)));
+    if ([...heads.values()].some((h) => !h || h.size > UPLOAD_PURPOSES.serviceImage.maxBytes)) throw new Error('INVALID_IMAGE');
+
+    const meta = new Map(current.images.map((i) => [i.storageKey, { contentType: i.contentType, size: i.sizeBytes }]));
+    const imageRows = keys.map((key, position) => {
+        const m = meta.get(key) ?? heads.get(key)!;
+        return { serviceId, storageKey: key, position, contentType: m.contentType, sizeBytes: m.size };
+    });
+
+    let updated;
+    try {
+        updated = await db.transaction(async (tx) => {
+            const [row] = await tx.update(services)
+                .set({ ...toServiceColumns(input), updatedAt: new Date() })
+                .where(and(eq(services.id, serviceId), notDeleted, ownedBy(userId)))
+                .returning();
+            if (!row) throw new ServiceNotFoundError(); // deleted between our read and this write
+
+            // Replace the whole image set: updating positions in place would collide on
+            // UNIQUE(service_id, position) mid-way (e.g. swapping cover 0 ↔ 1)
+            await tx.delete(serviceImages).where(eq(serviceImages.serviceId, serviceId));
+            if (imageRows.length) await tx.insert(serviceImages).values(imageRows);
+            return row;
+        });
+    } catch (err) {
+        // An "added" key already attached to ANOTHER service → UNIQUE(storage_key)
+        if (isUniqueViolation(err)) throw new Error('INVALID_IMAGE');
+        throw err;
+    }
+
+    // Delete files only AFTER commit: if the tx had failed, the rows would still point at them.
+    // Failure here leaves an orphan file (harmless; the cleanup cron will catch it) — never a broken row.
+    const results = await Promise.allSettled(removed.map((k) => storage.remove(k)));
+    results.forEach((r, i) => r.status === 'rejected' && console.error('storage.remove failed', removed[i], r.reason));
+
+    return updated;
 }

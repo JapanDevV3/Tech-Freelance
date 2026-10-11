@@ -33,3 +33,9 @@ export async function upsertMyProfile(userId: string, input: ProfileInput) {
 
     return profile;
 }
+
+export function profileIdOf(userId: string) {
+    return db.select({ id: technicianProfiles.id })
+        .from(technicianProfiles)
+        .where(eq(technicianProfiles.userId, userId));
+}
