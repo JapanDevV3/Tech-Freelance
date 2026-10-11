@@ -16,8 +16,11 @@ import { SERVICE_CATEGORIES, SERVICE_DURATIONS } from '@/lib/service-categories'
 import { serviceFormSchema, type ServiceFormValues } from '@/lib/validations/service';
 import { uploadImage } from '@/lib/uploads/client';
 import { applyServerErrors, rootErrorKey } from '@/lib/forms/apply-server-errors';
+import type { serviceStatus } from '@/db/schema';
 
+type ServiceStatus = (typeof serviceStatus.enumValues)[number];
 type PublishStatus = 'active' | 'draft';
+type EditableService = { id: string; status: ServiceStatus; values: ServiceFormValues }
 
 const FORM_FIELDS = ['title', 'category', 'priceBaht', 'duration', 'mode', 'serviceArea', 'description', 'images'] as const;
 
@@ -26,13 +29,15 @@ const DEFAULT_VALUES = {
     title: '', duration: 'days_1_2', mode: 'remote', serviceArea: '', description: '', images: [],
 } satisfies Partial<ServiceFormValues>;
 
-export function ServiceForm() {
+export function ServiceForm({ service }: { service?: EditableService }) {
+    const isEdit = !!service;
+
     const t = useTranslations('serviceForm');
     const router = useRouter();
     const [savedAs, setSavedAs] = useState<PublishStatus | null>(null);
 
     const { register, control, handleSubmit, reset, setError, formState: { errors, isSubmitting } } =
-        useForm<ServiceFormValues>({ resolver: zodResolver(serviceFormSchema), defaultValues: DEFAULT_VALUES });
+        useForm<ServiceFormValues>({ resolver: zodResolver(serviceFormSchema), defaultValues: service?.values ?? DEFAULT_VALUES });
 
     // useWatch (not watch()) — subscribes to one field and plays well with the React Compiler
     const mode = useWatch({ control, name: 'mode' });
@@ -46,24 +51,35 @@ export function ServiceForm() {
     const durationItems = SERVICE_DURATIONS.map((d) => ({ value: d, label: t(`durationOptions.${d}`) }));
     const modeItems = [{ value: 'remote', label: t('modeRemote') }, { value: 'onsite', label: t('modeOnsite') }];
 
+    // Edit keeps the current status unless the user explicitly switch it.
+    const isLive = service?.status === 'active';
+    const primary: PublishStatus = !isEdit || isLive ? 'active' : 'draft';
+    const secondary: PublishStatus = primary === 'active' ? 'draft' : 'active';
+
+    const primaryLabel = !isEdit ? t('submit') : isLive ? t('update') : t('saveDraft');
+    const secondaryLabel = !isEdit ? t('saveDraft') : isLive ? t('unpublish') : t('submit');
+
+
     // handleSubmit doesn't tell us which button was clicked → bind status explicitly
     const save = (status: PublishStatus) => handleSubmit(async ({ images, ...fields }) => {
         setSavedAs(null);
 
         let imageKeys: string[];
         try {
-            imageKeys = await Promise.all(images.map((f) => uploadImage('serviceImage', f)));
+            imageKeys = await Promise.all(images.map((img) => img.kind === 'existing' ? img.key : uploadImage('serviceImage', img.file)));
         } catch (err) {
             const rateLimited = err instanceof Error && err.message === 'RATE_LIMITED';
             setError('images', { message: rateLimited ? 'tooManyRequests' : 'imageUploadFailed' });
             return;
         }
 
-        const res = await fetch('/api/v1/services', {
-            method: 'POST',
+        const res = await fetch(isEdit ? `/api/v1/services/${service.id}` : '/api/v1/services', {
+            method: isEdit ? 'PUT' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...fields, status, imageKeys }),
         });
+
+        if (res.ok && isEdit) {router.push(`/services/${service.id}`); return;}
 
         if (res.ok) {
             setSavedAs(status);
@@ -81,7 +97,7 @@ export function ServiceForm() {
     });
 
     return (
-        <form onSubmit={save('active')} className="grid gap-4" noValidate>
+        <form onSubmit={save(primary)} className="grid gap-4" noValidate>
             <div className="grid gap-2">
                 <Label htmlFor="title">{t('name')}</Label>
                 <Input id="title" placeholder={t('namePlaceholder')} aria-invalid={!!errors.title} {...register('title')} />
@@ -164,8 +180,8 @@ export function ServiceForm() {
             <FieldError message={errors.root?.message} />
 
             <div className="flex flex-wrap gap-2">
-                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : t('submit')}</Button>
-                <Button type="button" variant="outline" disabled={isSubmitting} onClick={save('draft')}>{t('saveDraft')}</Button>
+                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : primaryLabel}</Button>
+                <Button type="button" variant="outline" disabled={isSubmitting} onClick={save(secondary)}>{secondaryLabel}</Button>
             </div>
             {savedAs && <p className="text-sm text-primary">{savedAs === 'draft' ? t('savedDraft') : t('saved')}</p>}
         </form>

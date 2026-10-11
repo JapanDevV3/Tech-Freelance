@@ -15,6 +15,7 @@ export const services = pgTable('services', {
     duration: serviceDuration('duration').notNull().default('days_1_2'),
     serviceArea: text('service_area'),
     status: serviceStatus('status').notNull().default('draft'),
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => ({

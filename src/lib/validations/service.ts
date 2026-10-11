@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SERVICE_CATEGORIES, SERVICE_DURATIONS  } from '@/lib/service-categories';
+import { SERVICE_CATEGORIES, SERVICE_DURATIONS } from '@/lib/service-categories';
 import { SERVICE_IMAGE_MAX_COUNT, UPLOAD_PURPOSES, isImageContentType } from '@/lib/uploads/constants';
 
 // Plain object, NO refine — zod v4 won't let you extend/omit a refined object.
@@ -18,6 +18,11 @@ const onsiteNeedsArea = <T extends { mode: string; serviceArea: string }>(d: T) 
     d.mode !== 'onsite' || d.serviceArea.length > 0;
 const onsiteNeedsAreaIssue = { message: 'serviceAreaRequired', path: ['serviceArea'] };
 
+const formImage = z.discriminatedUnion('kind', [
+    z.object({ kind: z.literal('existing'), key: z.string(), url: z.string() }),
+    z.object({ kind: z.literal('new'), file: z.instanceof(File) }),
+]);
+
 export const createServiceSchema = serviceFields
     .extend({
         status: z.enum(['draft', 'active']),
@@ -29,12 +34,15 @@ export const createServiceSchema = serviceFields
 const { maxBytes } = UPLOAD_PURPOSES.serviceImage;
 export const serviceFormSchema = serviceFields
     .extend({
-        images: z.array(z.instanceof(File))
+        images: z.array(formImage)
             .max(SERVICE_IMAGE_MAX_COUNT, 'imagesMax')
-            .refine((fs) => fs.every((f) => isImageContentType(f.type)), 'imageType')
-            .refine((fs) => fs.every((f) => f.size <= maxBytes), 'imageSize'),
+            .refine((xs) => xs.every((x) => x.kind === 'existing' || isImageContentType(x.file.type)), 'imageType')
+            .refine((xs) => xs.every((x) => x.kind === 'existing' || x.file.size <= maxBytes), 'imageSize'),
     })
     .refine(onsiteNeedsArea, onsiteNeedsAreaIssue);
 
+export const updateServiceSchema = createServiceSchema;
+
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;
 export type ServiceFormValues = z.input<typeof serviceFormSchema>;
+export type FormImage = z.infer<typeof formImage>;

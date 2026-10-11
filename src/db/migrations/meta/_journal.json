@@ -43,6 +43,13 @@
       "when": 1790868121727,
       "tag": "0005_backfill_technician_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791211438807,
+      "tag": "0006_fresh_silverclaw",
+      "breakpoints": true
     }
   ]
 }

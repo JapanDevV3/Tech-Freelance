@@ -50,7 +50,9 @@
             "incomingRequests": "คำขอที่เข้ามา",
             "noRequests": "ยังไม่มีคำขอตอนนี้",
             "decline": "ปฏิเสธ",
-            "viewRequest": "ดูคำขอ"
+            "viewRequest": "ดูคำขอ",
+            "edit": "แก้ไข",
+            "draft": "ฉบับร่าง"
         },
         "customer": {
             "greeting": "สวัสดี {name}",
@@ -171,7 +173,11 @@
         "imagesDrop": "ลากไฟล์มาวาง หรือคลิกเพื่ออัปโหลด",
         "imagesHint": "สูงสุด {max} รูป · ไฟล์ละไม่เกิน {sizeMb}MB · JPG/PNG/WebP",
         "imagesCover": "ปก",
-        "imagesRemove": "ลบ {name}"
+        "imagesRemove": "ลบ {name}",
+        "editPageTitle": "แก้ไขบริการ",
+        "update": "บันทึกการแก้ไข",
+        "imagesRemoveExisting": "ลบรูปที่ {index}",
+        "unpublish": "ย้ายเป็นฉบับร่าง"
     },
     "serviceFilters": {
         "filters": "ตัวกรอง",
@@ -376,7 +382,8 @@
         "similarServices": "บริการที่คล้ายกัน",
         "durationLabel": "ระยะเวลา",
         "areaLabel": "พื้นที่",
-        "showImage": "ดูรูปที่ {index} จาก {total}"
+        "showImage": "ดูรูปที่ {index} จาก {total}",
+        "editService": "แก้ไขบริการ"
     },
     "technicianProfile": {
         "back": "กลับ",
@@ -458,5 +465,14 @@
         "change": "เปลี่ยนรูป",
         "uploading": "กำลังอัปโหลด...",
         "hint": "JPG/PNG/WebP · ไม่เกิน {sizeMb}MB"
+    },
+    "serviceDelete": {
+        "trigger": "ลบ",
+        "title": "ลบบริการนี้?",
+        "description": "\"{title}\" จะถูกนำออกจากหน้ารวมบริการ งานที่มีอยู่แล้วจะไม่ได้รับผลกระทบ",
+        "cancel": "ยกเลิก",
+        "confirm": "ลบ",
+        "deleting": "กำลังลบ…",
+        "failed": "ลบไม่สำเร็จ ลองใหม่อีกครั้ง"
     }
 }

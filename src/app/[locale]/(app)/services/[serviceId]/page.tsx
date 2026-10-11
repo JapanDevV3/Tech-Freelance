@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { getServiceById, listActiveServices } from '@/services/catalog.service';
 import { Container } from '@/components/layout/container';
 import { Link } from '@/i18n/navigation';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RatingStars } from '@/components/ui/rating-stars';
 import { ServiceCard } from '@/components/services/service-card';
@@ -11,8 +11,7 @@ import { formatBaht } from '@/lib/format';
 import { findTechnician } from '@/lib/mock/marketplace';
 import { auth } from '@/auth';
 import { ServiceGallery } from '@/components/services/service-gallery';
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+import { isUuid } from '@/lib/ids';
 
 export default async function ServiceDetailPage({
     params,
@@ -20,7 +19,7 @@ export default async function ServiceDetailPage({
     params: Promise<{ serviceId: string }>;
 }) {
     const { serviceId } = await params;
-    if (!UUID_RE.test(serviceId)) notFound();
+    if (!isUuid(serviceId)) notFound();
 
     const [t, service] = await Promise.all([
         getTranslations('serviceDetail'),
@@ -117,9 +116,17 @@ export default async function ServiceDetailPage({
                         )}
                     </dl>
 
-                    <Button className="mt-5 w-full">{t('hireButton')}</Button>
-                    <Button variant="outline" className="mt-2 w-full">{t('askFirst')}</Button>
-                    <p className="mt-3 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>
+                    {isOwner ? (
+                        <Link href={`/technician/services/${service.id}/edit`} className={buttonVariants({ className: 'mt-5 w-full' })}>
+                            {t('editService')}
+                        </Link>
+                    ) : (
+                        <>
+                            <Button className="mt-5 w-full">{t('hireButton')}</Button>
+                            <Button variant="outline" className="mt-2 w-full">{t('askFirst')}</Button>
+                            <p className="mt-3 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>
+                        </>
+                    )}
                 </aside>
             </div>
 
@@ -148,7 +155,7 @@ export default async function ServiceDetailPage({
 
 export async function generateMetadata({ params }: { params: Promise<{ serviceId: string }> }) {
     const { serviceId } = await params;
-    if (!UUID_RE.test(serviceId)) return {};
+    if (!isUuid(serviceId)) return {};
     const service = await getServiceById(serviceId);
 
     // Never put a draft's title into <title> — the page itself 404s for non-owners

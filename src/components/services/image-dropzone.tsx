@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { IMAGE_CONTENT_TYPES, SERVICE_IMAGE_MAX_COUNT, UPLOAD_PURPOSES } from '@/lib/uploads/constants';
+import type { FormImage } from '@/lib/validations/service';
 
-type Props = { value: File[]; onChange: (files: File[]) => void; onBlur: () => void; invalid?: boolean; describedBy?: string };
+type Props = { value: FormImage[]; onChange: (files: FormImage[]) => void; onBlur: () => void; invalid?: boolean; describedBy?: string };
 
 export function ImageDropzone({ value, onChange, onBlur, invalid, describedBy }: Props) {
     const t = useTranslations('serviceForm');
@@ -14,8 +15,8 @@ export function ImageDropzone({ value, onChange, onBlur, invalid, describedBy }:
 
     function addFiles(list: FileList | null) {
         if (!list?.length) return;
-        onChange([...value, ...Array.from(list)]); // zod is the single source of truth for errors
-        onBlur();                                   // mark touched → error shows immediately
+        onChange([...value, ...Array.from(list, (file) => ({ kind: 'new' as const, file }))]);
+        onBlur();
     }
 
     return (
@@ -47,16 +48,21 @@ export function ImageDropzone({ value, onChange, onBlur, invalid, describedBy }:
 
             {value.length > 0 && (
                 <ul className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-                    {value.map((file, i) => (
-                        <li key={`${file.name}-${file.lastModified}-${i}`} className="relative aspect-square overflow-hidden rounded-lg border border-border">
-                            <Thumb file={file} alt={file.name} />
+                    {value.map((img, i) => (
+                        <li key={img.kind === 'existing' ? img.key : `${img.file.name}-${img.file.lastModified}-${i}`} className="relative aspect-square overflow-hidden rounded-lg border border-border">
+                            {img.kind === 'existing'
+                                // eslint-disable-next-line @next/next/no-img-element -- tiny preview, same as Thumb
+                                ? <img src={img.url} alt="" className="size-full object-cover" />
+                                : <Thumb file={img.file} alt={img.file.name} />}
                             {i === 0 && (
                                 <span className="absolute left-1 top-1 rounded bg-primary px-1.5 text-[10px] font-medium text-primary-foreground">{t('imagesCover')}</span>
                             )}
                             <button
                                 type="button"
                                 onClick={() => onChange(value.filter((_, idx) => idx !== i))}
-                                aria-label={t('imagesRemove', { name: file.name })}
+                                aria-label={img.kind === 'existing'
+                                    ? t('imagesRemoveExisting', { index: i + 1 })
+                                    : t('imagesRemove', { name: img.file.name })}
                                 className="absolute right-1 top-1 rounded-full bg-background/80 px-1.5 text-xs"
                             >✕</button>
                         </li>
