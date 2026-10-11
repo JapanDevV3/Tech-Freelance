@@ -151,7 +151,7 @@ export default async function ServiceDetailPage({
 
 export async function generateMetadata({ params }: { params: Promise<{ serviceId: string }> }) {
     const { serviceId } = await params;
-    if (isUuid(serviceId)) return {};
+    if (!isUuid(serviceId)) return {};
     const service = await getServiceById(serviceId);
 
     // Never put a draft's title into <title> — the page itself 404s for non-owners
