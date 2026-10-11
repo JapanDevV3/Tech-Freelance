@@ -18,7 +18,7 @@ import { uploadImage } from '@/lib/uploads/client';
 import { applyServerErrors, rootErrorKey } from '@/lib/forms/apply-server-errors';
 
 type PublishStatus = 'active' | 'draft';
-type EditableService = { id: string, values: ServiceFormValues }
+type EditableService = { id: string; status: 'active' | 'draft' | 'paused' | 'archived'; values: ServiceFormValues }
 
 const FORM_FIELDS = ['title', 'category', 'priceBaht', 'duration', 'mode', 'serviceArea', 'description', 'images'] as const;
 
@@ -48,6 +48,15 @@ export function ServiceForm({ service }: { service?: EditableService }) {
     ];
     const durationItems = SERVICE_DURATIONS.map((d) => ({ value: d, label: t(`durationOptions.${d}`) }));
     const modeItems = [{ value: 'remote', label: t('modeRemote') }, { value: 'onsite', label: t('modeOnsite') }];
+
+    // Edit keeps the current status unless the user explicitly switch it.
+    const isLive = service?.status === 'active';
+    const primary: PublishStatus = !isEdit || isLive ? 'active' : 'draft';
+    const secondary: PublishStatus = primary === 'active' ? 'draft' : 'active';
+
+    const primaryLabel = !isEdit ? t('submit') : isLive ? t('update') : t('saveDraft');
+    const secondaryLabel = !isEdit ? t('saveDraft') : isLive ? t('unpublish') : t('submit');
+
 
     // handleSubmit doesn't tell us which button was clicked → bind status explicitly
     const save = (status: PublishStatus) => handleSubmit(async ({ images, ...fields }) => {
@@ -86,7 +95,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
     });
 
     return (
-        <form onSubmit={save('active')} className="grid gap-4" noValidate>
+        <form onSubmit={save(primary)} className="grid gap-4" noValidate>
             <div className="grid gap-2">
                 <Label htmlFor="title">{t('name')}</Label>
                 <Input id="title" placeholder={t('namePlaceholder')} aria-invalid={!!errors.title} {...register('title')} />
@@ -169,10 +178,10 @@ export function ServiceForm({ service }: { service?: EditableService }) {
             <FieldError message={errors.root?.message} />
 
             <div className="flex flex-wrap gap-2">
-                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : t(isEdit ? 'update' : 'submit')}</Button>
-                <Button type="button" variant="outline" disabled={isSubmitting} onClick={save('draft')}>{t('saveDraft')}</Button>
+                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : primaryLabel}</Button>
+                <Button type="button" variant="outline" disabled={isSubmitting} onClick={save(secondary)}>{secondaryLabel}</Button>
             </div>
-            {savedAs && <p className="text-sm text-primary">{savedAs === 'draft' ? t('savedDraft') : t('saved')}</p>}
+            {savedAs && <p className="text-sm text-primary">{savedAs === secondary ? t('savedDraft') : t('saved')}</p>}
         </form>
     );
 }

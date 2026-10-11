@@ -175,7 +175,8 @@
         "imagesRemove": "Remove {name}",
         "editPageTitle": "Edit service",
         "update": "Save changes",
-        "imagesRemoveExisting": "Remove image {index}"
+        "imagesRemoveExisting": "Remove image {index}",
+        "unpublish": "Move to draft"
     },
     "serviceFilters": {
         "filters": "Filters",

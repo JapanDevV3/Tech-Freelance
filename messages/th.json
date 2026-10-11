@@ -176,7 +176,8 @@
         "imagesRemove": "ลบ {name}",
         "editPageTitle": "แก้ไขบริการ",
         "update": "บันทึกการแก้ไข",
-        "imagesRemoveExisting": "ลบรูปที่ {index}"
+        "imagesRemoveExisting": "ลบรูปที่ {index}",
+        "unpublish": "ย้ายเป็นฉบับร่าง"
     },
     "serviceFilters": {
         "filters": "ตัวกรอง",
