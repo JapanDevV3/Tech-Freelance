@@ -2,7 +2,7 @@ import { Container } from "@/components/layout/container";
 import { ServiceForm } from "@/components/services/service-form";
 import { requireRole } from "@/lib/auth-guard";
 import { isUuid } from "@/lib/ids";
-import { ServiceFormValues } from "@/lib/validations/service";
+import type { ServiceFormValues } from "@/lib/validations/service";
 import { getServiceForEdit } from "@/services/catalog.service";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default async function EditServicePage({ params }: Props) {
             <h1 className="mt-3 text-2xl font-bold text-foreground">{t('editPageTitle')}</h1>
             <div className="mt-6 rounded-xl border border-border bg-card p-5">
                 {/* key → remount when data changes (same lesson as the profile form) */}
-                <ServiceForm key={service.updatedAt.toISOString()} service={{ id: service.id, values }} />
+                <ServiceForm key={service.updatedAt.toISOString()} service={{ id: service.id, status:service.status ,values }} />
             </div>
         </Container>
     );

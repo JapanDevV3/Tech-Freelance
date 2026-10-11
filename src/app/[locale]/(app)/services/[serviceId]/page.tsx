@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { getServiceById, listActiveServices } from '@/services/catalog.service';
 import { Container } from '@/components/layout/container';
 import { Link } from '@/i18n/navigation';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RatingStars } from '@/components/ui/rating-stars';
 import { ServiceCard } from '@/components/services/service-card';
@@ -116,9 +116,13 @@ export default async function ServiceDetailPage({
                         )}
                     </dl>
 
-                    <Button className="mt-5 w-full">{t(isOwner ? 'editService' : 'hireButton')}</Button>
-                    {!isOwner && (
+                    {isOwner ? (
+                        <Link href={`/technician/services/${service.id}/edit`} className={buttonVariants({ className: 'mt-5 w-full' })}>
+                            {t('editService')}
+                        </Link>
+                    ) : (
                         <>
+                            <Button className="mt-5 w-full">{t('hireButton')}</Button>
                             <Button variant="outline" className="mt-2 w-full">{t('askFirst')}</Button>
                             <p className="mt-3 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>
                         </>
