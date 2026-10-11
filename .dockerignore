@@ -1,0 +1,25 @@
+node_modules
+.next
+out
+build
+coverage
+storage
+
+.git
+.github
+.claude
+.vscode
+.idea
+
+# secrets must never be baked into an image layer
+.env*
+!.env.example
+
+Dockerfile
+.dockerignore
+docker-compose*.yml
+Caddyfile
+*.md
+npm-debug.log*
+*.tsbuildinfo
+.DS_Store

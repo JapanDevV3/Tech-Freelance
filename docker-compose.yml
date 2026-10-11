@@ -1,14 +1,17 @@
 services:
+
+  # `docker compose up -d` starts only this service (db for running `npm run dev` on the host).
+  # Production: `docker compose --profile prod up -d --build` (see DEPLOYMENT.md).
   db:
     image: postgres:16-alpine
     container_name: cfh-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: cfh
-      POSTGRES_PASSWORD: cfh_local_pw
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cfh_local_pw}
       POSTGRES_DB: computer_fix_hub
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432" # loopback only, never exposed to the internet
     volumes:
       - cfh_pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -17,5 +20,94 @@ services:
       timeout: 5s
       retries: 5
 
+  # Dev server with hot reload: `docker compose --profile dev up --build`
+  dev:
+    profiles: [dev]
+    build:
+      context: .
+      target: dev
+    command: sh -c "npm run db:migrate && npm run dev -- -H 0.0.0.0"
+    environment:
+      DATABASE_URL: postgres://cfh:${POSTGRES_PASSWORD:-cfh_local_pw}@db:5432/computer_fix_hub
+      AUTH_SECRET: ${AUTH_SECRET:-dev-only-insecure-secret}
+      STORAGE_DRIVER: local
+      RATE_LIMIT_DRIVER: memory
+      WATCHPACK_POLLING: ${WATCHPACK_POLLING:-false} # set true if file changes are not picked up
+    ports:
+      - "${DEV_PORT:-3000}:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules # keep the image's Linux node_modules, not the host's
+      - /app/.next
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # One-shot: applies Drizzle migrations, then exits
+  migrate:
+    profiles: [prod]
+    build:
+      context: .
+      target: migrator
+    environment:
+      DATABASE_URL: postgres://cfh:${POSTGRES_PASSWORD:-cfh_local_pw}@db:5432/computer_fix_hub
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  app:
+    profiles: [prod]
+    build:
+      context: .
+      args:
+        R2_PUBLIC_URL: ${R2_PUBLIC_URL:-}
+    container_name: cfh-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://cfh:${POSTGRES_PASSWORD:-cfh_local_pw}@db:5432/computer_fix_hub
+      AUTH_SECRET: ${AUTH_SECRET:-} # required: empty makes Auth.js fail, so the healthcheck blocks Caddy
+      AUTH_TRUST_HOST: "true" # running behind the Caddy reverse proxy
+      AUTH_URL: https://${SITE_DOMAIN:-localhost}
+      STORAGE_DRIVER: ${STORAGE_DRIVER:-local}
+      RATE_LIMIT_DRIVER: ${RATE_LIMIT_DRIVER:-memory}
+      UPSTASH_REDIS_REST_URL: ${UPSTASH_REDIS_REST_URL:-}
+      UPSTASH_REDIS_REST_TOKEN: ${UPSTASH_REDIS_REST_TOKEN:-}
+      R2_PUBLIC_URL: ${R2_PUBLIC_URL:-}
+    volumes:
+      - cfh_uploads:/app/storage/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    expose:
+      - "3000" # reachable by Caddy only, not published on the host
+
+  # Reverse proxy with automatic HTTPS (Let's Encrypt)
+  caddy:
+    profiles: [prod]
+    image: caddy:2-alpine
+    container_name: cfh-caddy
+    restart: unless-stopped
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:-}
+    # not `:?` in the YAML: Compose would then demand it even for the db-only/dev profiles
+    command: sh -c 'test -n "$$SITE_DOMAIN" || { echo "SITE_DOMAIN is not set in .env" >&2; exit 1; }; exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile'
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+
 volumes:
   cfh_pgdata:
+  cfh_uploads:
+  caddy_data:
+  caddy_config:
