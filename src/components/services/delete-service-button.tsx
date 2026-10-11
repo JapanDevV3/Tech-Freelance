@@ -6,8 +6,6 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
-// imports: useState, useTranslations, useRouter (@/i18n/navigation), Button, Dialog* from '@/components/ui/dialog'
-
 export function DeleteServiceButton({ serviceId, serviceTitle }: { serviceId: string; serviceTitle: string }) {
     const t = useTranslations('serviceDelete');
     const router = useRouter();
@@ -18,11 +16,17 @@ export function DeleteServiceButton({ serviceId, serviceTitle }: { serviceId: st
     async function onConfirm() {
         setPending(true);
         setFailed(false);
-        const res = await fetch(`/api/v1/services/${serviceId}`, { method: 'DELETE' });
-        setPending(false);
-        // 404 = already gone (double click / other tab) → same end state as success
-        if (res.ok || res.status === 404) { setOpen(false); router.refresh(); return; }
-        setFailed(true);
+
+        try {
+            const res = await fetch(`/api/v1/services/${serviceId}`, { method: 'DELETE' })
+            // 404 = already gone (double click / other tab) → same end state as success
+            if (res.ok || res.status === 404) { setOpen(false); router.refresh(); return; }
+            setFailed(true);
+        } catch {
+            setFailed(true); // network failure: fetch rejects instead of returning a response
+        } finally {
+            setPending(false);
+        }
     }
 
     return (
