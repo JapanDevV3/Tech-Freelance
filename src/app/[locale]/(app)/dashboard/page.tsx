@@ -13,6 +13,7 @@ import { MOCK_ORDERS } from '@/lib/mock/marketplace';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Search01Icon, ClipboardIcon, FavouriteIcon } from '@hugeicons/core-free-icons';
 import { requireSession } from '@/lib/auth-guard';
+import { MyServiceRow } from '@/components/services/my-service-row';
 
 type DashboardProps = { params: Promise<{ locale: string }> };
 
@@ -41,7 +42,8 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
         : [];
     const incomingRequests = MOCK_ORDERS.filter((o) => o.status === 'quoted' || o.status === 'awaiting_response').slice(0, 2);
     const monthlyRevenueBaht = 0; // no completed-orders backend yet to sum real revenue from
-
+    const activeCount = myServices.filter((s) => s.status === 'active').length;
+    
     return (
         <Container size="xl" gutter="lg">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -56,7 +58,7 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
                 <StatCard label={t('statRevenue')} value={formatBaht(monthlyRevenueBaht)} hint={t('statRevenueHint')} hintTone="positive" />
                 <StatCard label={t('statJobs')} value={String(incomingRequests.length)} hint={t('statJobsHint')} hintTone="positive" />
                 <StatCard label={t('statRating')} value="4.9" hint={t('statRatingHint', { count: 37 })} />
-                <StatCard label={t('statListings')} value={String(myServices.length)} hint={t('statListingsHint')} />
+                <StatCard label={t('statListings')} value={String(activeCount)} hint={t('statListingsHint')} />
             </div>
 
             <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
@@ -70,9 +72,7 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
                         />
                     ) : (
                         <div>
-                            {myServices.map((s) => (
-                                <OrderRow key={s.id} href={`/services/${s.id}`} title={s.title} subtitle={t('published')} coverUrl={s.coverUrl} priceBaht={s.basePriceAmount / 100} />
-                            ))}
+                            {myServices.map((s) => <MyServiceRow key={s.id} service={s} />)}
                         </div>
                     )}
                 </div>
