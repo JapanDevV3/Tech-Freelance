@@ -9,6 +9,7 @@ import { UPLOAD_PURPOSES } from "@/lib/uploads/constants";
 import { cache } from "react";
 import { profileIdOf } from "./technician.service";
 import { isUniqueViolation } from "@/db/errors";
+import { diffImageKeys } from "@/lib/uploads/diff-image-keys";
 
 type ImageRow = { storageKey: string };
 
@@ -158,16 +159,6 @@ export async function softDeleteService(userId: string, serviceId: string) {
     if (!deleted) throw new ServiceNotFoundError();
     // Images + files are kept on purpose: future orders reference this service.
     // A purge job hard-deletes old soft-deleted rows and calls storage.remove().
-}
-
-// Pure → unit-testable. Order of `next` is the new display order (index 0 = cover).
-export function diffImageKeys(current: string[], next: string[]) {
-    const cur = new Set(current);
-    const nxt = new Set(next);
-    return {
-        added: next.filter((key) => !cur.has(key)),
-        removed: current.filter((key) => !nxt.has(key)),
-    }
 }
 
 // Edit page needs storage KEYs (to send back) + URLs (to preview); getServiceById only has URLs.
