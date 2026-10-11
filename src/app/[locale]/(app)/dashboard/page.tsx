@@ -37,7 +37,7 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
     // Filter by technician id, never by display name: names aren't unique
     // (and new profiles default to the account name, e.g. many "สมชาย").
     const myServices = profile
-        ? (await listServicesByTechnician(profile.id)).filter((s) => s.status === 'active')
+        ? (await listServicesByTechnician(profile.id))
         : [];
     const incomingRequests = MOCK_ORDERS.filter((o) => o.status === 'quoted' || o.status === 'awaiting_response').slice(0, 2);
     const monthlyRevenueBaht = 0; // no completed-orders backend yet to sum real revenue from

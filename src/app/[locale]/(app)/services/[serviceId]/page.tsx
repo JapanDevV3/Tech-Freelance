@@ -19,7 +19,7 @@ export default async function ServiceDetailPage({
     params: Promise<{ serviceId: string }>;
 }) {
     const { serviceId } = await params;
-    if (isUuid(serviceId)) notFound();
+    if (!isUuid(serviceId)) notFound();
 
     const [t, service] = await Promise.all([
         getTranslations('serviceDetail'),
@@ -116,9 +116,13 @@ export default async function ServiceDetailPage({
                         )}
                     </dl>
 
-                    <Button className="mt-5 w-full">{t('hireButton')}</Button>
-                    <Button variant="outline" className="mt-2 w-full">{t('askFirst')}</Button>
-                    <p className="mt-3 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>
+                    <Button className="mt-5 w-full">{t(isOwner ? 'editService' : 'hireButton')}</Button>
+                    {!isOwner && (
+                        <>
+                            <Button variant="outline" className="mt-2 w-full">{t('askFirst')}</Button>
+                            <p className="mt-3 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>
+                        </>
+                    )}
                 </aside>
             </div>
 

@@ -18,6 +18,7 @@ import { uploadImage } from '@/lib/uploads/client';
 import { applyServerErrors, rootErrorKey } from '@/lib/forms/apply-server-errors';
 
 type PublishStatus = 'active' | 'draft';
+type EditableService = { id: string, values: ServiceFormValues }
 
 const FORM_FIELDS = ['title', 'category', 'priceBaht', 'duration', 'mode', 'serviceArea', 'description', 'images'] as const;
 
@@ -26,7 +27,9 @@ const DEFAULT_VALUES = {
     title: '', duration: 'days_1_2', mode: 'remote', serviceArea: '', description: '', images: [],
 } satisfies Partial<ServiceFormValues>;
 
-export function ServiceForm() {
+export function ServiceForm({ service }: { service?: EditableService }) {
+    const isEdit = !!service;
+
     const t = useTranslations('serviceForm');
     const router = useRouter();
     const [savedAs, setSavedAs] = useState<PublishStatus | null>(null);
@@ -52,18 +55,20 @@ export function ServiceForm() {
 
         let imageKeys: string[];
         try {
-            imageKeys = await Promise.all(images.map((f) => uploadImage('serviceImage', f)));
+            imageKeys = await Promise.all(images.map((img) => img.kind === 'existing' ? img.key : uploadImage('serviceImage', img.file)));
         } catch (err) {
             const rateLimited = err instanceof Error && err.message === 'RATE_LIMITED';
             setError('images', { message: rateLimited ? 'tooManyRequests' : 'imageUploadFailed' });
             return;
         }
 
-        const res = await fetch('/api/v1/services', {
-            method: 'POST',
+        const res = await fetch(isEdit ? `/api/v1/services/${service.id}` : '/api/v1/services', {
+            method: isEdit ? 'PUT' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...fields, status, imageKeys }),
         });
+
+        if (res.ok && isEdit) {router.push(`/services/${service.id}`); return;}
 
         if (res.ok) {
             setSavedAs(status);
@@ -164,7 +169,7 @@ export function ServiceForm() {
             <FieldError message={errors.root?.message} />
 
             <div className="flex flex-wrap gap-2">
-                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : t('submit')}</Button>
+                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : t(isEdit ? 'update' : 'submit')}</Button>
                 <Button type="button" variant="outline" disabled={isSubmitting} onClick={save('draft')}>{t('saveDraft')}</Button>
             </div>
             {savedAs && <p className="text-sm text-primary">{savedAs === 'draft' ? t('savedDraft') : t('saved')}</p>}

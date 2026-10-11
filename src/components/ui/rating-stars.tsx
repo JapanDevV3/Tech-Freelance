@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
+
 import { StarIcon } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
+import { HugeiconsIcon } from '@hugeicons/react';
 
 type RatingStarsProps = {
     value: number;
