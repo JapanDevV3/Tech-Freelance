@@ -36,5 +36,7 @@ export const serviceFormSchema = serviceFields
     })
     .refine(onsiteNeedsArea, onsiteNeedsAreaIssue);
 
+export const updateServiceSchema = createServiceSchema;
+
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;
 export type ServiceFormValues = z.input<typeof serviceFormSchema>;
