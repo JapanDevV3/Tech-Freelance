@@ -50,6 +50,13 @@
       "when": 1791211438807,
       "tag": "0006_fresh_silverclaw",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791810731169,
+      "tag": "0007_moaning_texas_twister",
+      "breakpoints": true
     }
   ]
 }
