@@ -43,7 +43,9 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
     const myOrders = profile ? await listMyOrders(userId, 'technician') : [];
     const incomingRequests = myOrders.filter((o) => o.status === 'pending_quote').slice(0, 3);
     const activeJobs = myOrders.filter((o) => inTab(o.status, 'active')).length;
+    const activeListings = myServices.filter((s) => s.status === 'active').length;
     const format = await getFormatter();
+    const monthlyRevenue = 0;
 
     return (
         <Container size="xl" gutter="lg">
@@ -56,10 +58,10 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
             </div>
 
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                <StatCard label={t('statRevenue')} value="0" hint={t('statRevenueHint')} hintTone="positive" />
+                <StatCard label={t('statRevenue')} value={formatBaht(monthlyRevenue)} hint={t('statRevenueHint')} hintTone="positive" />
                 <StatCard label={t('statJobs')} value={String(activeJobs)} hint={t('statJobsHint')} hintTone="positive" />
                 <StatCard label={t('statRating')} value="4.9" hint={t('statRatingHint', { count: 37 })} />
-                <StatCard label={t('statListings')} value="0" hint={t('statListingsHint')} />
+                <StatCard label={t('statListings')} value={String(activeListings)} hint={t('statListingsHint')} />
             </div>
 
             <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
