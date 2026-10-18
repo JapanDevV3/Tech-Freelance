@@ -1,3 +1,4 @@
+import type { DomainErrorCode } from "@/domain/errors";
 import { NextResponse } from "next/server";
 import type { ZodError } from "zod";
 
@@ -14,7 +15,8 @@ export type ApiErrorCode =
     | 'INTERNAL'
     | 'PAYLOAD_TOO_LARGE'
     | 'UNSUPPORTED_MEDIA_TYPE'
-    | 'EMPTY_BODY';
+    | 'EMPTY_BODY'
+    | DomainErrorCode;
 
 export type ApiIssue = { path: PropertyKey[]; message: string };
 
