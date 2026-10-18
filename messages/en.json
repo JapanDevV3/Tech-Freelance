@@ -20,6 +20,7 @@
         "namePlaceholder": "e.g. Somchai Jaidee",
         "passwordPlaceholder": "At least 8 characters",
         "passwordHint": "Must include at least one letter and one number",
+        "passwordMismatch": "Passwords do not match",
         "confirmPassword": "Confirm password",
         "confirmPasswordPlaceholder": "Re-enter your password",
         "createAccount": "Create account",

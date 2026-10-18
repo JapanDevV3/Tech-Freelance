@@ -109,11 +109,11 @@ export default async function OrderDetailPage({ params }: Props) {
                                 <p className="mt-4 whitespace-pre-line rounded-lg bg-muted p-3 text-xs text-muted-foreground">{current.note}</p>
                             )}
                         </>
-                    ) : (
+                    ) : order.status === 'pending_quote' ? (
                         <p className="text-sm text-muted-foreground">
                             {party === 'customer' ? t('waitingForQuote') : t('sendQuoteHint')}
                         </p>
-                    )}
+                    ) : null}
                     {/* 5b: <OrderActions …/> — accept / cancel / quote form, driven by canPerform() */}
                     {party === 'customer' && <p className="mt-4 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>}
                 </aside>

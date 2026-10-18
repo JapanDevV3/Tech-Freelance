@@ -1,5 +1,3 @@
-
-
 // ---------------------------------------------------------------------------
 // UI-placeholder data.
 // The order / chat / review / payment flows don't have a backend yet — this
