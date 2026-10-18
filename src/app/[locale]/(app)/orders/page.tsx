@@ -7,6 +7,7 @@ import { requireSession } from '@/lib/auth-guard';
 import { ORDER_TABS, inTab, isOrderTab } from '@/lib/orders/status-groups';
 import { cn } from '@/lib/utils';
 import { listMyOrders } from '@/services/order.service';
+import { rowPrice } from '@/lib/orders/row-price';
 
 type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ tab?: string }> };
 
@@ -52,7 +53,6 @@ export default async function OrdersPage({ params, searchParams }: Props) {
                 ) : (
                     <div className="rounded-xl border border-border bg-card px-4">
                         {visible.map((o) => {
-                            const latest = o.quotes.at(0) ?? null; // listMyOrders returns the newest quote only
                             const who = party === 'customer'
                                 ? `${t('technician')} ${o.technician.displayName}`
                                 : `${t('customer')} ${o.customer.name}`;
@@ -62,8 +62,8 @@ export default async function OrdersPage({ params, searchParams }: Props) {
                                     href={`/orders/${o.id}`}
                                     title={o.service.title}
                                     subtitle={`${who} · ${format.dateTime(o.createdAt, { dateStyle: 'medium' })}`}
-                                    amount={latest?.amount ?? null}
-                                    amountFallback={t('awaitingQuote')}
+                                    price={rowPrice(o.status, o.quotes.at(0) ?? null)}
+                                    awaitingLabel={t('awaitingQuote')}
                                     status={o.status}
                                     statusLabel={tStatus(`${party}.${o.status}`)}
                                 />

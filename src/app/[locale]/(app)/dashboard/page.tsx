@@ -16,6 +16,7 @@ import { MyServiceRow } from '@/components/services/my-service-row';
 import { listMyOrders } from '@/services/order.service';
 import { inTab } from '@/lib/orders/status-groups';
 import { getFormatter } from 'next-intl/server';
+import { rowPrice } from '@/lib/orders/row-price';
 
 type DashboardProps = { params: Promise<{ locale: string }> };
 
@@ -163,7 +164,8 @@ async function CustomerDashboard({ userId, userName }: { userId: string, userNam
                             href={`/orders/${order.id}`}
                             title={order.service.title}
                             subtitle={`${t('by')} ${order.technician.displayName}`}
-                            amount={order.quotes.at(0)?.amount ?? null} amountFallback={tStatus('customer.pending_quote')}
+                            price={rowPrice(order.status, order.quotes.at(0) ?? null)}
+                            awaitingLabel={tStatus('customer.pending_quote')}
                             status={order.status} statusLabel={tStatus(`customer.${order.status}`)} />
                     ))}
                 </div>

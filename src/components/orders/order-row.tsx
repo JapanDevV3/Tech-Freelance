@@ -3,6 +3,7 @@ import { formatBaht } from '@/lib/format';
 import { StatusBadge } from '@/components/ui/status-badge';
 import Image from 'next/image';
 import type { OrderStatus } from '@/domain/order/state-machine';
+import { RowPrice } from '@/lib/orders/row-price';
 
 // One order/job row — reused by the orders list, and by the technician/customer
 // dashboards for "recent orders" / "my listed jobs" strips.
@@ -10,14 +11,14 @@ type OrderRowProps = {
     href: string;
     title: string;
     subtitle: string;
-    amount: number | null;
-    amountFallback?: string
+    price: RowPrice;
+    awaitingLabel?: string;
     status?: OrderStatus;
     statusLabel?: string;
     coverUrl?: string | null;
 };
 
-export function OrderRow({ href, title, subtitle, amount, amountFallback, status, statusLabel, coverUrl }: OrderRowProps) {
+export function OrderRow({ href, title, subtitle, price, awaitingLabel, status, statusLabel, coverUrl }: OrderRowProps) {
     return (
         <Link
             href={href}
@@ -40,9 +41,8 @@ export function OrderRow({ href, title, subtitle, amount, amountFallback, status
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1.5">
                 {status && statusLabel && <StatusBadge status={status} label={statusLabel} />}
-                {amount !== null
-                    ? <span className="text-sm font-bold text-foreground">{formatBaht(amount)}</span>
-                    : <span className="text-xs text-muted-foreground">{amountFallback}</span>}
+                {price?.kind === 'amount' && <span className="text-sm font-bold text-foreground">{formatBaht(price.amount)}</span>}
+                {price?.kind === 'awaiting' && <span className="text-xs text-muted-foreground">{awaitingLabel}</span>}
             </div>
         </Link>
     );
