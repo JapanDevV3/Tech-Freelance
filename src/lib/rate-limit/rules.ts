@@ -7,6 +7,8 @@ export const RATE_LIMITS = {
     upload: { limit: 30, windowSec: 10 * 60 },
     createService: { limit: 10, windowSec: 60 * 60 },
     updateService: { limit: 30, windowSec: 60 * 60 },
+    createOrder: { limit: 20, windowSec: 60 * 60 },
+    sendQuote: { limit: 30, windowSec: 60 * 60 },
 } as const satisfies Record<string, RateLimitRule>;
 
 export type RateLimitName = keyof typeof RATE_LIMITS;
