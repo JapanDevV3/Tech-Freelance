@@ -275,53 +275,82 @@
         "backHome": "กลับหน้าหลัก"
     },
     "orders": {
-        "title": "ออเดอร์ของฉัน",
-        "subtitle": "ติดตามสถานะงานที่คุณจ้างช่างไว้",
+        "title": "งานของฉัน",
+        "subtitle": "ติดตามทุกงานที่คุณเปิดหรือได้รับ",
         "tabs": {
             "all": "ทั้งหมด",
-            "in_progress": "กำลังดำเนินการ",
-            "awaiting_payment": "รอชำระ",
-            "completed": "เสร็จสิ้น"
+            "active": "กำลังดำเนินการ",
+            "done": "เสร็จแล้ว",
+            "cancelled": "ยกเลิก"
         },
         "technician": "ช่าง",
-        "status": {
-            "awaiting_response": "ขอใบเสนอราคา",
-            "quoted": "เสนอราคาแล้ว · รอตอบรับ",
-            "awaiting_payment": "รอชำระเงิน",
-            "in_progress": "กำลังดำเนินการ",
-            "completed": "เสร็จสิ้น · ให้รีวิวได้"
-        },
-        "emptyTitle": "ไม่มีออเดอร์ในสถานะนี้",
-        "emptySub": "ออเดอร์ที่คุณจ้างจะแสดงที่นี่"
+        "customer": "ลูกค้า",
+        "awaitingQuote": "รอใบเสนอราคา",
+        "emptyTitle": "ยังไม่มีงานในหมวดนี้",
+        "emptySub": "งานที่คุณเปิดหรือได้รับจะแสดงที่นี่"
     },
     "orderDetail": {
-        "back": "กลับไปออเดอร์ของฉัน",
+        "back": "กลับไปหน้างานของฉัน",
         "technician": "ช่าง",
-        "opened": "เปิดออเดอร์",
+        "customer": "ลูกค้า",
+        "opened": "เปิดงานเมื่อ",
         "jobStatus": "สถานะงาน",
-        "yourBrief": "รายละเอียดที่คุณส่ง",
-        "currentQuote": "ข้อเสนอราคาปัจจุบัน · v{version}",
+        "problem": "ปัญหาที่แจ้ง",
+        "quoteHistory": "ประวัติใบเสนอราคา",
+        "currentQuote": "ใบเสนอราคาปัจจุบัน · v{version}",
         "duration": "ระยะเวลา",
-        "equipment": "รวมค่าอุปกรณ์",
-        "revisions": "แก้งานได้",
-        "acceptAndPay": "ยอมรับและชำระเงิน",
-        "negotiate": "ขอต่อรอง / สอบถาม",
-        "leaveReview": "ให้รีวิวงานนี้",
-        "confirmDone": "ยืนยันงานเสร็จ",
-        "escrowNote": "เงินของคุณจะถูกพักไว้อย่างปลอดภัย และจะโอนให้ช่างก็ต่อเมื่อคุณยืนยันว่างานเสร็จ",
-        "chatWithTechnician": "แชทกับช่าง",
-        "status": {
-            "awaiting_response": "ขอใบเสนอราคา",
-            "quoted": "เสนอราคาแล้ว · รอตอบรับ",
-            "awaiting_payment": "รอชำระเงิน",
+        "revisions": "แก้งานให้ได้",
+        "revisionsValue": "{count, plural, =0 {ไม่มี} other {# ครั้ง}}",
+        "validUntilLabel": "ใช้ได้ถึง",
+        "waitingForQuote": "รอช่างส่งใบเสนอราคา",
+        "sendQuoteHint": "ส่งใบเสนอราคาฉบับแรกให้ลูกค้า",
+        "escrowNote": "เงินของคุณจะถูกพักไว้อย่างปลอดภัย และโอนให้ช่างเมื่อคุณยืนยันว่างานเสร็จ"
+    },
+    "orderStatus": {
+        "customer": {
+            "pending_quote": "รอช่างเสนอราคา",
+            "quoted": "ได้รับใบเสนอราคา · รอคุณตอบ",
+            "accepted": "ตกลงราคาแล้ว · รอชำระเงิน",
+            "paid": "ชำระเงินแล้ว · รอเริ่มงาน",
             "in_progress": "กำลังดำเนินการ",
-            "completed": "เสร็จสิ้น · ให้รีวิวได้"
+            "completed": "งานเสร็จ · รอคุณยืนยัน",
+            "released": "เสร็จสมบูรณ์",
+            "cancelled": "ยกเลิกแล้ว",
+            "refunded": "คืนเงินแล้ว",
+            "disputed": "อยู่ระหว่างข้อพิพาท"
         },
-        "quoteStatus": {
-            "accepted": "ยอมรับแล้ว",
-            "awaiting_response": "รอตอบรับ",
-            "superseded": "ถูกแก้ไขเป็นเวอร์ชันใหม่"
+        "technician": {
+            "pending_quote": "คำขอใหม่ · รอคุณเสนอราคา",
+            "quoted": "รอลูกค้าตอบ",
+            "accepted": "ลูกค้าตกลงแล้ว · รอชำระเงิน",
+            "paid": "ชำระแล้ว · เริ่มงานได้",
+            "in_progress": "กำลังดำเนินการ",
+            "completed": "รอลูกค้ายืนยัน",
+            "released": "เสร็จสมบูรณ์",
+            "cancelled": "ยกเลิกแล้ว",
+            "refunded": "คืนเงินแล้ว",
+            "disputed": "อยู่ระหว่างข้อพิพาท"
         }
+    },
+    "quoteStatus": {
+        "sent": "ฉบับปัจจุบัน",
+        "superseded": "ถูกแทนที่",
+        "accepted": "รับแล้ว",
+        "rejected": "ไม่ได้รับ",
+        "expired": "หมดอายุ"
+    },
+    "orderTimeline": {
+        "pending_quote": "ส่งคำขอ",
+        "quoted": "ได้รับใบเสนอราคา",
+        "accepted": "ตกลงราคา",
+        "paid": "ชำระเงินเข้าระบบ",
+        "in_progress": "เริ่มงาน",
+        "completed": "งานเสร็จ",
+        "released": "ปิดงาน",
+        "cancelled": "ยกเลิก",
+        "refunded": "คืนเงิน",
+        "disputed": "เปิดข้อพิพาท",
+        "pending": "รอดำเนินการ"
     },
     "technicianOrderDetail": {
         "back": "กลับไปแดชบอร์ด",
@@ -350,12 +379,7 @@
         "youReceive": "ยอดที่จะได้รับ",
         "platformFee": "ค่าธรรมเนียม ({percent}%)",
         "net": "สุทธิ",
-        "markDone": "ทำเครื่องหมายว่าเสร็จ",
-        "quoteStatus": {
-            "accepted": "ยอมรับแล้ว",
-            "awaiting_response": "รอตอบรับ",
-            "superseded": "ถูกแก้ไขเป็นเวอร์ชันใหม่"
-        }
+        "markDone": "ทำเครื่องหมายว่าเสร็จ"
     },
     "serviceDetail": {
         "backToList": "กลับไปหน้ารายการ",

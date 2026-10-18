@@ -1,7 +1,8 @@
 import { Link } from '@/i18n/navigation';
 import { formatBaht } from '@/lib/format';
-import { StatusBadge, type OrderStatus } from '@/components/ui/status-badge';
+import { StatusBadge } from '@/components/ui/status-badge';
 import Image from 'next/image';
+import type { OrderStatus } from '@/domain/order/state-machine';
 
 // One order/job row — reused by the orders list, and by the technician/customer
 // dashboards for "recent orders" / "my listed jobs" strips.
@@ -9,13 +10,14 @@ type OrderRowProps = {
     href: string;
     title: string;
     subtitle: string;
-    priceBaht: number;
+    amount: number | null;
+    amountFallback?: string
     status?: OrderStatus;
     statusLabel?: string;
-    coverUrl?: string|null;
+    coverUrl?: string | null;
 };
 
-export function OrderRow({ href, title, subtitle, priceBaht, status, statusLabel, coverUrl }: OrderRowProps) {
+export function OrderRow({ href, title, subtitle, amount, amountFallback, status, statusLabel, coverUrl }: OrderRowProps) {
     return (
         <Link
             href={href}
@@ -38,7 +40,9 @@ export function OrderRow({ href, title, subtitle, priceBaht, status, statusLabel
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1.5">
                 {status && statusLabel && <StatusBadge status={status} label={statusLabel} />}
-                <span className="text-sm font-bold text-foreground">{formatBaht(priceBaht * 100)}</span>
+                {amount !== null
+                    ? <span className="text-sm font-bold text-foreground">{formatBaht(amount)}</span>
+                    : <span className="text-xs text-muted-foreground">{amountFallback}</span>}
             </div>
         </Link>
     );

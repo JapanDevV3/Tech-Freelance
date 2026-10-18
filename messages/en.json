@@ -275,52 +275,81 @@
     },
     "orders": {
         "title": "My orders",
-        "subtitle": "Track the status of jobs you've hired",
+        "subtitle": "Track every job you've opened or received",
         "tabs": {
             "all": "All",
-            "in_progress": "In progress",
-            "awaiting_payment": "Awaiting payment",
-            "completed": "Completed"
+            "active": "Active",
+            "done": "Completed",
+            "cancelled": "Cancelled"
         },
         "technician": "Technician",
-        "status": {
-            "awaiting_response": "Quote requested",
-            "quoted": "Quote received · awaiting reply",
-            "awaiting_payment": "Awaiting payment",
-            "in_progress": "In progress",
-            "completed": "Completed · leave a review"
-        },
-        "emptyTitle": "No orders in this status",
-        "emptySub": "Orders you place will show up here"
+        "customer": "Customer",
+        "awaitingQuote": "Awaiting quote",
+        "emptyTitle": "No orders here yet",
+        "emptySub": "Orders you open or receive will show up here"
     },
     "orderDetail": {
         "back": "Back to orders",
         "technician": "Technician",
+        "customer": "Customer",
         "opened": "Opened",
         "jobStatus": "Job status",
-        "yourBrief": "What you sent",
+        "problem": "Problem described",
+        "quoteHistory": "Quote history",
         "currentQuote": "Current quote · v{version}",
         "duration": "Duration",
-        "equipment": "Equipment",
-        "revisions": "Revisions included",
-        "acceptAndPay": "Accept & pay",
-        "negotiate": "Negotiate / ask a question",
-        "leaveReview": "Leave a review",
-        "confirmDone": "Confirm job done",
-        "escrowNote": "Your money is held safely and only released once you confirm the job is done",
-        "chatWithTechnician": "Chat with technician",
-        "status": {
-            "awaiting_response": "Quote requested",
-            "quoted": "Quoted · awaiting your reply",
-            "awaiting_payment": "Awaiting payment",
+        "revisions": "Rework included",
+        "revisionsValue": "{count, plural, =0 {None} one {# time} other {# times}}",
+        "validUntilLabel": "Valid until",
+        "waitingForQuote": "Waiting for the technician's quote",
+        "sendQuoteHint": "Send the first quote to the customer",
+        "escrowNote": "Your money is held safely and only released once you confirm the job is done"
+    },
+    "orderStatus": {
+        "customer": {
+            "pending_quote": "Waiting for a quote",
+            "quoted": "Quote received · your turn",
+            "accepted": "Price agreed · awaiting payment",
+            "paid": "Paid · waiting to start",
             "in_progress": "In progress",
-            "completed": "Completed · leave a review"
+            "completed": "Done · please confirm",
+            "released": "Completed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "disputed": "In dispute"
         },
-        "quoteStatus": {
-            "accepted": "Accepted",
-            "awaiting_response": "Awaiting reply",
-            "superseded": "Replaced"
+        "technician": {
+            "pending_quote": "New request · send a quote",
+            "quoted": "Waiting for the customer",
+            "accepted": "Agreed · awaiting payment",
+            "paid": "Paid · ready to start",
+            "in_progress": "In progress",
+            "completed": "Waiting for confirmation",
+            "released": "Completed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "disputed": "In dispute"
         }
+    },
+    "quoteStatus": {
+        "sent": "Current",
+        "superseded": "Replaced",
+        "accepted": "Accepted",
+        "rejected": "Declined",
+        "expired": "Expired"
+    },
+    "orderTimeline": {
+        "pending_quote": "Request sent",
+        "quoted": "Quote received",
+        "accepted": "Price agreed",
+        "paid": "Paid into escrow",
+        "in_progress": "Work started",
+        "completed": "Work done",
+        "released": "Closed",
+        "cancelled": "Cancelled",
+        "refunded": "Refunded",
+        "disputed": "Dispute opened",
+        "pending": "Pending"
     },
     "technicianOrderDetail": {
         "back": "Back to dashboard",
@@ -349,12 +378,7 @@
         "youReceive": "Amount you'll receive",
         "platformFee": "Platform fee ({percent}%)",
         "net": "Net total",
-        "markDone": "Mark work as done",
-        "quoteStatus": {
-            "accepted": "Accepted",
-            "awaiting_response": "Awaiting reply",
-            "superseded": "Replaced"
-        }
+        "markDone": "Mark work as done"
     },
     "serviceDetail": {
         "backToList": "Back to list",

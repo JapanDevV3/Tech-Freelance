@@ -1,4 +1,4 @@
-import type { OrderStatus } from '@/components/ui/status-badge';
+
 
 // ---------------------------------------------------------------------------
 // UI-placeholder data.
@@ -40,6 +40,8 @@ export type MockTechnician = {
     services: MockTechnicianService[];
     reviews: MockReview[];
 };
+
+export type MockOrderStatus = 'awaiting_response' | 'quoted' | 'awaiting_payment' | 'in_progress' | 'completed';
 
 export const MOCK_TECHNICIANS: MockTechnician[] = [
     {
@@ -160,7 +162,7 @@ export type MockOrder = {
     serviceTitle: string;
     technicianName: string;
     customerName: string;
-    status: OrderStatus;
+    status: MockOrderStatus;
     priceBaht: number;
     feePercent: number;
     createdAt: string;

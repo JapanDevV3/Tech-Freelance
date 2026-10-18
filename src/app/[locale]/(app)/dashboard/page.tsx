@@ -4,16 +4,18 @@ import { getMyProfile } from '@/services/technician.service';
 import { listActiveServices, listServicesByTechnician } from '@/services/catalog.service';
 import { Container } from '@/components/layout/container';
 import { StatCard } from '@/components/ui/stat-card';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { EmptyState } from '@/components/shared/empty-state';
 import { OrderRow } from '@/components/orders/order-row';
 import { ServiceCard } from '@/components/services/service-card';
 import { formatBaht } from '@/lib/format';
-import { MOCK_ORDERS } from '@/lib/mock/marketplace';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Search01Icon, ClipboardIcon, FavouriteIcon } from '@hugeicons/core-free-icons';
 import { requireSession } from '@/lib/auth-guard';
 import { MyServiceRow } from '@/components/services/my-service-row';
+import { listMyOrders } from '@/services/order.service';
+import { inTab } from '@/lib/orders/status-groups';
+import { getFormatter } from 'next-intl/server';
 
 type DashboardProps = { params: Promise<{ locale: string }> };
 
@@ -23,7 +25,7 @@ export default async function DashboardPage({ params }: DashboardProps) {
 
     return session.user.role === 'technician'
         ? <TechnicianDashboard userId={session.user.id} userName={session.user.name ?? ''} />
-        : <CustomerDashboard userName={session.user.name ?? ''} />;
+        : <CustomerDashboard userId={session.user.id} userName={session.user.name ?? ''} />;
 }
 
 // ---------------------------------------------------------------------------
@@ -35,15 +37,14 @@ export default async function DashboardPage({ params }: DashboardProps) {
 async function TechnicianDashboard({ userId, userName }: { userId: string; userName: string }) {
     const t = await getTranslations('dashboard.technician');
     const profile = await getMyProfile(userId);
-    // Filter by technician id, never by display name: names aren't unique
-    // (and new profiles default to the account name, e.g. many "สมชาย").
     const myServices = profile
         ? (await listServicesByTechnician(profile.id))
         : [];
-    const incomingRequests = MOCK_ORDERS.filter((o) => o.status === 'quoted' || o.status === 'awaiting_response').slice(0, 2);
-    const monthlyRevenueBaht = 0; // no completed-orders backend yet to sum real revenue from
-    const activeCount = myServices.filter((s) => s.status === 'active').length;
-    
+    const myOrders = profile ? await listMyOrders(userId, 'technician') : [];
+    const incomingRequests = myOrders.filter((o) => o.status === 'pending_quote').slice(0, 3);
+    const activeJobs = myOrders.filter((o) => inTab(o.status, 'active')).length;
+    const format = await getFormatter();
+
     return (
         <Container size="xl" gutter="lg">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -55,10 +56,10 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
             </div>
 
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                <StatCard label={t('statRevenue')} value={formatBaht(monthlyRevenueBaht)} hint={t('statRevenueHint')} hintTone="positive" />
-                <StatCard label={t('statJobs')} value={String(incomingRequests.length)} hint={t('statJobsHint')} hintTone="positive" />
+                <StatCard label={t('statRevenue')} value="0" hint={t('statRevenueHint')} hintTone="positive" />
+                <StatCard label={t('statJobs')} value={String(activeJobs)} hint={t('statJobsHint')} hintTone="positive" />
                 <StatCard label={t('statRating')} value="4.9" hint={t('statRatingHint', { count: 37 })} />
-                <StatCard label={t('statListings')} value={String(activeCount)} hint={t('statListingsHint')} />
+                <StatCard label={t('statListings')} value="0" hint={t('statListingsHint')} />
             </div>
 
             <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
@@ -85,19 +86,12 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
                         <div className="space-y-3">
                             {incomingRequests.map((order) => (
                                 <div key={order.id} className="rounded-lg border border-border p-3">
-                                    <div className="flex items-start justify-between gap-2">
-                                        <div className="min-w-0">
-                                            <p className="truncate text-sm font-semibold text-foreground">{order.customerName}</p>
-                                            <p className="line-clamp-1 text-xs text-muted-foreground">{order.serviceTitle}</p>
-                                        </div>
-                                        <span className="shrink-0 text-sm font-bold text-foreground">{formatBaht(order.priceBaht * 100)}</span>
-                                    </div>
-                                    <div className="mt-3 flex gap-2">
-                                        <Button variant="outline" size="sm" className="flex-1">{t('decline')}</Button>
-                                        <Link href={`/technician/orders/${order.id}`} className={buttonVariants({ size: 'sm', className: 'flex-1' })}>
-                                            {t('viewRequest')}
-                                        </Link>
-                                    </div>
+                                    <p className="truncate text-sm font-semibold text-foreground">{order.customer.name}</p>
+                                    <p className="line-clamp-1 text-xs text-muted-foreground">{order.service.title}</p>
+                                    <p className="mt-1 text-xs text-muted-foreground">{format.dateTime(order.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                                    <Link href={`/orders/${order.id}`} className={buttonVariants({ size: 'sm', className: 'mt-3 w-full' })}>
+                                        {t('viewRequest')}
+                                    </Link>
                                 </div>
                             ))}
                         </div>
@@ -113,12 +107,15 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
 // saved-technician count are mock until orders/favorites have a backend;
 // recommended services reuse the real catalog.
 // ---------------------------------------------------------------------------
-async function CustomerDashboard({ userName }: { userName: string }) {
+async function CustomerDashboard({ userId, userName }: { userId: string, userName: string }) {
     const t = await getTranslations('dashboard.customer');
     const recommended = (await listActiveServices()).slice(0, 3);
-    const recentOrders = MOCK_ORDERS.slice(0, 2);
-    const inProgressCount = MOCK_ORDERS.filter((o) => o.status === 'in_progress' || o.status === 'quoted' || o.status === 'awaiting_payment').length;
-    const totalSpentBaht = MOCK_ORDERS.filter((o) => o.status === 'completed' || o.status === 'in_progress').reduce((sum, o) => sum + o.priceBaht, 0);
+    const [myOrders, tStatus] = await Promise.all([listMyOrders(userId, 'customer'), getTranslations('orderStatus')]);
+    const recentOrders = myOrders.slice(0, 2);
+    const inProgressCount = myOrders.filter((o) => inTab(o.status, 'active')).length;
+    const totalSpent = myOrders
+        .filter((o) => ['paid', 'in_progress', 'completed', 'released'].includes(o.status))
+        .reduce((sum, o) => sum + (o.quotes.at(0)?.amount ?? 0), 0);
 
     const quickLinks = [
         { href: '/services', icon: Search01Icon, label: t('quickSearch') },
@@ -133,7 +130,7 @@ async function CustomerDashboard({ userName }: { userName: string }) {
 
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <StatCard label={t('statInProgress')} value={String(inProgressCount)} />
-                <StatCard label={t('statSpent')} value={formatBaht(totalSpentBaht * 100)} />
+                <StatCard label={t('statSpent')} value={formatBaht(totalSpent)} />
                 <StatCard label={t('statSaved')} value="3" />
             </div>
 
@@ -162,12 +159,10 @@ async function CustomerDashboard({ userName }: { userName: string }) {
                         <OrderRow
                             key={order.id}
                             href={`/orders/${order.id}`}
-                            title={order.serviceTitle}
-                            subtitle={`${t('by')} ${order.technicianName}`}
-                            priceBaht={order.priceBaht}
-                            status={order.status}
-                            statusLabel={t(`status.${order.status}`)}
-                        />
+                            title={order.service.title}
+                            subtitle={`${t('by')} ${order.technician.displayName}`}
+                            amount={order.quotes.at(0)?.amount ?? null} amountFallback={tStatus('customer.pending_quote')}
+                            status={order.status} statusLabel={tStatus(`customer.${order.status}`)} />
                     ))}
                 </div>
             </section>
