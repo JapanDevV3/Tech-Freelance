@@ -28,3 +28,10 @@ export function assertCanPerform(action: OrderAction, party: OrderParty, status:
     if (!rule.from.includes(status)) throw new DomainError('INVALID_STATE');
     return rule.to;
 }
+
+// Same rule table, boolean answer — for deciding whether the UI shows an action.
+// UX only: the service layer still calls assertCanPerform, which is what actually protects the data.
+export function canPerform(action: OrderAction, party: OrderParty, status: OrderStatus): boolean{
+    const rule: Rule = ORDER_ACTIONS[action];
+    return rule.by.includes(party) && rule.from.includes(status);
+}
