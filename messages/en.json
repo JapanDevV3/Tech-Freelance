@@ -483,7 +483,9 @@
         "bioMax": "Too long (max 500 characters)",
         "phoneInvalid": "Invalid phone number (e.g. 089-765-4321)",
         "experienceInvalid": "Enter a number of years from 0 to 60",
-        "tooManyRequests": "Too many requests. Please try again later."
+        "tooManyRequests": "Too many requests. Please try again later.",
+        "problemMin": "Please describe the problem in at least 10 characters",
+        "problemMax": "Keep it under 2,000 characters"
     },
     "avatar": {
         "change": "Change photo",
@@ -498,5 +500,26 @@
         "confirm": "Delete",
         "deleting": "Deleting…",
         "failed": "Couldn't delete. Please try again."
+    },
+    "hire": {
+        "trigger": "Hire this technician",
+        "loginToHire": "Sign in to hire",
+        "title": "Describe the problem",
+        "description": "The technician reads this and sends you a quote. You won't pay anything until you accept a price.",
+        "label": "What's wrong?",
+        "placeholder": "e.g. The PC won't turn on and beeps 3 times…",
+        "cancel": "Cancel",
+        "submit": "Send request",
+        "submitting": "Sending…"
+    },
+    "orderErrors": {
+        "QUOTE_STALE": "The technician just revised the price — check the latest quote before deciding.",
+        "QUOTE_LIMIT_REACHED": "This order has reached the maximum number of quotes.",
+        "INVALID_STATE": "This order has changed. The page now shows its latest status.",
+        "FORBIDDEN": "You can't do that on this order.",
+        "NOT_FOUND": "This order is no longer available.",
+        "RATE_LIMITED": "Too many attempts. Please wait a moment.",
+        "NETWORK": "Couldn't reach the server. Check your connection.",
+        "failed": "Something went wrong. Please try again."
     }
 }
