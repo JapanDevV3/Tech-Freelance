@@ -361,10 +361,10 @@
         "quoteFormTitle": "Quote / edit offer",
         "price": "Price offered (THB)",
         "duration": "Duration",
-        "revisions": "Revision count",
+        "revisions": "Rework rounds included",
         "noteToCustomer": "Note to customer",
         "notePlaceholder": "Explain the change or scope of work...",
-        "sendQuote": "Send quote (creates v{version})",
+        "sendQuote": "Send quote (v{version})",
         "sent": "Sent",
         "sentConfirmation": "Quote sent — waiting for the customer's response.",
         "quoteHistory": "Quote history",
@@ -521,7 +521,7 @@
         "submitting": "Sending…"
     },
     "orderErrors": {
-        "QUOTE_STALE": "The technician just revised the price — check the latest quote before deciding.",
+        "QUOTE_STALE": "This quote is no longer valid — it was revised or has expired. The latest details are shown below.",
         "QUOTE_LIMIT_REACHED": "This order has reached the maximum number of quotes.",
         "INVALID_STATE": "This order has changed. The page now shows its latest status.",
         "FORBIDDEN": "You can't do that on this order.",

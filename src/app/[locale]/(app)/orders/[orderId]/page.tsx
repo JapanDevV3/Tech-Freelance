@@ -47,7 +47,7 @@ export default async function OrderDetailPage({ params }: Props) {
     // Decided on the server from the SAME rule table the API asserts; client components only get the answers
     const can = {
         quote: canPerform('sendQuote', party, order.status),
-        accept: canPerform('accept', party, order.status),
+        accept: canPerform('accept', party, order.status) && current?.status === 'sent' && !isQuoteExpired(current.expiresAt, now),
         cancel: canPerform('cancel', party, order.status)
     }
 
