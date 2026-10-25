@@ -529,5 +529,13 @@
         "RATE_LIMITED": "Too many attempts. Please wait a moment.",
         "NETWORK": "Couldn't reach the server. Check your connection.",
         "failed": "Something went wrong. Please try again."
+    },
+    "orderActions": {
+        "acceptTrigger": "Accept this quote",
+        "acceptTitle": "Accept {amount} (v{version})?",
+        "acceptDescription": "This price becomes the agreed price and can't be revised. Payment is the next step.",
+        "acceptConfirm": "Accept quote",
+        "accepting": "Accepting…",
+        "back": "Go back"
     }
 }

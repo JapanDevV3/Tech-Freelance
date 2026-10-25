@@ -12,6 +12,7 @@ import { getOrderForUser } from '@/services/order.service';
 import { isQuoteExpired, revisionsLeft } from '@/domain/order/quote-policy';
 import { canPerform } from '@/domain/order/state-machine';
 import { QuoteForm } from '@/components/orders/quote-form';
+import { AcceptQuoteButton } from '@/components/orders/accept-quote-button';
 
 type Props = { params: Promise<{ locale: string; orderId: string }> };
 
@@ -143,6 +144,14 @@ export default async function OrderDetailPage({ params }: Props) {
                             {party === 'customer' ? t('waitingForQuote') : t('sendQuoteHint')}
                         </p>
                     ) : null}
+                    {can.accept && current && (
+                        <AcceptQuoteButton
+                            orderId={order.id}
+                            quoteId={current.id}
+                            version={current.version}
+                            amountLabel={formatBaht(current.amount)} // formatted on the server, same as the card above
+                        />
+                    )}
                     {/* 5b: <OrderActions …/> — accept / cancel / quote form, driven by canPerform() */}
                     {party === 'customer' && <p className="mt-4 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>}
                 </aside>
