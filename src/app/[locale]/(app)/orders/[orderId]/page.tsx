@@ -13,6 +13,7 @@ import { isQuoteExpired, revisionsLeft } from '@/domain/order/quote-policy';
 import { canPerform } from '@/domain/order/state-machine';
 import { QuoteForm } from '@/components/orders/quote-form';
 import { AcceptQuoteButton } from '@/components/orders/accept-quote-button';
+import { CancelOrderButton } from '@/components/orders/cancel-order-button';
 
 type Props = { params: Promise<{ locale: string; orderId: string }> };
 
@@ -152,7 +153,7 @@ export default async function OrderDetailPage({ params }: Props) {
                             amountLabel={formatBaht(current.amount)} // formatted on the server, same as the card above
                         />
                     )}
-                    {/* 5b: <OrderActions …/> — accept / cancel / quote form, driven by canPerform() */}
+                    {can.cancel && <CancelOrderButton orderId={order.id} />}
                     {party === 'customer' && <p className="mt-4 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>}
                 </aside>
             </div>

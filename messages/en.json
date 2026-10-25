@@ -536,6 +536,13 @@
         "acceptDescription": "This price becomes the agreed price and can't be revised. Payment is the next step.",
         "acceptConfirm": "Accept quote",
         "accepting": "Accepting…",
-        "back": "Go back"
+        "back": "Go back",
+        "cancelTrigger": "Cancel order",
+        "cancelTitle": "Cancel this order?",
+        "cancelDescription": "The other party will see that it was cancelled. This can't be undone.",
+        "reasonLabel": "Reason (optional)",
+        "keep": "Keep order",
+        "cancelConfirm": "Cancel order",
+        "cancelling": "Cancelling…"
     }
 }
