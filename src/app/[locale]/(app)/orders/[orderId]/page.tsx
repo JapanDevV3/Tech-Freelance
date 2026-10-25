@@ -8,8 +8,10 @@ import { requireSession } from '@/lib/auth-guard';
 import { isUuid } from '@/lib/ids';
 import { formatBaht } from '@/lib/format';
 import { buildTimeline } from '@/lib/orders/timeline';
-import { isQuoteExpired } from '@/domain/order/quote-policy';
 import { getOrderForUser } from '@/services/order.service';
+import { isQuoteExpired, revisionsLeft } from '@/domain/order/quote-policy';
+import { canPerform } from '@/domain/order/state-machine';
+import { QuoteForm } from '@/components/orders/quote-form';
 
 type Props = { params: Promise<{ locale: string; orderId: string }> };
 
@@ -21,13 +23,14 @@ export default async function OrderDetailPage({ params }: Props) {
     const order = await getOrderForUser(session.user.id, orderId);
     if (!order) notFound(); // missing and "not yours" look identical
 
-    const [t, tStatus, tStep, tQuote, tDuration, format] = await Promise.all([
+    const [t, tStatus, tStep, tQuote, tDuration, format, tTech] = await Promise.all([
         getTranslations('orderDetail'),
         getTranslations('orderStatus'),
         getTranslations('orderTimeline'),
         getTranslations('quoteStatus'),
         getTranslations('serviceForm.durationOptions'),
         getFormatter(),
+        getTranslations('technicianOrderDetail'),
     ]);
 
     const party = order.viewerParty;
@@ -37,6 +40,14 @@ export default async function OrderDetailPage({ params }: Props) {
     const current = order.quotes.find((q) => q.status === 'sent' || q.status === 'accepted') ?? null;
     const quoteLabel = (q: (typeof order.quotes)[number]) =>
         tQuote(q.status === 'sent' && isQuoteExpired(q.expiresAt, now) ? 'expired' : q.status);
+
+    const latestVersion = order.quotes.at(0)?.version ?? 0; // quotes are newest first
+    // Decided on the server from the SAME rule table the API asserts; client components only get the answers
+    const can = {
+        quote: canPerform('sendQuote', party, order.status),
+        accept: canPerform('accept', party, order.status),
+        cancel: canPerform('cancel', party, order.status)
+    }
 
     const steps = buildTimeline(order.status, order.events).map((s) => ({
         key: s.key, state: s.state, label: tStep(s.key), timestamp: s.at ? when(s.at) : undefined,
@@ -63,6 +74,24 @@ export default async function OrderDetailPage({ params }: Props) {
 
             <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
                 <div className="space-y-8">
+                    {can.quote && (
+                        <section className='rounded-xl border border-border bg-card p-5'>
+                            <h2 className='mb-4 text-sm font-semibold text-foreground'>{tTech('quoteFormTitle')}</h2>
+                            <QuoteForm
+                                key={latestVersion} // a new version after refresh → remount with that version's defaults
+                                orderId={order.id}
+                                nextVersion={latestVersion + 1}
+                                revisionsLeft={revisionsLeft(latestVersion)}
+                                // Pre-fill a revision from the live quote; the note is left blank on purpose:
+                                // each version's note should say what changed in THIS version
+                                defaults={current ? {
+                                    amountBaht: current.amount / 100,
+                                    duration: current.duration ?? undefined,
+                                    revisionsIncluded: current.revisionsIncluded ?? undefined,
+                                } : undefined}
+                            />
+                        </section>
+                    )}
                     <section>
                         <h2 className="mb-4 text-sm font-semibold text-foreground">{t('jobStatus')}</h2>
                         <OrderTimeline steps={steps} pendingLabel={tStep('pending')} />

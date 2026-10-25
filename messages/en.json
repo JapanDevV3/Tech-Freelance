@@ -379,7 +379,12 @@
         "youReceive": "Amount you'll receive",
         "platformFee": "Platform fee ({percent}%)",
         "net": "Net total",
-        "markDone": "Mark work as done"
+        "markDone": "Mark work as done",
+        "validDays": "Quote valid for",
+        "validDaysOption": "{count, plural, one {# day} other {# days}}",
+        "revisionsLeft": "{count, plural, =0 {No revisions left} one {# revision left} other {# revisions left}}",
+        "limitReached": "You've sent the maximum number of quotes for this order.",
+        "sending": "Sending…"
     },
     "serviceDetail": {
         "backToList": "Back to list",
@@ -485,7 +490,10 @@
         "experienceInvalid": "Enter a number of years from 0 to 60",
         "tooManyRequests": "Too many requests. Please try again later.",
         "problemMin": "Please describe the problem in at least 10 characters",
-        "problemMax": "Keep it under 2,000 characters"
+        "problemMax": "Keep it under 2,000 characters",
+        "revisionsMax": "At most 20 rework rounds",
+        "quoteNoteMax": "Keep the note under 2,000 characters",
+        "validDaysMax": "At most 30 days"
     },
     "avatar": {
         "change": "Change photo",

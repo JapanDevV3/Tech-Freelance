@@ -379,7 +379,12 @@
         "youReceive": "ยอดที่จะได้รับ",
         "platformFee": "ค่าธรรมเนียม ({percent}%)",
         "net": "สุทธิ",
-        "markDone": "ทำเครื่องหมายว่าเสร็จ"
+        "markDone": "ทำเครื่องหมายว่าเสร็จ",
+        "validDays": "ราคานี้ใช้ได้",
+        "validDaysOption": "{count} วัน",
+        "revisionsLeft": "{count, plural, =0 {แก้ราคาไม่ได้แล้ว} other {แก้ราคาได้อีก # ครั้ง}}",
+        "limitReached": "คุณส่งใบเสนอราคาครบจำนวนที่กำหนดสำหรับงานนี้แล้ว",
+        "sending": "กำลังส่ง…"
     },
     "serviceDetail": {
         "backToList": "กลับไปหน้ารายการ",
@@ -485,7 +490,10 @@
         "experienceInvalid": "กรอกจำนวนปีระหว่าง 0–60",
         "tooManyRequests": "ส่งคำขอบ่อยเกินไป กรุณาลองใหม่ภายหลัง",
         "problemMin": "กรุณาเล่าปัญหาอย่างน้อย 10 ตัวอักษร",
-        "problemMax": "ไม่เกิน 2,000 ตัวอักษร"
+        "problemMax": "ไม่เกิน 2,000 ตัวอักษร",
+        "revisionsMax": "แก้งานได้ไม่เกิน 20 ครั้ง",
+        "quoteNoteMax": "หมายเหตุไม่เกิน 2,000 ตัวอักษร",
+        "validDaysMax": "ไม่เกิน 30 วัน"
     },
     "avatar": {
         "change": "เปลี่ยนรูป",
