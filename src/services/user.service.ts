@@ -29,3 +29,11 @@ export async function setMyAvatar(userId: string, key: string) {
     //    if this fails we leak a file — far better than a broken avatar.
     if (oldKey && oldKey !== key) await storage.remove(oldKey);
 }
+
+export async function getMemberSince(userId: string) {
+    const row = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        columns: { createdAt: true },
+    });
+    return row?.createdAt ?? null;
+}

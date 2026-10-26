@@ -210,10 +210,9 @@
     "account": {
         "title": "บัญชีของฉัน",
         "subtitle": "จัดการข้อมูลส่วนตัวและการตั้งค่าบัญชี",
-        "customerSince": "ลูกค้า · เข้าร่วมตั้งแต่ {year}",
+        "memberSince": "{role, select, technician {ช่าง} other {ลูกค้า}} · เข้าร่วมเมื่อ {year}",
         "statHired": "จ้างงานทั้งหมด",
         "statSpent": "ใช้จ่ายสะสม",
-        "statSaved": "ช่างที่บันทึกไว้",
         "personalInfo": "ข้อมูลส่วนตัว",
         "name": "ชื่อ-นามสกุล",
         "phone": "เบอร์โทร",

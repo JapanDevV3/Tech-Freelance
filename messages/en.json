@@ -210,10 +210,9 @@
     "account": {
         "title": "My account",
         "subtitle": "Manage your personal info and account settings",
-        "customerSince": "Customer · joined {year}",
+        "memberSince": "{role, select, technician {Technician} other {Customer}} · Member since {year}",
         "statHired": "Jobs hired",
         "statSpent": "Total spent",
-        "statSaved": "Saved technicians",
         "personalInfo": "Personal info",
         "name": "Full name",
         "phone": "Phone number",
