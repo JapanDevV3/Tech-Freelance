@@ -96,6 +96,22 @@ function DropdownMenuItem({
   )
 }
 
+// A menu entry that navigates. Base UI's LinkItem makes the whole row the <a>,
+// so a click anywhere on it works and it's announced as a link, not a button.
+// Pass the router link through `render`: <DropdownMenuLinkItem render={<Link href="/x" />}>
+function DropdownMenuLinkItem({ className, ...props }: MenuPrimitive.LinkItem.Props) {
+  return (
+    <MenuPrimitive.LinkItem
+      data-slot="dropdown-menu-link-item"
+      className={cn(
+        "relative flex min-h-7 cursor-default items-center gap-2 rounded-md px-2 py-1 text-small/relaxed outline-hidden select-none focus:bg-accent focus:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 function DropdownMenuSub({ ...props }: MenuPrimitive.SubmenuRoot.Props) {
   return <MenuPrimitive.SubmenuRoot data-slot="dropdown-menu-sub" {...props} />
 }
@@ -255,6 +271,7 @@ export {
   DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuItem,
+  DropdownMenuLinkItem,
   DropdownMenuCheckboxItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
