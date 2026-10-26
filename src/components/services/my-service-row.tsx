@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { formatBaht } from '@/lib/format';
 import { DeleteServiceButton } from './delete-service-button';
+import { ServiceStatusBadge } from './service-status-badge';
+import type { serviceStatus } from '@/db/schema';
 
-type Props = { service: { id: string; title: string; status: string; basePriceAmount: number; coverUrl: string | null } };
+type Props = { service: { id: string; title: string; status: (typeof serviceStatus.enumValues)[number]; basePriceAmount: number; coverUrl: string | null } };
 
 // Not a single <a>: the row holds its own buttons, and interactive content can't nest inside a link
 export function MyServiceRow({ service }: Props) {
@@ -21,7 +22,7 @@ export function MyServiceRow({ service }: Props) {
                     {service.title}
                 </Link>
                 <div className="mt-1 flex items-center gap-2 text-small text-muted-foreground">
-                    <Badge variant="outline">{t(service.status === 'active' ? 'published' : 'draft')}</Badge>
+                    <ServiceStatusBadge status={service.status} />
                     <span>{formatBaht(service.basePriceAmount)}</span>
                 </div>
             </div>
