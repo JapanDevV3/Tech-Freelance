@@ -1,6 +1,7 @@
 {
     "common": {
-        "appName": "computer-fix-hub",
+        "appName": "TechLance",
+        "appDescription": "Computer repair and custom PC builds",
         "charCount": "{count, number} / {max, number}",
         "charCountLabel": "Characters",
         "toggleTheme": "Toggle theme",

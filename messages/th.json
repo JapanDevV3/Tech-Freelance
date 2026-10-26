@@ -1,6 +1,7 @@
 {
     "common": {
-        "appName": "computer-fix-hub",
+        "appName": "TechLance",
+        "appDescription": "รับซ่อมและประกอบคอมพิวเตอร์",
         "charCount": "{count, number} / {max, number}",
         "charCountLabel": "จำนวนตัวอักษร",
         "toggleTheme": "สลับธีม",
