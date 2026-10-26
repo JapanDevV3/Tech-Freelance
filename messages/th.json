@@ -2,7 +2,9 @@
     "common": {
         "appName": "computer-fix-hub",
         "charCount": "{count, number} / {max, number}",
-        "charCountLabel": "จำนวนตัวอักษร"
+        "charCountLabel": "จำนวนตัวอักษร",
+        "toggleTheme": "สลับธีม",
+        "close": "ปิด"
     },
     "auth": {
         "signIn": "เข้าสู่ระบบ",
@@ -89,7 +91,11 @@
         "profile": "โปรไฟล์",
         "account": "บัญชีของฉัน",
         "signIn": "เข้าสู่ระบบ",
-        "signOut": "ออกจากระบบ"
+        "signOut": "ออกจากระบบ",
+        "mainNav": "เมนูหลัก",
+        "menu": "เมนู",
+        "openMenu": "เปิดเมนู",
+        "accountMenu": "เมนูบัญชี"
     },
     "home": {
         "heroTitle": "หาช่างซ่อม/ประกอบคอมพิวเตอร์ที่ไว้ใจได้",

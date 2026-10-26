@@ -2,7 +2,9 @@
     "common": {
         "appName": "computer-fix-hub",
         "charCount": "{count, number} / {max, number}",
-        "charCountLabel": "Characters"
+        "charCountLabel": "Characters",
+        "toggleTheme": "Toggle theme",
+        "close": "Close"
     },
     "auth": {
         "signIn": "Sign in",
@@ -89,7 +91,11 @@
         "profile": "Profile",
         "account": "My account",
         "signIn": "Sign in",
-        "signOut": "Sign out"
+        "signOut": "Sign out",
+        "mainNav": "Main",
+        "menu": "Menu",
+        "openMenu": "Open menu",
+        "accountMenu": "Account menu"
     },
     "home": {
         "heroTitle": "Find a computer repair & build technician you can trust",
