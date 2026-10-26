@@ -362,7 +362,7 @@
         "disputed": "Dispute opened",
         "pending": "Pending"
     },
-    "technicianOrderDetail": {
+    "quoteForm": {
         "quoteFormTitle": "Quote / edit offer",
         "price": "Price offered (THB)",
         "duration": "Duration",

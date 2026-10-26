@@ -362,7 +362,7 @@
         "disputed": "เปิดข้อพิพาท",
         "pending": "รอดำเนินการ"
     },
-    "technicianOrderDetail": {
+    "quoteForm": {
         "quoteFormTitle": "เสนอราคา / แก้ไขข้อเสนอ",
         "price": "ราคาที่เสนอ (บาท)",
         "duration": "ระยะเวลา",

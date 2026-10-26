@@ -33,7 +33,7 @@ type Props = {
 };
 
 export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Props) {
-    const t = useTranslations('technicianOrderDetail');
+    const t = useTranslations('quoteForm');
     const tDuration = useTranslations('serviceForm.durationOptions');
     const tErr = useTranslations('orderErrors');
     const router = useRouter();
