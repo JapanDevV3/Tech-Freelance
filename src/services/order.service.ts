@@ -154,7 +154,7 @@ export async function listMyOrders(userId: string, party: OrderParty, { limit = 
 }
 
 // Aggregated in SQL so the numbers cover every order, not only the rows a list query returns.
-export async function getOrderStatus(userId: string, party: OrderParty): Promise<OrderStats> {
+export async function getOrderStats(userId: string, party: OrderParty): Promise<OrderStats> {
     const [row] = await db.select({
         // count() and sum() return bigint; node-postgres hands bigint back as a string
         total: sql<number>`count(*)`.mapWith(Number),
