@@ -45,7 +45,7 @@ export default async function ServiceDetailPage({
 
     return (
         <Container size="xl" gutter="lg">
-            <Link href="/services" className="mb-4 inline-block text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/services" className="mb-4 inline-block text-body text-muted-foreground hover:text-foreground">
                 ← {t('backToList')}
             </Link>
 
@@ -55,7 +55,7 @@ export default async function ServiceDetailPage({
                     <ServiceGallery images={service.imageUrls} title={service.title} />
 
                     <Badge variant="outline" className="mt-6">{t(`category.${service.category}`)}</Badge>
-                    <h1 className="mt-2 text-2xl font-bold text-foreground text-balance">{service.title}</h1>
+                    <h1 className="mt-2 text-h1 font-bold text-foreground text-balance">{service.title}</h1>
 
                     <Link
                         href={`/technicians/${encodeURIComponent(service.technician.displayName)}`}
@@ -63,32 +63,32 @@ export default async function ServiceDetailPage({
                     >
                         <div className="size-10 shrink-0 rounded-full bg-muted" />
                         <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold text-foreground">{service.technician.displayName}</p>
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <p className="truncate text-body font-semibold text-foreground">{service.technician.displayName}</p>
+                            <div className="flex items-center gap-1 text-small text-muted-foreground">
                                 <RatingStars value={technicianRef.rating} />
                                 <span>{technicianRef.rating} ({technicianRef.reviewCount} {t('reviews')})</span>
                             </div>
                         </div>
-                        <span className="shrink-0 text-xs font-medium text-primary">{t('viewProfile')}</span>
+                        <span className="shrink-0 text-small font-medium text-primary">{t('viewProfile')}</span>
                     </Link>
 
                     <section className="mt-8">
-                        <h2 className="text-lg font-semibold text-foreground">{t('details')}</h2>
-                        <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">{service.description}</p>
+                        <h2 className="text-h2 font-semibold text-foreground">{t('details')}</h2>
+                        <p className="mt-2 whitespace-pre-line text-body text-muted-foreground">{service.description}</p>
                     </section>
 
                     {technicianRef.reviews.length > 0 && (
                         <section className="mt-8">
-                            <h2 className="text-lg font-semibold text-foreground">{t('reviews')}</h2>
+                            <h2 className="text-h2 font-semibold text-foreground">{t('reviews')}</h2>
                             <div className="mt-3 space-y-4">
                                 {technicianRef.reviews.map((review) => (
                                     <div key={review.id} className="border-b border-hairline pb-4 last:border-b-0">
                                         <div className="flex items-center justify-between">
-                                            <p className="text-sm font-semibold text-foreground">{review.author}</p>
-                                            <p className="text-xs text-muted-foreground">{review.timeAgo}</p>
+                                            <p className="text-body font-semibold text-foreground">{review.author}</p>
+                                            <p className="text-small text-muted-foreground">{review.timeAgo}</p>
                                         </div>
                                         <RatingStars value={review.rating} className="mt-1" />
-                                        <p className="mt-1.5 text-sm text-muted-foreground">{review.comment}</p>
+                                        <p className="mt-1.5 text-body text-muted-foreground">{review.comment}</p>
                                     </div>
                                 ))}
                             </div>
@@ -98,10 +98,10 @@ export default async function ServiceDetailPage({
 
                 {/* ---- Sticky price card ---- */}
                 <aside className="rounded-xl border border-border bg-card p-5 lg:sticky lg:top-20">
-                    <p className="text-xs text-muted-foreground">{t('priceFrom')}</p>
-                    <p className="mt-1 text-3xl font-bold text-foreground">{formatBaht(service.basePriceAmount)}</p>
+                    <p className="text-small text-muted-foreground">{t('priceFrom')}</p>
+                    <p className="mt-1 text-price-lg font-bold text-foreground">{formatBaht(service.basePriceAmount)}</p>
 
-                    <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-sm">
+                    <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-body">
                         <div className="flex items-center justify-between gap-4">
                             <dt className="text-muted-foreground">{t('durationLabel')}</dt>
                             <dd className="font-medium text-foreground">{tDuration(service.duration)}</dd>
@@ -135,13 +135,13 @@ export default async function ServiceDetailPage({
                         <HireDialog serviceId={service.id} />
                     ) : null /* another technician browsing: nothing to act on here */}
 
-                    {!isOwner && <p className="mt-3 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>}
+                    {!isOwner && <p className="mt-3 text-center text-small text-muted-foreground">🔒 {t('escrowNote')}</p>}
                 </aside>
             </div>
 
             {similar.length > 0 && (
                 <section className="mt-14">
-                    <h2 className="mb-4 text-lg font-semibold text-foreground">{t('similarServices')}</h2>
+                    <h2 className="mb-4 text-h2 font-semibold text-foreground">{t('similarServices')}</h2>
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
                         {similar.map((s) => (
                             <ServiceCard

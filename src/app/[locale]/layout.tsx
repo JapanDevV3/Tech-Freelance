@@ -1,13 +1,18 @@
 import type { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { Noto_Sans_Thai, Roboto } from 'next/font/google';
+import { IBM_Plex_Sans_Thai } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { ThemeProvider } from '@/components/theme-provider';
 import '../globals.css';
 
-const thaiFont = Noto_Sans_Thai({ subsets: ['thai', 'latin'], display: 'swap' });
-const enFont = Roboto({ subsets: ['latin'], display: 'swap' });
+// One typeface for both locales: IBM Plex Sans Thai covers Thai and Latin,
+// so switching language never changes the rhythm of the layout.
+const font = IBM_Plex_Sans_Thai({
+  subsets: ['thai', 'latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'TechLance',
@@ -28,7 +33,6 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
-  const font = locale === 'th' ? thaiFont : enFont;
 
   return (
     <html lang={locale} suppressHydrationWarning>

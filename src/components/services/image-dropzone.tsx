@@ -36,8 +36,8 @@ export function ImageDropzone({ value, onChange, onBlur, invalid, describedBy }:
                     invalid && 'border-destructive',
                 )}
             >
-                <span className="text-sm font-medium text-foreground">{t('imagesDrop')}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-body font-medium text-foreground">{t('imagesDrop')}</span>
+                <span className="text-small text-muted-foreground">
                     {t('imagesHint', { max: SERVICE_IMAGE_MAX_COUNT, sizeMb: UPLOAD_PURPOSES.serviceImage.maxBytes / 1024 / 1024 })}
                 </span>
             </button>
@@ -63,7 +63,7 @@ export function ImageDropzone({ value, onChange, onBlur, invalid, describedBy }:
                                 aria-label={img.kind === 'existing'
                                     ? t('imagesRemoveExisting', { index: i + 1 })
                                     : t('imagesRemove', { name: img.file.name })}
-                                className="absolute right-1 top-1 rounded-full bg-background/80 px-1.5 text-xs"
+                                className="absolute right-1 top-1 rounded-full bg-background/80 px-1.5 text-small"
                             >✕</button>
                         </li>
                     ))}

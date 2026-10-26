@@ -32,7 +32,7 @@ export function PaymentForm({ orderId, amountBaht }: { orderId: string; amountBa
                         type="button"
                         onClick={() => setMethod(m)}
                         className={cn(
-                            'rounded-md py-2 text-sm font-medium transition-colors',
+                            'rounded-md py-2 text-body font-medium transition-colors',
                             method === m ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
                         )}
                     >
@@ -44,7 +44,7 @@ export function PaymentForm({ orderId, amountBaht }: { orderId: string; amountBa
             {method === 'promptpay' ? (
                 <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border-strong py-10 text-center">
                     <div className="size-36 rounded-lg bg-sunken" />
-                    <p className="text-sm text-muted-foreground">{t('promptpayHint')}</p>
+                    <p className="text-body text-muted-foreground">{t('promptpayHint')}</p>
                     <Button onClick={() => router.push(`/orders/${orderId}/payment/success`)} className="mt-2">
                         {t('pay', { amount: formatBaht(amountBaht * 100) })}
                     </Button>
@@ -77,7 +77,7 @@ export function PaymentForm({ orderId, amountBaht }: { orderId: string; amountBa
             <Button type="submit" disabled={submitting} className="mt-2 w-full">
                 {submitting ? t('processing') : t('pay', { amount: formatBaht(amountBaht * 100) })}
             </Button>
-            <p className="text-center text-xs text-muted-foreground">🔒 {t('sslNote')}</p>
+            <p className="text-center text-small text-muted-foreground">🔒 {t('sslNote')}</p>
             </form>
             )}
         </div>

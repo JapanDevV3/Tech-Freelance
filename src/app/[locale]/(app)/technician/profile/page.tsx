@@ -32,24 +32,24 @@ export default async function TechnicianProfilePage({ params }: TechnicianProfil
 
     return (
         <Container size="md" gutter="lg">
-            <Link href="/dashboard" className="text-sm font-medium text-primary hover:underline">
+            <Link href="/dashboard" className="text-body font-medium text-primary hover:underline">
                 ← {t('backToDashboard')}
             </Link>
-            <h1 className="mt-3 text-2xl font-bold text-foreground">{t('title')}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
+            <h1 className="mt-3 text-h1 font-bold text-foreground">{t('title')}</h1>
+            <p className="mt-1 text-body text-muted-foreground">{t('subtitle')}</p>
 
             <div className="mt-6 flex items-center gap-4 rounded-xl border border-border bg-card p-5">
                 <AvatarUploader src={avatarSrc} fallback={displayName.slice(0, 2)} />
                 <div className="min-w-0">
                     <p className="truncate font-semibold text-foreground">{displayName}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-small text-muted-foreground">
                         {joinedYear ? t('statLine', { year: joinedYear, count: myServices.length }) : t('publicProfileHint')}
                     </p>
                 </div>
             </div>
 
             <div className="mt-6 rounded-xl border border-border bg-card p-5">
-                <h2 className="mb-4 text-sm font-semibold text-foreground">{t('formTitle')}</h2>
+                <h2 className="mb-4 text-body font-semibold text-foreground">{t('formTitle')}</h2>
                 <TechnicianProfileForm
                     initial={{
                         displayName: profile?.displayName ?? '',

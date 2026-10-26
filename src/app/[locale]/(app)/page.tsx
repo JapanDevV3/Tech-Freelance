@@ -54,7 +54,7 @@ export default async function HomePage() {
       <section className="border-b border-border bg-card">
         <Container size="xl" gutter="lg">
           <div className="max-w-2xl">
-            <h1 className="text-4xl font-bold leading-tight tracking-tight text-foreground text-balance">
+            <h1 className="text-display font-bold tracking-tight text-foreground text-balance">
               {hero.title}
             </h1>
             <p className="mt-3 text-lg text-muted-foreground">
@@ -88,10 +88,10 @@ export default async function HomePage() {
       <section className="bg-background">
         <Container size="xl" gutter="lg">
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-foreground">
+            <h2 className="text-h2 font-semibold text-foreground">
               {t("popularServices")}
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-body text-muted-foreground">
               {t("popularServicesSub")}
             </p>
           </div>
@@ -99,7 +99,7 @@ export default async function HomePage() {
           {services.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border-strong p-14 text-center">
               <p className="font-medium text-foreground">{t("emptyTitle")}</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-body text-muted-foreground">
                 {t("emptySub")}
               </p>
             </div>
@@ -126,19 +126,19 @@ export default async function HomePage() {
       {isGuest && (
         <section className="border-t border-border bg-card">
           <Container size="xl" gutter="lg">
-            <h2 className="mb-6 text-xl font-semibold text-foreground">
+            <h2 className="mb-6 text-h2 font-semibold text-foreground">
               {t("howTitle")}
             </h2>
             <div className="grid gap-6 sm:grid-cols-3">
               {steps.map((step, i) => (
                 <div key={step.title}>
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-sm font-bold text-primary">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-body font-bold text-primary">
                     {i + 1}
                   </div>
                   <h3 className="mt-3 font-semibold text-foreground">
                     {step.title}
                   </h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-body text-muted-foreground">
                     {step.desc}
                   </p>
                 </div>
@@ -153,7 +153,7 @@ export default async function HomePage() {
         <Container size="xl" gutter="lg">
           <div className="flex flex-col items-start gap-4 rounded-2xl bg-primary px-8 py-10 text-primary-foreground sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-2xl font-bold">{cta.title}</h2>
+              <h2 className="text-h1 font-bold">{cta.title}</h2>
               <p className="mt-1 text-primary-foreground/80">{cta.sub}</p>
             </div>
             <Link

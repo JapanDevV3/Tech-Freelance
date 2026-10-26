@@ -29,12 +29,12 @@ export function OrderTimeline({ steps, pendingLabel }: { steps: TimelineItem[], 
                         {step.state === 'current' && <span className="size-2 rounded-full bg-primary" />}
                     </span>
                     <div>
-                        <p className={cn('text-sm font-medium', step.state === 'pending' ? 'text-muted-foreground' : 'text-foreground')}>
+                        <p className={cn('text-body font-medium', step.state === 'pending' ? 'text-muted-foreground' : 'text-foreground')}>
                             {step.label}
                         </p>
-                        {step.timestamp && <p className="mt-0.5 text-xs text-muted-foreground">{step.timestamp}</p>}
+                        {step.timestamp && <p className="mt-0.5 text-small text-muted-foreground">{step.timestamp}</p>}
                         {!step.timestamp && step.state === 'pending' && (
-                            <p className="mt-0.5 text-xs text-muted-foreground">{pendingLabel}</p>
+                            <p className="mt-0.5 text-small text-muted-foreground">{pendingLabel}</p>
                         )}
                     </div>
                 </li>

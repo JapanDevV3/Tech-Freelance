@@ -17,10 +17,10 @@ export function MyServiceRow({ service }: Props) {
                 {service.coverUrl && <Image src={service.coverUrl} alt="" fill sizes="48px" className="object-cover" />}
             </div>
             <div className="min-w-0 flex-1">
-                <Link href={`/services/${service.id}`} className="block truncate text-sm font-semibold text-foreground hover:underline">
+                <Link href={`/services/${service.id}`} className="block truncate text-body font-semibold text-foreground hover:underline">
                     {service.title}
                 </Link>
-                <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="mt-1 flex items-center gap-2 text-small text-muted-foreground">
                     <Badge variant="outline">{t(service.status === 'active' ? 'published' : 'draft')}</Badge>
                     <span>{formatBaht(service.basePriceAmount)}</span>
                 </div>

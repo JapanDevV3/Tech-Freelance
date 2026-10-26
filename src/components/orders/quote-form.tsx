@@ -52,7 +52,7 @@ export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Pro
     });
 
     // Hooks above run on every render; this early return comes after them, so the hook order never changes
-    if (revisionsLeft === 0) return <p className="text-sm text-muted-foreground">{t('limitReached')}</p>;
+    if (revisionsLeft === 0) return <p className="text-body text-muted-foreground">{t('limitReached')}</p>;
 
     const durationItems = SERVICE_DURATIONS.map((d) => ({ value: d, label: tDuration(d) }));
     const dayItems = VALID_DAYS.map((d) => ({ value: String(d), label: t('validDaysOption', { count: d }) }));
@@ -113,11 +113,11 @@ export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Pro
                 <FieldError message={errors.note?.message} />
             </div>
 
-            {errors.root?.message && <p role="alert" className="text-sm text-destructive">{tErr(errors.root.message)}</p>}
+            {errors.root?.message && <p role="alert" className="text-body text-destructive">{tErr(errors.root.message)}</p>}
 
             <div className="flex flex-wrap items-center justify-between gap-3">
                 {/* The first quote isn't a revision — only count down from v2 on */}
-                {nextVersion > 1 && <p className="text-xs text-muted-foreground">{t('revisionsLeft', { count: revisionsLeft })}</p>}
+                {nextVersion > 1 && <p className="text-small text-muted-foreground">{t('revisionsLeft', { count: revisionsLeft })}</p>}
                 <Button type="submit" disabled={isSubmitting} className="ml-auto">
                     {isSubmitting ? t('sending') : t('sendQuote', { version: nextVersion })}
                 </Button>

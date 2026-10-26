@@ -25,14 +25,14 @@ export default async function NewServicePage({ params }: NewServicePageProps) {
 
     return (
         <Container size="lg" gutter="lg">
-            <Link href="/dashboard" className="text-sm font-medium text-primary hover:underline">
+            <Link href="/dashboard" className="text-body font-medium text-primary hover:underline">
                 ← {t('back')}
             </Link>
-            <h1 className="mt-3 text-2xl font-bold text-foreground">{t('pageTitle')}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{t('pageSubtitle')}</p>
+            <h1 className="mt-3 text-h1 font-bold text-foreground">{t('pageTitle')}</h1>
+            <p className="mt-1 text-body text-muted-foreground">{t('pageSubtitle')}</p>
 
             <div className="mt-6 rounded-xl border border-border bg-card p-5">
-                <h2 className="mb-4 text-sm font-semibold text-foreground">{t('formTitle')}</h2>
+                <h2 className="mb-4 text-body font-semibold text-foreground">{t('formTitle')}</h2>
                 <ServiceForm />
             </div>
         </Container>

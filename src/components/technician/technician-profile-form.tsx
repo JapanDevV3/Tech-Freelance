@@ -88,7 +88,7 @@ export function TechnicianProfileForm({ initial }: Props) {
                     />
                     {errors.phone
                         ? <FieldError message={errors.phone.message} />
-                        : <p className="text-xs text-muted-foreground">{t('phonePrivateHint')}</p>}
+                        : <p className="text-small text-muted-foreground">{t('phonePrivateHint')}</p>}
                 </div>
 
                 <div className="grid content-start gap-2">
@@ -118,7 +118,7 @@ export function TechnicianProfileForm({ initial }: Props) {
                                 setValueAs: (v: unknown) => (v === '' || v == null ? null : Number(v)),
                             })}
                         />
-                        <span className="text-sm text-muted-foreground">{t('experienceUnit')}</span>
+                        <span className="text-body text-muted-foreground">{t('experienceUnit')}</span>
                     </div>
                     <FieldError message={errors.experienceYears?.message} />
                 </div>
@@ -144,7 +144,7 @@ export function TechnicianProfileForm({ initial }: Props) {
                                                 : [...field.value, category],
                                         )}
                                         className={cn(
-                                            'rounded-full border px-3 py-1 text-xs font-medium transition-colors',
+                                            'rounded-full border px-3 py-1 text-small font-medium transition-colors',
                                             selected
                                                 ? 'border-primary bg-accent-soft text-primary'
                                                 : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
@@ -157,7 +157,7 @@ export function TechnicianProfileForm({ initial }: Props) {
                         </div>
                     )}
                 />
-                <p className="text-xs text-muted-foreground">{t('skillsHint')}</p>
+                <p className="text-small text-muted-foreground">{t('skillsHint')}</p>
                 <FieldError message={errors.skills?.message} />
             </div>
 
@@ -178,7 +178,7 @@ export function TechnicianProfileForm({ initial }: Props) {
             <Button type="submit" disabled={isSubmitting || !isDirty} className="justify-self-start">
                 {isSubmitting ? t('saving') : t('save')}
             </Button>
-            {saved && !isDirty && <p className="text-sm text-primary">{t('saved')}</p>}
+            {saved && !isDirty && <p className="text-body text-primary">{t('saved')}</p>}
         </form>
     );
 }

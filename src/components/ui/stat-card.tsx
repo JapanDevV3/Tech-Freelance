@@ -14,10 +14,10 @@ type StatCardProps = {
 export function StatCard({ label, value, hint, hintTone = 'muted', className }: StatCardProps) {
     return (
         <div className={cn('rounded-xl border border-border bg-card p-5', className)}>
-            <p className="text-sm text-muted-foreground">{label}</p>
-            <p className="mt-2 text-2xl font-bold text-foreground">{value}</p>
+            <p className="text-body text-muted-foreground">{label}</p>
+            <p className="mt-2 text-stat font-bold text-foreground">{value}</p>
             {hint && (
-                <p className={cn('mt-1 text-xs', hintTone === 'positive' ? 'text-primary' : 'text-muted-foreground')}>
+                <p className={cn('mt-1 text-small', hintTone === 'positive' ? 'text-primary' : 'text-muted-foreground')}>
                     {hint}
                 </p>
             )}

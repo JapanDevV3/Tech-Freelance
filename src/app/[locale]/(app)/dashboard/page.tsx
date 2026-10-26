@@ -52,8 +52,8 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
         <Container size="xl" gutter="lg">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">{t('greeting', { name: userName })}</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
+                    <h1 className="text-h1 font-bold text-foreground">{t('greeting', { name: userName })}</h1>
+                    <p className="mt-1 text-body text-muted-foreground">{t('subtitle')}</p>
                 </div>
                 <Link href="/technician/services/new" className={buttonVariants()}>{t('postNew')}</Link>
             </div>
@@ -67,7 +67,7 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
 
             <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
                 <div className="rounded-xl border border-border bg-card p-5">
-                    <h2 className="mb-2 text-sm font-semibold text-foreground">{t('myServices')}</h2>
+                    <h2 className="mb-2 text-body font-semibold text-foreground">{t('myServices')}</h2>
                     {myServices.length === 0 ? (
                         <EmptyState
                             title={t('noServicesTitle')}
@@ -82,16 +82,16 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
                 </div>
 
                 <div className="rounded-xl border border-border bg-card p-5">
-                    <h2 className="mb-3 text-sm font-semibold text-foreground">{t('incomingRequests')}</h2>
+                    <h2 className="mb-3 text-body font-semibold text-foreground">{t('incomingRequests')}</h2>
                     {incomingRequests.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">{t('noRequests')}</p>
+                        <p className="text-body text-muted-foreground">{t('noRequests')}</p>
                     ) : (
                         <div className="space-y-3">
                             {incomingRequests.map((order) => (
                                 <div key={order.id} className="rounded-lg border border-border p-3">
-                                    <p className="truncate text-sm font-semibold text-foreground">{order.customer.name}</p>
-                                    <p className="line-clamp-1 text-xs text-muted-foreground">{order.service.title}</p>
-                                    <p className="mt-1 text-xs text-muted-foreground">{format.dateTime(order.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                                    <p className="truncate text-body font-semibold text-foreground">{order.customer.name}</p>
+                                    <p className="line-clamp-1 text-small text-muted-foreground">{order.service.title}</p>
+                                    <p className="mt-1 text-small text-muted-foreground">{format.dateTime(order.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                     <Link href={`/orders/${order.id}`} className={buttonVariants({ size: 'sm', className: 'mt-3 w-full' })}>
                                         {t('viewRequest')}
                                     </Link>
@@ -128,8 +128,8 @@ async function CustomerDashboard({ userId, userName }: { userId: string, userNam
 
     return (
         <Container size="xl" gutter="lg">
-            <h1 className="text-2xl font-bold text-foreground">{t('greeting', { name: userName })}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
+            <h1 className="text-h1 font-bold text-foreground">{t('greeting', { name: userName })}</h1>
+            <p className="mt-1 text-body text-muted-foreground">{t('subtitle')}</p>
 
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <StatCard label={t('statInProgress')} value={String(inProgressCount)} />
@@ -147,15 +147,15 @@ async function CustomerDashboard({ userId, userName }: { userId: string, userNam
                         <span className="flex size-10 items-center justify-center rounded-full bg-accent-soft text-primary">
                             <HugeiconsIcon icon={q.icon} />
                         </span>
-                        <span className="text-sm font-medium text-foreground">{q.label}</span>
+                        <span className="text-body font-medium text-foreground">{q.label}</span>
                     </Link>
                 ))}
             </div>
 
             <section className="mt-10">
                 <div className="mb-3 flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-foreground">{t('recentOrders')}</h2>
-                    <Link href="/orders" className="text-sm font-medium text-primary hover:underline">{t('viewAll')} →</Link>
+                    <h2 className="text-h2 font-semibold text-foreground">{t('recentOrders')}</h2>
+                    <Link href="/orders" className="text-body font-medium text-primary hover:underline">{t('viewAll')} →</Link>
                 </div>
                 <div className="rounded-xl border border-border bg-card px-4">
                     {recentOrders.map((order) => (
@@ -173,7 +173,7 @@ async function CustomerDashboard({ userId, userName }: { userId: string, userNam
 
             {recommended.length > 0 && (
                 <section className="mt-10">
-                    <h2 className="mb-3 text-lg font-semibold text-foreground">{t('recommended')}</h2>
+                    <h2 className="mb-3 text-h2 font-semibold text-foreground">{t('recommended')}</h2>
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
                         {recommended.map((s) => (
                             <ServiceCard

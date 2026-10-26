@@ -20,11 +20,11 @@ export default async function OrderPaymentPage({
 
     return (
         <Container size="lg" gutter="lg">
-            <Link href={`/orders/${order.id}`} className="mb-4 inline-block text-sm text-muted-foreground hover:text-foreground">
+            <Link href={`/orders/${order.id}`} className="mb-4 inline-block text-body text-muted-foreground hover:text-foreground">
                 ← {t('back')}
             </Link>
-            <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
+            <h1 className="text-h1 font-bold text-foreground">{t('title')}</h1>
+            <p className="mt-1 text-body text-muted-foreground">{t('subtitle')}</p>
 
             <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
                 <div className="rounded-xl border border-border bg-card p-6">
@@ -35,12 +35,12 @@ export default async function OrderPaymentPage({
                     <div className="flex items-center gap-3">
                         <div className="size-12 shrink-0 rounded-lg bg-sunken" />
                         <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-foreground">{order.serviceTitle}</p>
-                            <p className="truncate text-xs text-muted-foreground">{t('technician')} {order.technicianName}</p>
+                            <p className="truncate text-body font-semibold text-foreground">{order.serviceTitle}</p>
+                            <p className="truncate text-small text-muted-foreground">{t('technician')} {order.technicianName}</p>
                         </div>
                     </div>
 
-                    <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-sm">
+                    <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-body">
                         <div className="flex items-center justify-between">
                             <dt className="text-muted-foreground">{t('serviceFee')}</dt>
                             <dd className="font-medium text-foreground">{formatBaht(latest.priceBaht * 100)}</dd>
@@ -52,9 +52,9 @@ export default async function OrderPaymentPage({
                     </dl>
                     <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3">
                         <dt className="font-semibold text-foreground">{t('total')}</dt>
-                        <dd className="text-lg font-bold text-foreground">{formatBaht(latest.priceBaht * 100)}</dd>
+                        <dd className="text-price font-bold text-foreground">{formatBaht(latest.priceBaht * 100)}</dd>
                     </div>
-                    <p className="mt-3 text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>
+                    <p className="mt-3 text-small text-muted-foreground">🔒 {t('escrowNote')}</p>
                     <p className="mt-4 text-center text-[0.7rem] text-muted-foreground">{t('poweredBy')}</p>
                 </aside>
             </div>

@@ -26,11 +26,11 @@ export function TechnicianCard({ technician, labels }: TechnicianCardProps) {
                     <p className="font-semibold text-foreground">{technician.displayName}</p>
                     <Badge variant="outline">{technician.categoryLabel}</Badge>
                 </div>
-                <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <div className="mt-1 flex items-center gap-1.5 text-small text-muted-foreground">
                     <RatingStars value={technician.rating} />
                     <span>{technician.rating} ({technician.reviewCount} {labels.reviews})</span>
                 </div>
-                <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">{technician.bio}</p>
+                <p className="mt-1 line-clamp-1 text-body text-muted-foreground">{technician.bio}</p>
             </div>
 
             <div className="flex shrink-0 items-center gap-2">

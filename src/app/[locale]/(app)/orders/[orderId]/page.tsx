@@ -57,14 +57,14 @@ export default async function OrderDetailPage({ params }: Props) {
 
     return (
         <Container size="lg" gutter="lg">
-            <Link href="/orders" className="mb-4 inline-block text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/orders" className="mb-4 inline-block text-body text-muted-foreground hover:text-foreground">
                 ← {t('back')}
             </Link>
 
             <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                    <h1 className="text-xl font-bold text-foreground text-balance">{order.service.title}</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <h1 className="text-h1 font-bold text-foreground text-balance">{order.service.title}</h1>
+                    <p className="mt-1 text-body text-muted-foreground">
                         {party === 'customer'
                             ? `${t('technician')} ${order.technician.displayName}`
                             : `${t('customer')} ${order.customer.name}`}
@@ -78,7 +78,7 @@ export default async function OrderDetailPage({ params }: Props) {
                 <div className="space-y-8">
                     {can.quote && (
                         <section className='rounded-xl border border-border bg-card p-5'>
-                            <h2 className='mb-4 text-sm font-semibold text-foreground'>{tTech('quoteFormTitle')}</h2>
+                            <h2 className='mb-4 text-body font-semibold text-foreground'>{tTech('quoteFormTitle')}</h2>
                             <QuoteForm
                                 key={latestVersion} // a new version after refresh → remount with that version's defaults
                                 orderId={order.id}
@@ -95,27 +95,27 @@ export default async function OrderDetailPage({ params }: Props) {
                         </section>
                     )}
                     <section>
-                        <h2 className="mb-4 text-sm font-semibold text-foreground">{t('jobStatus')}</h2>
+                        <h2 className="mb-4 text-body font-semibold text-foreground">{t('jobStatus')}</h2>
                         <OrderTimeline steps={steps} pendingLabel={tStep('pending')} />
                     </section>
 
                     <section>
-                        <h2 className="mb-2 text-sm font-semibold text-foreground">{t('problem')}</h2>
+                        <h2 className="mb-2 text-body font-semibold text-foreground">{t('problem')}</h2>
                         {/* Plain text: React escapes it, whitespace-pre-line keeps the customer's line breaks */}
-                        <p className="whitespace-pre-line rounded-lg border border-border bg-card p-4 text-sm text-muted-foreground">
+                        <p className="whitespace-pre-line rounded-lg border border-border bg-card p-4 text-body text-muted-foreground">
                             {order.problemDescription}
                         </p>
                     </section>
 
                     {order.quotes.length > 0 && (
                         <section>
-                            <h2 className="mb-3 text-sm font-semibold text-foreground">{t('quoteHistory')}</h2>
+                            <h2 className="mb-3 text-body font-semibold text-foreground">{t('quoteHistory')}</h2>
                             <ul className="divide-y divide-hairline rounded-xl border border-border bg-card px-4">
                                 {order.quotes.map((q) => (
-                                    <li key={q.id} className="flex items-center justify-between gap-3 py-3 text-sm">
+                                    <li key={q.id} className="flex items-center justify-between gap-3 py-3 text-body">
                                         <span className="font-medium text-foreground">v{q.version} · {formatBaht(q.amount)}</span>
                                         <span className="text-muted-foreground">{quoteLabel(q)}</span>
-                                        <span className="text-xs text-muted-foreground">{when(q.createdAt)}</span>
+                                        <span className="text-small text-muted-foreground">{when(q.createdAt)}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -127,21 +127,21 @@ export default async function OrderDetailPage({ params }: Props) {
                     {current ? (
                         <>
                             <div className="flex items-center justify-between">
-                                <p className="text-xs font-medium text-muted-foreground">{t('currentQuote', { version: current.version })}</p>
-                                <span className="text-xs text-muted-foreground">{quoteLabel(current)}</span>
+                                <p className="text-small font-medium text-muted-foreground">{t('currentQuote', { version: current.version })}</p>
+                                <span className="text-small text-muted-foreground">{quoteLabel(current)}</span>
                             </div>
-                            <p className="mt-2 text-2xl font-bold text-foreground">{formatBaht(current.amount)}</p>
-                            <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-sm">
+                            <p className="mt-2 text-price-lg font-bold text-foreground">{formatBaht(current.amount)}</p>
+                            <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-body">
                                 <Row label={t('duration')} value={current.duration ? tDuration(current.duration) : '—'} />
                                 <Row label={t('revisions')} value={current.revisionsIncluded === null ? '—' : t('revisionsValue', { count: current.revisionsIncluded })} />
                                 {current.expiresAt && <Row label={t('validUntilLabel')} value={when(current.expiresAt)} />}
                             </dl>
                             {current.note && (
-                                <p className="mt-4 whitespace-pre-line rounded-lg bg-muted p-3 text-xs text-muted-foreground">{current.note}</p>
+                                <p className="mt-4 whitespace-pre-line rounded-lg bg-muted p-3 text-small text-muted-foreground">{current.note}</p>
                             )}
                         </>
                     ) : order.status === 'pending_quote' ? (
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-body text-muted-foreground">
                             {party === 'customer' ? t('waitingForQuote') : t('sendQuoteHint')}
                         </p>
                     ) : null}
@@ -154,7 +154,7 @@ export default async function OrderDetailPage({ params }: Props) {
                         />
                     )}
                     {can.cancel && <CancelOrderButton orderId={order.id} />}
-                    {party === 'customer' && <p className="mt-4 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>}
+                    {party === 'customer' && <p className="mt-4 text-center text-small text-muted-foreground">🔒 {t('escrowNote')}</p>}
                 </aside>
             </div>
         </Container>

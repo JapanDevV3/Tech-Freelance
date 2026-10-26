@@ -28,8 +28,8 @@ export default async function OrdersPage({ params, searchParams }: Props) {
 
     return (
         <Container size="lg" gutter="lg">
-            <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
+            <h1 className="text-h1 font-bold text-foreground">{t('title')}</h1>
+            <p className="mt-1 text-body text-muted-foreground">{t('subtitle')}</p>
 
             <div className="mt-6 flex flex-wrap gap-1 rounded-lg bg-muted p-1">
                 {ORDER_TABS.map((key) => (
@@ -38,7 +38,7 @@ export default async function OrdersPage({ params, searchParams }: Props) {
                         href={key === 'all' ? '/orders' : { pathname: '/orders', query: { tab: key } }}
                         aria-current={active === key ? 'page' : undefined}
                         className={cn(
-                            'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                            'rounded-md px-3 py-1.5 text-body font-medium transition-colors',
                             active === key ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
                         )}
                     >

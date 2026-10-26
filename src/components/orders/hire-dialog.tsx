@@ -70,7 +70,7 @@ export function HireDialog({ serviceId }: { serviceId: string }) {
                     </div>
 
                     {errors.root?.message && (
-                        <p role="alert" className="text-sm text-destructive">{tErr(errors.root.message)}</p>
+                        <p role="alert" className="text-body text-destructive">{tErr(errors.root.message)}</p>
                     )}
 
                     <DialogFooter>

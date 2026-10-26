@@ -28,8 +28,8 @@ export default async function EditServicePage({ params }: Props) {
 
     return (
         <Container size="lg" gutter="lg">
-            <Link href="/dashboard" className="text-sm font-medium text-primary hover:underline">← {t('back')}</Link>
-            <h1 className="mt-3 text-2xl font-bold text-foreground">{t('editPageTitle')}</h1>
+            <Link href="/dashboard" className="text-body font-medium text-primary hover:underline">← {t('back')}</Link>
+            <h1 className="mt-3 text-h1 font-bold text-foreground">{t('editPageTitle')}</h1>
             <div className="mt-6 rounded-xl border border-border bg-card p-5">
                 {/* key → remount when data changes (same lesson as the profile form) */}
                 <ServiceForm key={service.updatedAt.toISOString()} service={{ id: service.id, status: service.status, values }} />

@@ -50,18 +50,18 @@ export function LoginForm({ callbackPath }: LoginFormProps) {
                     <div className="grid gap-2">
                         <Label htmlFor="email">{t('email')}</Label>
                         <Input id="email" type="email" autoComplete="email" {...register('email')} />
-                        {errors.email && <p className="text-sm text-destructive">{tv(errors.email.message!)}</p>}
+                        {errors.email && <p className="text-body text-destructive">{tv(errors.email.message!)}</p>}
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="password">{t('password')}</Label>
                         <Input id="password" type="password" autoComplete="current-password" {...register('password')} />
-                        {errors.password && <p className="text-sm text-destructive">{tv(errors.password.message!)}</p>}
+                        {errors.password && <p className="text-body text-destructive">{tv(errors.password.message!)}</p>}
                     </div>
-                    {errors.root && <p className="text-sm text-destructive">{t(errors.root.message!)}</p>}
+                    {errors.root && <p className="text-body text-destructive">{t(errors.root.message!)}</p>}
                     <Button type="submit" disabled={isSubmitting} className="w-full">
                         {isSubmitting ? t('signingIn') : t('signIn')}
                     </Button>
-                    <p className="text-center text-sm text-muted-foreground">
+                    <p className="text-center text-body text-muted-foreground">
                         {t('noAccount')}{' '}
                         <Link href={{ pathname: '/auth/register', query: callbackPath === DEFAULT_CALLBACK_PATH ? {} : { callbackUrl: callbackPath } }} className="font-medium text-primary hover:underline">
                             {t('createAccount')}

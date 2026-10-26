@@ -22,8 +22,8 @@ export default async function RegisterPage({ params, searchParams }: PageProps<'
         <Card className="w-full max-w-lg">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                    <CardTitle className="text-lg">{t('createAccountTitle')}</CardTitle>
-                    <p className="mt-1 text-xs text-muted-foreground">{t('createAccountSubtitle')}</p>
+                    <CardTitle className="text-h2">{t('createAccountTitle')}</CardTitle>
+                    <p className="mt-1 text-small text-muted-foreground">{t('createAccountSubtitle')}</p>
                 </div>
                 <LanguageToggle />
             </CardHeader>

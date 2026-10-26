@@ -102,7 +102,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
                 <Label htmlFor="title">{t('name')}</Label>
                 <Input id="title" placeholder={t('namePlaceholder')} aria-invalid={!!errors.title} {...register('title')} />
                 {errors.title ? <FieldError message={errors.title.message} />
-                    : <p className="text-xs text-muted-foreground">{t('nameHint')}</p>}
+                    : <p className="text-small text-muted-foreground">{t('nameHint')}</p>}
             </div>
 
             <div className="grid gap-2">
@@ -183,7 +183,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
                 <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : primaryLabel}</Button>
                 <Button type="button" variant="outline" disabled={isSubmitting} onClick={save(secondary)}>{secondaryLabel}</Button>
             </div>
-            {savedAs && <p className="text-sm text-primary">{savedAs === 'draft' ? t('savedDraft') : t('saved')}</p>}
+            {savedAs && <p className="text-body text-primary">{savedAs === 'draft' ? t('savedDraft') : t('saved')}</p>}
         </form>
     );
 }

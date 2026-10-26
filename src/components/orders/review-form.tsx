@@ -22,7 +22,7 @@ export function ReviewForm() {
             className="grid gap-5"
         >
             <div className="text-center">
-                <Label className="justify-center text-sm">{t('overallRating')}</Label>
+                <Label className="justify-center text-body">{t('overallRating')}</Label>
                 <RatingInput name="overall" defaultValue={5} className="mt-2 justify-center" />
             </div>
 
@@ -38,7 +38,7 @@ export function ReviewForm() {
             </div>
 
             <Button type="submit" disabled={submitted}>{submitted ? t('sent') : t('submit')}</Button>
-            {submitted && <p className="text-center text-sm text-primary">{t('thanks')}</p>}
+            {submitted && <p className="text-center text-body text-primary">{t('thanks')}</p>}
         </form>
     );
 }
@@ -46,7 +46,7 @@ export function ReviewForm() {
 function RatingRow({ name, label }: { name: string; label: string }) {
     return (
         <div className="flex items-center justify-between">
-            <span className="text-sm text-foreground">{label}</span>
+            <span className="text-body text-foreground">{label}</span>
             <RatingInput name={name} defaultValue={5} />
         </div>
     );

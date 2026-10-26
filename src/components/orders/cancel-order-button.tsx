@@ -48,7 +48,7 @@ export function CancelOrderButton({ orderId }: { orderId: string }) {
                         {/* maxLength mirrors cancelOrderSchema (500) so the browser stops typing at the limit */}
                         <Textarea id="cancelReason" rows={3} maxLength={500} value={reason} onChange={(e) => setReason(e.target.value)} />
                     </div>
-                    {error && <p role="alert" className="text-sm text-destructive">{tErr(error)}</p>}
+                    {error && <p role="alert" className="text-body text-destructive">{tErr(error)}</p>}
                     <DialogFooter>
                         <DialogClose render={<Button variant="outline" />}>{t('keep')}</DialogClose>
                         <Button variant="destructive" onClick={onConfirm} disabled={pending}>
@@ -58,7 +58,7 @@ export function CancelOrderButton({ orderId }: { orderId: string }) {
                 </DialogContent>
             </Dialog>
             {/* Shown after the dialog closed on a refresh-worthy error */}
-            {error && !open && <p role="alert" className="mt-2 text-sm text-destructive">{tErr(error)}</p>}
+            {error && !open && <p role="alert" className="mt-2 text-body text-destructive">{tErr(error)}</p>}
         </>
     );
 }

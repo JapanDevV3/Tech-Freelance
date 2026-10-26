@@ -51,7 +51,7 @@ export function AcceptQuoteButton({ orderId, quoteId, version, amountLabel }: Pr
                 </DialogContent>
             </Dialog>
             {/* Outside the dialog: it must stay readable after the dialog closes and the page refreshes */}
-            {error && <p role="alert" className="mt-2 text-sm text-destructive">{tErr(error)}</p>}
+            {error && <p role="alert" className="mt-2 text-body text-destructive">{tErr(error)}</p>}
         </>
     );
 }

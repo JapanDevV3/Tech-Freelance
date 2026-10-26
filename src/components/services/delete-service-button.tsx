@@ -37,7 +37,7 @@ export function DeleteServiceButton({ serviceId, serviceTitle }: { serviceId: st
                     <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>{t('description', { title: serviceTitle })}</DialogDescription>
                 </DialogHeader>
-                {failed && <p role="alert" className="text-sm text-destructive">{t('failed')}</p>}
+                {failed && <p role="alert" className="text-body text-destructive">{t('failed')}</p>}
                 <DialogFooter>
                     <DialogClose render={<Button variant="outline" />}>{t('cancel')}</DialogClose>
                     <Button variant="destructive" onClick={onConfirm} disabled={pending}>

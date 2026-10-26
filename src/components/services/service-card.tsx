@@ -39,15 +39,15 @@ export function ServiceCard({
                 </div>
                 <CardHeader>
                     <CardTitle>
-                        <span className="line-clamp-2 text-base font-semibold">{title}</span>
+                        <span className="line-clamp-2 text-h3 font-semibold">{title}</span>
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                    <p className="line-clamp-2 text-sm text-muted-foreground">{description}</p>
-                    <p className="text-xs text-muted-foreground">{labels.by} {technicianName}</p>
+                    <p className="line-clamp-2 text-body text-muted-foreground">{description}</p>
+                    <p className="text-small text-muted-foreground">{labels.by} {technicianName}</p>
                     <div className="flex items-baseline justify-between border-t border-hairline pt-3">
-                        <span className="text-xs text-muted-foreground">{labels.priceFrom}</span>
-                        <span className="text-lg font-bold text-foreground">{formatBaht(basePriceAmount)}</span>
+                        <span className="text-small text-muted-foreground">{labels.priceFrom}</span>
+                        <span className="text-price font-bold text-foreground">{formatBaht(basePriceAmount)}</span>
                     </div>
                 </CardContent>
             </Card>

@@ -23,10 +23,10 @@ export default async function PaymentSuccessPage({
         <Container size="sm" gutter="lg">
             <div className="flex flex-col items-center text-center">
                 <span className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-3xl text-primary">✓</span>
-                <h1 className="mt-4 text-2xl font-bold text-foreground">{t('title')}</h1>
-                <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
+                <h1 className="mt-4 text-h1 font-bold text-foreground">{t('title')}</h1>
+                <p className="mt-1 text-body text-muted-foreground">{t('subtitle')}</p>
 
-                <ol className="mt-6 flex w-full items-center justify-center gap-6 text-xs">
+                <ol className="mt-6 flex w-full items-center justify-center gap-6 text-small">
                     <StepDot n={1} label={t('step1')} active />
                     <StepDot n={2} label={t('step2')} />
                     <StepDot n={3} label={t('step3')} />
@@ -37,23 +37,23 @@ export default async function PaymentSuccessPage({
                 <div className="flex items-center gap-3">
                     <div className="size-12 shrink-0 rounded-lg bg-sunken" />
                     <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-foreground">{order.serviceTitle}</p>
-                        <p className="truncate text-xs text-muted-foreground">{t('technician')} {order.technicianName}</p>
+                        <p className="truncate text-body font-semibold text-foreground">{order.serviceTitle}</p>
+                        <p className="truncate text-small text-muted-foreground">{t('technician')} {order.technicianName}</p>
                     </div>
                 </div>
 
-                <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-sm">
+                <dl className="mt-4 space-y-2 border-t border-hairline pt-4 text-body">
                     <Row label={t('paymentId')} value={`#PAY-${order.id.slice(-5)}`} />
                     <Row label={t('method')} value="Visa •••• 4242" />
                     <Row label={t('date')} value={paidAt} />
                 </dl>
                 <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3">
                     <dt className="font-semibold text-foreground">{t('amountPaid')}</dt>
-                    <dd className="text-lg font-bold text-foreground">{formatBaht(latest.priceBaht * 100)}</dd>
+                    <dd className="text-price font-bold text-foreground">{formatBaht(latest.priceBaht * 100)}</dd>
                 </div>
             </div>
 
-            <p className="mt-4 rounded-lg bg-accent-soft p-3 text-center text-xs text-primary">
+            <p className="mt-4 rounded-lg bg-accent-soft p-3 text-center text-small text-primary">
                 🔒 {t('escrowNote', { amount: formatBaht(latest.priceBaht * 100), technician: order.technicianName })}
             </p>
 

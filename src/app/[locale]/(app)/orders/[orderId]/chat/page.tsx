@@ -19,17 +19,17 @@ export default async function OrderChatPage({
 
     return (
         <Container size="md" gutter="lg">
-            <Link href={`/orders/${order.id}`} className="mb-4 inline-block text-sm text-muted-foreground hover:text-foreground">
+            <Link href={`/orders/${order.id}`} className="mb-4 inline-block text-body text-muted-foreground hover:text-foreground">
                 ← {t('back')}
             </Link>
 
             <div className="overflow-hidden rounded-xl border border-border bg-card">
                 <div className="flex items-center justify-between border-b border-border p-4">
                     <div>
-                        <p className="text-sm font-semibold text-foreground">{order.technicianName}</p>
-                        <p className="text-xs text-muted-foreground">#{order.id} · {order.serviceTitle}</p>
+                        <p className="text-body font-semibold text-foreground">{order.technicianName}</p>
+                        <p className="text-small text-muted-foreground">#{order.id} · {order.serviceTitle}</p>
                     </div>
-                    <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-primary">
+                    <span className="rounded-full bg-accent-soft px-3 py-1 text-small font-medium text-primary">
                         🔒 Escrow {formatBaht(order.priceBaht * 100)}
                     </span>
                 </div>

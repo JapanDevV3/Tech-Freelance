@@ -39,7 +39,7 @@ export function Header({ user }: { user: HeaderUser }) {
             <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-body font-bold text-primary-foreground">
                         T
                     </span>
                     <span className="text-lg font-bold tracking-tight text-foreground">TechLance</span>
@@ -53,7 +53,7 @@ export function Header({ user }: { user: HeaderUser }) {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${active
+                                className={`rounded-lg px-3 py-2 text-body font-medium transition-colors ${active
                                     ? 'bg-accent text-foreground'
                                     : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                                     }`}

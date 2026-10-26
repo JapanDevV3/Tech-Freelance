@@ -20,7 +20,7 @@ export default async function TechnicianProfilePage({
 
     return (
         <Container size="xl" gutter="lg">
-            <Link href="/services" className="mb-4 inline-block text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/services" className="mb-4 inline-block text-body text-muted-foreground hover:text-foreground">
                 ← {t('back')}
             </Link>
 
@@ -32,19 +32,19 @@ export default async function TechnicianProfilePage({
                     </Avatar>
                     <div>
                         <div className="flex flex-wrap items-center gap-2">
-                            <h1 className="text-xl font-bold text-foreground">{technician.displayName}</h1>
+                            <h1 className="text-h1 font-bold text-foreground">{technician.displayName}</h1>
                             {technician.verified && (
                                 <Badge className="bg-primary/10 text-primary">✓ {t('verified')}</Badge>
                             )}
                         </div>
-                        <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <div className="mt-1 flex items-center gap-1.5 text-body text-muted-foreground">
                             <RatingStars value={technician.rating} />
                             <span>{technician.rating} ({technician.reviewCount} {t('reviews')})</span>
                         </div>
-                        <p className="mt-1 text-xs text-muted-foreground">
+                        <p className="mt-1 text-small text-muted-foreground">
                             📍 {technician.location} · {t('memberSince', { year: technician.memberSince })}
                         </p>
-                        <p className="mt-3 max-w-xl text-sm text-muted-foreground">{technician.bio}</p>
+                        <p className="mt-3 max-w-xl text-body text-muted-foreground">{technician.bio}</p>
                     </div>
                 </div>
                 <Button className="shrink-0">{t('contact')}</Button>
@@ -60,8 +60,8 @@ export default async function TechnicianProfilePage({
             {/* ---- Services ---- */}
             {technician.services.length > 0 && (
                 <section className="mt-10">
-                    <h2 className="text-lg font-semibold text-foreground">{t('servicesTitle')}</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <h2 className="text-h2 font-semibold text-foreground">{t('servicesTitle')}</h2>
+                    <p className="mt-1 text-body text-muted-foreground">
                         {t('servicesSub', { count: technician.services.length })}
                     </p>
                     <div className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
@@ -69,11 +69,11 @@ export default async function TechnicianProfilePage({
                             <div key={service.id} className="rounded-xl border border-border bg-card">
                                 <div className="aspect-video w-full bg-sunken" />
                                 <div className="space-y-1 p-4">
-                                    <p className="line-clamp-2 text-sm font-semibold text-foreground">{service.title}</p>
-                                    <p className="line-clamp-1 text-xs text-muted-foreground">{service.subtitle}</p>
+                                    <p className="line-clamp-2 text-body font-semibold text-foreground">{service.title}</p>
+                                    <p className="line-clamp-1 text-small text-muted-foreground">{service.subtitle}</p>
                                     <div className="flex items-baseline justify-between border-t border-hairline pt-3">
-                                        <span className="text-xs text-muted-foreground">{t('priceFrom')}</span>
-                                        <span className="text-base font-bold text-foreground">{formatBaht(service.priceBaht * 100)}</span>
+                                        <span className="text-small text-muted-foreground">{t('priceFrom')}</span>
+                                        <span className="text-price font-bold text-foreground">{formatBaht(service.priceBaht * 100)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -84,19 +84,19 @@ export default async function TechnicianProfilePage({
 
             {/* ---- Reviews ---- */}
             <section className="mt-10">
-                <h2 className="text-lg font-semibold text-foreground">{t('reviewsTitle')}</h2>
+                <h2 className="text-h2 font-semibold text-foreground">{t('reviewsTitle')}</h2>
                 {technician.reviews.length === 0 ? (
-                    <p className="mt-2 text-sm text-muted-foreground">{t('noReviews')}</p>
+                    <p className="mt-2 text-body text-muted-foreground">{t('noReviews')}</p>
                 ) : (
                     <div className="mt-3 space-y-4">
                         {technician.reviews.map((review) => (
                             <div key={review.id} className="border-b border-hairline pb-4 last:border-b-0">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-foreground">{review.author}</p>
-                                    <p className="text-xs text-muted-foreground">{review.timeAgo}</p>
+                                    <p className="text-body font-semibold text-foreground">{review.author}</p>
+                                    <p className="text-small text-muted-foreground">{review.timeAgo}</p>
                                 </div>
                                 <RatingStars value={review.rating} className="mt-1" />
-                                <p className="mt-1.5 text-sm text-muted-foreground">{review.comment}</p>
+                                <p className="mt-1.5 text-body text-muted-foreground">{review.comment}</p>
                             </div>
                         ))}
                     </div>

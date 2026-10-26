@@ -34,7 +34,7 @@ export default async function ServicesPage({
 
                 <div>
                     <div className="mb-4 flex items-center justify-between gap-3">
-                        <p className="text-sm text-text-2">{t('found', { count: services.length })}</p>
+                        <p className="text-body text-text-2">{t('found', { count: services.length })}</p>
                         <SortSelect labels={{
                             newest: t('sortNewest'), priceAsc: t('sortPriceAsc'), priceDesc: t('sortPriceDesc'),
                         }} />
@@ -43,7 +43,7 @@ export default async function ServicesPage({
                     {services.length === 0 ? (
                         <div className="rounded-xl border border-dashed border-border-strong p-14 text-center">
                             <p className="font-medium text-foreground">{t('emptyTitle')}</p>
-                            <p className="mt-1 text-sm text-muted-foreground">{t('emptySub')}</p>
+                            <p className="mt-1 text-body text-muted-foreground">{t('emptySub')}</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
