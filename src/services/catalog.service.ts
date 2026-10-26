@@ -225,3 +225,12 @@ export async function updateService(userId: string, serviceId: string, input: Cr
 
     return updated;
 }
+
+// Service reads stay in this module (it owns the notDeleted filter)
+export async function getOrderableService(serviceId: string) {
+    return db.query.services.findFirst({
+        where: and(eq(services.id, serviceId), eq(services.status, 'active'), notDeleted),
+        columns: { id: true, technicianId: true },
+        with: { technician: { columns: { userId: true } } },
+    });
+}

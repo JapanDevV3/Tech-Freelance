@@ -1,7 +1,7 @@
 import type { FieldValues, Path, UseFormSetError } from 'react-hook-form';
 
 type ApiIssue = { path?: (string | number)[]; message: string };
-type ApiErrorBody = { error?: { code?: string; details?: ApiIssue[] } } | null;
+export type ApiErrorBody = { error?: { code?: string; details?: ApiIssue[] } } | null;
 
 const ROOT_ERROR_KEYS: Record<string, string> = { RATE_LIMITED: 'tooManyRequests' };
 

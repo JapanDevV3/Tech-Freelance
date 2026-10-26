@@ -21,7 +21,10 @@ export function Header({ user }: { user: HeaderUser }) {
         { href: '/services', label: t('services') },
         ...(user ? [{ href: '/dashboard', label: t('dashboard') }] : []),
         ...(user?.role === 'technician'
-            ? [{ href: '/technician/services/new', label: t('newService') }]
+            ? [
+                { href: '/orders', label: t('orders') },
+                { href: '/technician/services/new', label: t('newService') },
+            ]
             : []),
         ...(user?.role === 'customer'
             ? [
@@ -66,13 +69,13 @@ export function Header({ user }: { user: HeaderUser }) {
                 {/* actions */}
                 <LanguageToggle />
                 <ThemeToggle />
-                
+
                 {user ? <AvatarDropdown role={user?.role}></AvatarDropdown>
-                : (
-                    <Link href="/auth/login" className={buttonVariants({ size: 'sm' })}>
-                        {t('signIn')}
-                    </Link>
-                )}
+                    : (
+                        <Link href="/auth/login" className={buttonVariants({ size: 'sm' })}>
+                            {t('signIn')}
+                        </Link>
+                    )}
             </div>
         </header>
     );

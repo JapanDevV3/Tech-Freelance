@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { getServiceById, listActiveServices } from '@/services/catalog.service';
 import { Container } from '@/components/layout/container';
 import { Link } from '@/i18n/navigation';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RatingStars } from '@/components/ui/rating-stars';
 import { ServiceCard } from '@/components/services/service-card';
@@ -12,6 +12,7 @@ import { findTechnician } from '@/lib/mock/marketplace';
 import { auth } from '@/auth';
 import { ServiceGallery } from '@/components/services/service-gallery';
 import { isUuid } from '@/lib/ids';
+import { HireDialog } from '@/components/orders/hire-dialog';
 
 export default async function ServiceDetailPage({
     params,
@@ -40,6 +41,7 @@ export default async function ServiceDetailPage({
         .slice(0, 3);
 
     const tDuration = await getTranslations('serviceForm.durationOptions');
+    const tHire = await getTranslations('hire');
 
     return (
         <Container size="xl" gutter="lg">
@@ -116,17 +118,24 @@ export default async function ServiceDetailPage({
                         )}
                     </dl>
 
+                    {/* Who sees what follows the API: only customers may create orders */}
                     {isOwner ? (
                         <Link href={`/technician/services/${service.id}/edit`} className={buttonVariants({ className: 'mt-5 w-full' })}>
                             {t('editService')}
                         </Link>
-                    ) : (
-                        <>
-                            <Button className="mt-5 w-full">{t('hireButton')}</Button>
-                            <Button variant="outline" className="mt-2 w-full">{t('askFirst')}</Button>
-                            <p className="mt-3 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>
-                        </>
-                    )}
+                    ) : !session ? (
+                        // After sign-in, the existing callbackUrl flow brings them straight back to this service
+                        <Link
+                            href={{ pathname: '/auth/login', query: { callbackUrl: `/services/${service.id}` } }}
+                            className={buttonVariants({ className: 'mt-5 w-full' })}
+                        >
+                            {tHire('loginToHire')}
+                        </Link>
+                    ) : session.user.role === 'customer' ? (
+                        <HireDialog serviceId={service.id} />
+                    ) : null /* another technician browsing: nothing to act on here */}
+
+                    {!isOwner && <p className="mt-3 text-center text-xs text-muted-foreground">🔒 {t('escrowNote')}</p>}
                 </aside>
             </div>
 

@@ -1,21 +1,19 @@
 import { Badge } from '@/components/ui/badge';
+import type { OrderStatus } from '@/domain/order/state-machine';
 import { cn } from '@/lib/utils';
 
-// Order lifecycle status → visual tone. Centralized here so every place that
-// renders an order status (list rows, detail headers, dashboard) stays in sync.
-export type OrderStatus =
-    | 'awaiting_response'
-    | 'quoted'
-    | 'awaiting_payment'
-    | 'in_progress'
-    | 'completed';
 
 const TONE: Record<OrderStatus, string> = {
-    awaiting_response: 'bg-accent-soft text-primary',
-    quoted: 'bg-accent-soft text-primary',
-    awaiting_payment: 'bg-star/15 text-star',
+    pending_quote: 'bg-accent-soft text-primary',
+    quoted: 'bg-star/15 text-star',
+    accepted: 'bg-star/15 text-star',
+    paid: 'bg-accent-soft text-primary',
     in_progress: 'bg-accent-soft text-primary',
-    completed: 'bg-primary/10 text-primary',
+    completed: 'bg-star/15 text-star',
+    released: 'bg-primary/10 text-primary',
+    cancelled: 'bg-muted text-muted-foreground',
+    refunded: 'bg-muted text-muted-foreground',
+    disputed: 'bg-destructive/10 text-destructive',
 };
 
 export function StatusBadge({ status, label, className }: { status: OrderStatus; label: string; className?: string }) {

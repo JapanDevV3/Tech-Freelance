@@ -1,0 +1,969 @@
+{
+  "info": {
+    "_postman_id": "6d4297b6-b81a-4734-9486-f8e4b8b91597",
+    "name": "computer-fix-hub API",
+    "description": "API tests for /api/v1 — run the whole collection in order with the Collection Runner.\n\nSetup: import the environment file, fill in the two test accounts (one customer, one technician WITH a technician profile), select the environment.\n\nWhy two hosts: Postman keeps one cookie jar per domain. The customer signs in on localhost and the technician on 127.0.0.1, so both sessions live side by side.\n\nRate limits apply here too (login 5 per email / 15 min, createOrder 20/h, sendQuote 30/h). In dev the memory limiter resets when you restart `npm run dev`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "0 · Auth (run first)",
+      "description": "Signs both users in. Customer cookies live on `customerHost`, technician cookies on `technicianHost` — two hostnames = two cookie jars, so both sessions stay alive in one run.",
+      "item": [
+        {
+          "name": "Customer · CSRF token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Auth.js double-submit CSRF: the token in the body must match the csrf cookie it just set",
+                  "pm.test('200 + csrfToken', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('customerCsrf', pm.response.json().csrfToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customerHost}}/api/auth/csrf"
+          }
+        },
+        {
+          "name": "Customer · Sign in",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Success sets the session cookie in Postman's jar for THIS host.",
+                  "// Failure still answers 200, with the reason in the returned URL (?error=…&code=…)",
+                  "pm.test('signed in (no error in the redirect URL)', () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    const url = pm.response.json().url || '';",
+                  "    pm.expect(url, url).to.not.include('error=');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Auth-Return-Redirect",
+                "value": "1",
+                "description": "Ask Auth.js for JSON {url} instead of a 302 — what next-auth/react signIn() does"
+              }
+            ],
+            "url": "{{customerHost}}/api/auth/callback/credentials",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{customerEmail}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{customerPassword}}",
+                  "type": "text"
+                },
+                {
+                  "key": "csrfToken",
+                  "value": "{{customerCsrf}}",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Customer · Session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('session belongs to a customer', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.user, 'no session — check credentials or the rate limit').to.be.an('object');",
+                  "    pm.expect(json.user.role).to.eql('customer');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customerHost}}/api/auth/session"
+          }
+        },
+        {
+          "name": "Technician · CSRF token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Auth.js double-submit CSRF: the token in the body must match the csrf cookie it just set",
+                  "pm.test('200 + csrfToken', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('technicianCsrf', pm.response.json().csrfToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{technicianHost}}/api/auth/csrf"
+          }
+        },
+        {
+          "name": "Technician · Sign in",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Success sets the session cookie in Postman's jar for THIS host.",
+                  "// Failure still answers 200, with the reason in the returned URL (?error=…&code=…)",
+                  "pm.test('signed in (no error in the redirect URL)', () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    const url = pm.response.json().url || '';",
+                  "    pm.expect(url, url).to.not.include('error=');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Auth-Return-Redirect",
+                "value": "1",
+                "description": "Ask Auth.js for JSON {url} instead of a 302 — what next-auth/react signIn() does"
+              }
+            ],
+            "url": "{{technicianHost}}/api/auth/callback/credentials",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{technicianEmail}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{technicianPassword}}",
+                  "type": "text"
+                },
+                {
+                  "key": "csrfToken",
+                  "value": "{{technicianCsrf}}",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Technician · Session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('session belongs to a technician', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.user, 'no session — check credentials or the rate limit').to.be.an('object');",
+                  "    pm.expect(json.user.role).to.eql('technician');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{technicianHost}}/api/auth/session"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1 · Setup",
+      "item": [
+        {
+          "name": "Technician · Create service (once)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Reuse the service from an earlier run instead of creating one per run.",
+                  "// Clear the collection variable `serviceId` to create a fresh one.",
+                  "if (pm.collectionVariables.get('serviceId')) {",
+                  "    console.log('serviceId already set — skipping create');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('serviceId', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{technicianHost}}/api/v1/services",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman · ลง Windows + ไดรเวอร์\",\n  \"category\": \"install_windows\",\n  \"priceBaht\": 500,\n  \"duration\": \"days_1_2\",\n  \"mode\": \"remote\",\n  \"serviceArea\": \"\",\n  \"description\": \"Created by the Postman collection for API tests\",\n  \"status\": \"active\",\n  \"imageKeys\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 · Order + quote lifecycle",
+      "description": "One order through the whole pre-payment lifecycle, including the three business rules: revision limit, stale quote, wrong party.",
+      "item": [
+        {
+          "name": "Customer · Create order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 + pending_quote', () => {",
+                  "    pm.response.to.have.status(201);",
+                  "    const o = pm.response.json().data;",
+                  "    pm.expect(o.status).to.eql('pending_quote');",
+                  "    pm.expect(o.acceptedQuoteId).to.eql(null);",
+                  "});",
+                  "pm.collectionVariables.set('orderId', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customerHost}}/api/v1/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"{{serviceId}}\",\n  \"problemDescription\": \"เปิดเครื่องไม่ติด มีเสียงบี๊บ 3 ครั้ง\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Technician · Send quote v1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 + version 1', () => {",
+                  "    pm.response.to.have.status(201);",
+                  "    const q = pm.response.json().data;",
+                  "    pm.expect(q.version).to.eql(1);",
+                  "    pm.expect(q.amount, 'amount is stored in satang').to.eql(100000);",
+                  "    pm.expect(q.status).to.eql('sent');",
+                  "});",
+                  "pm.collectionVariables.set('quoteV1Id', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{technicianHost}}/api/v1/orders/{{orderId}}/quotes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amountBaht\": 1000,\n  \"duration\": \"days_1_2\",\n  \"revisionsIncluded\": 2,\n  \"note\": \"ลง Windows + ไดรเวอร์ + ทดสอบ\",\n  \"validDays\": 7\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Technician · Revise → v2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 + version 2', () => {",
+                  "    pm.response.to.have.status(201);",
+                  "    const q = pm.response.json().data;",
+                  "    pm.expect(q.version).to.eql(2);",
+                  "    pm.expect(q.amount, 'amount is stored in satang').to.eql(120000);",
+                  "    pm.expect(q.status).to.eql('sent');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{technicianHost}}/api/v1/orders/{{orderId}}/quotes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amountBaht\": 1200\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Technician · Revise → v3 (last allowed)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 + version 3', () => {",
+                  "    pm.response.to.have.status(201);",
+                  "    const q = pm.response.json().data;",
+                  "    pm.expect(q.version).to.eql(3);",
+                  "    pm.expect(q.amount, 'amount is stored in satang').to.eql(150000);",
+                  "    pm.expect(q.status).to.eql('sent');",
+                  "});",
+                  "pm.collectionVariables.set('quoteV3Id', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{technicianHost}}/api/v1/orders/{{orderId}}/quotes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amountBaht\": 1500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Technician · v4 is over the limit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 QUOTE_LIMIT_REACHED', () => {",
+                  "    pm.response.to.have.status(409);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('QUOTE_LIMIT_REACHED');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{technicianHost}}/api/v1/orders/{{orderId}}/quotes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amountBaht\": 1800\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Customer · Accept stale v1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 QUOTE_STALE', () => {",
+                  "    pm.response.to.have.status(409);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('QUOTE_STALE');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customerHost}}/api/v1/orders/{{orderId}}/accept",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"{{quoteV1Id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Technician · Cannot accept",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('403 FORBIDDEN', () => {",
+                  "    pm.response.to.have.status(403);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{technicianHost}}/api/v1/orders/{{orderId}}/accept",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"{{quoteV3Id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Customer · Accept v3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 + the agreed price is v3', () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    const d = pm.response.json().data;",
+                  "    pm.expect(d.quoteId).to.eql(pm.collectionVariables.get('quoteV3Id'));",
+                  "    pm.expect(d.amount).to.eql(150000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customerHost}}/api/v1/orders/{{orderId}}/accept",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"{{quoteV3Id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Customer · Order detail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const o = pm.response.json().data;",
+                  "pm.test('200 + accepted with v3', () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(o.status).to.eql('accepted');",
+                  "    pm.expect(o.acceptedQuoteId).to.eql(pm.collectionVariables.get('quoteV3Id'));",
+                  "    pm.expect(o.viewerParty).to.eql('customer');",
+                  "});",
+                  "pm.test('quote history kept: v3 accepted, v2 + v1 superseded', () => {",
+                  "    pm.expect(o.quotes.map(q => q.version)).to.eql([3, 2, 1]);",
+                  "    pm.expect(o.quotes.map(q => q.status)).to.eql(['accepted', 'superseded', 'superseded']);",
+                  "});",
+                  "pm.test('timeline: create + 3 quotes + accept = 5 events', () => {",
+                  "    pm.expect(o.events.map(e => e.toStatus)).to.eql(['pending_quote', 'quoted', 'quoted', 'quoted', 'accepted']);",
+                  "});",
+                  "pm.test('no sensitive user fields leak', () => {",
+                  "    pm.expect(o.customer).to.not.have.property('passwordHash');",
+                  "    pm.expect(o.customer).to.not.have.property('email');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customerHost}}/api/v1/orders/{{orderId}}"
+          }
+        },
+        {
+          "name": "Technician · Order detail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 + seen as technician', () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().data.viewerParty).to.eql('technician');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{technicianHost}}/api/v1/orders/{{orderId}}"
+          }
+        },
+        {
+          "name": "Customer · My orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 + list contains this order', () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    const ids = pm.response.json().data.map(o => o.id);",
+                  "    pm.expect(ids).to.include(pm.collectionVariables.get('orderId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customerHost}}/api/v1/orders"
+          }
+        },
+        {
+          "name": "Customer · Cancel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customerHost}}/api/v1/orders/{{orderId}}/cancel",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Postman lifecycle test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Technician · Quote after cancel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 INVALID_STATE', () => {",
+                  "    pm.response.to.have.status(409);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('INVALID_STATE');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{technicianHost}}/api/v1/orders/{{orderId}}/quotes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amountBaht\": 900\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 · Guards + validation",
+      "description": "Edges of the API contract: auth, role, input shape, unknown ids.",
+      "item": [
+        {
+          "name": "No session → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 UNAUTHENTICATED', () => {",
+                  "    pm.response.to.have.status(401);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('UNAUTHENTICATED');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customerHost}}/api/v1/orders",
+            "description": "`protocolProfileBehavior.disableCookies` sends this request without the cookie jar."
+          },
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          }
+        },
+        {
+          "name": "Customer cannot quote → 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('403 FORBIDDEN', () => {",
+                  "    pm.response.to.have.status(403);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customerHost}}/api/v1/orders/{{orderId}}/quotes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amountBaht\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Short problem → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422 on problemDescription with an i18n key', () => {",
+                  "    pm.response.to.have.status(422);",
+                  "    const e = pm.response.json().error;",
+                  "    pm.expect(e.code).to.eql('VALIDATION_ERROR');",
+                  "    pm.expect(e.details[0].path).to.eql(['problemDescription']);",
+                  "    pm.expect(e.details[0].message).to.eql('problemMin');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customerHost}}/api/v1/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"{{serviceId}}\",\n  \"problemDescription\": \"พัง\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Unknown field → 422 (strict)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422 VALIDATION_ERROR', () => {",
+                  "    pm.response.to.have.status(422);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customerHost}}/api/v1/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"{{serviceId}}\",\n  \"problemDescription\": \"เปิดเครื่องไม่ติดเลยครับ\",\n  \"technicianId\": \"00000000-0000-4000-8000-000000000000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "A client must not be able to pick the technician — `.strict()` rejects the extra key."
+          }
+        },
+        {
+          "name": "Malformed JSON → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 BAD_REQUEST', () => {",
+                  "    pm.response.to.have.status(400);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('BAD_REQUEST');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{customerHost}}/api/v1/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"serviceId\": ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Not a uuid → 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 NOT_FOUND', () => {",
+                  "    pm.response.to.have.status(404);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('NOT_FOUND');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customerHost}}/api/v1/orders/not-a-uuid"
+          }
+        },
+        {
+          "name": "Unknown order → 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 NOT_FOUND', () => {",
+                  "    pm.response.to.have.status(404);",
+                  "    pm.expect(pm.response.json().error.code).to.eql('NOT_FOUND');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{customerHost}}/api/v1/orders/00000000-0000-4000-8000-000000000000"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "customerCsrf",
+      "value": ""
+    },
+    {
+      "key": "technicianCsrf",
+      "value": ""
+    },
+    {
+      "key": "serviceId",
+      "value": ""
+    },
+    {
+      "key": "orderId",
+      "value": ""
+    },
+    {
+      "key": "quoteV1Id",
+      "value": ""
+    },
+    {
+      "key": "quoteV3Id",
+      "value": ""
+    }
+  ]
+}
