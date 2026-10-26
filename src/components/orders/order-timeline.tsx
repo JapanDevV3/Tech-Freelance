@@ -8,9 +8,10 @@ export function OrderTimeline({ steps, pendingLabel }: { steps: TimelineItem[], 
     return (
         <ol>
             {steps.map((step, i) => (
-                <li key={step.key} className="relative flex gap-3 pb-6 last:pb-0">
+                <li key={step.key} aria-current={step.state === 'current' ? 'step' : undefined} className="relative flex gap-3 pb-6 last:pb-0">
                     {i < steps.length - 1 && (
-                        <span
+                        <span 
+                            aria-hidden
                             className={cn(
                                 'absolute top-5 left-2.25 h-full w-px',
                                 step.state === 'done' ? 'bg-primary' : 'bg-border',
@@ -18,6 +19,7 @@ export function OrderTimeline({ steps, pendingLabel }: { steps: TimelineItem[], 
                         />
                     )}
                     <span
+                        aria-hidden
                         className={cn(
                             'z-10 mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-full',
                             step.state === 'done' && 'bg-primary text-primary-foreground',
