@@ -1,6 +1,8 @@
 {
     "common": {
-        "appName": "computer-fix-hub"
+        "appName": "computer-fix-hub",
+        "charCount": "{count, number} / {max, number}",
+        "charCountLabel": "จำนวนตัวอักษร"
     },
     "auth": {
         "signIn": "เข้าสู่ระบบ",

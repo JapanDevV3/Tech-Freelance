@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { SERVICE_CATEGORIES, SERVICE_DURATIONS } from '@/lib/service-categories';
 import { SERVICE_IMAGE_MAX_COUNT, UPLOAD_PURPOSES, isImageContentType } from '@/lib/uploads/constants';
 
+// Shared with the description character counter
+export const SERVICE_DESCRIPTION_MAX = 2000;
+
 // Plain object, NO refine — zod v4 won't let you extend/omit a refined object.
 // Each variant extends this, then applies the cross-field rule last.
 const serviceFields = z.object({
@@ -11,7 +14,7 @@ const serviceFields = z.object({
     duration: z.enum(SERVICE_DURATIONS, { error: 'durationRequired' }),
     mode: z.enum(['remote', 'onsite']),
     serviceArea: z.string().trim().max(120, 'serviceAreaMax'),
-    description: z.string().trim().min(1, 'serviceDescriptionRequired').max(2000, 'serviceDescriptionMax'),
+    description: z.string().trim().min(1, 'serviceDescriptionRequired').max(SERVICE_DESCRIPTION_MAX, 'serviceDescriptionMax'),
 });
 
 const onsiteNeedsArea = <T extends { mode: string; serviceArea: string }>(d: T) =>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { z } from 'zod';
 import { useRouter } from '@/i18n/navigation';
@@ -10,9 +10,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FieldError } from '@/components/ui/field-error';
+import { CharCount } from '@/components/ui/char-count';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SERVICE_DURATIONS } from '@/lib/service-categories';
-import { sendQuoteSchema } from '@/lib/validations/order';
+import { QUOTE_NOTE_MAX, sendQuoteSchema } from '@/lib/validations/order';
 import { apiPost } from '@/lib/api/client';
 import { applyServerErrors } from '@/lib/forms/apply-server-errors';
 import { orderErrorKey, shouldRefresh } from '@/lib/orders/action-errors';
@@ -41,6 +42,8 @@ export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Pro
         resolver: zodResolver(sendQuoteSchema),
         defaultValues: { validDays: 7, ...defaults },
     });
+
+    const note = useWatch({ control, name: 'note' }) ?? '';
 
     const onSubmit = handleSubmit(async (values) => {
         const res = await apiPost(`/api/v1/orders/${orderId}/quotes`, values);
@@ -109,8 +112,11 @@ export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Pro
 
             <div className="grid gap-2">
                 <Label htmlFor="note">{t('noteToCustomer')}</Label>
-                <Textarea id="note" rows={3} placeholder={t('notePlaceholder')} aria-invalid={!!errors.note} {...register('note')} />
-                <FieldError message={errors.note?.message} />
+                <Textarea id="note" rows={3} placeholder={t('notePlaceholder')} aria-invalid={!!errors.note} aria-describedby="note-count" {...register('note')} />
+                <div className="flex items-start gap-3">
+                    <FieldError message={errors.note?.message} />
+                    <CharCount id="note-count" length={note.trim().length} max={QUOTE_NOTE_MAX} />
+                </div>
             </div>
 
             {errors.root?.message && <p role="alert" className="text-body text-destructive">{tErr(errors.root.message)}</p>}

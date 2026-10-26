@@ -1,6 +1,8 @@
 {
     "common": {
-        "appName": "computer-fix-hub"
+        "appName": "computer-fix-hub",
+        "charCount": "{count, number} / {max, number}",
+        "charCountLabel": "Characters"
     },
     "auth": {
         "signIn": "Sign in",

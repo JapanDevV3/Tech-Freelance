@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { z } from 'zod';
 import { useRouter } from '@/i18n/navigation';
@@ -10,10 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FieldError } from '@/components/ui/field-error';
+import { CharCount } from '@/components/ui/char-count';
 import {
     Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
-import { createOrderSchema } from '@/lib/validations/order';
+import { PROBLEM_DESCRIPTION_MAX, createOrderSchema } from '@/lib/validations/order';
 import { apiPost } from '@/lib/api/client';
 import { applyServerErrors } from '@/lib/forms/apply-server-errors';
 import { orderErrorKey } from '@/lib/orders/action-errors';
@@ -28,10 +29,12 @@ export function HireDialog({ serviceId }: { serviceId: string }) {
     const router = useRouter();
     const [open, setOpen] = useState(false);
 
-    const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<HireFormValues>({
+    const { register, control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<HireFormValues>({
         resolver: zodResolver(hireFormSchema),
         defaultValues: { problemDescription: '' },
     });
+
+    const problem = useWatch({ control, name: 'problemDescription' }) ?? '';
 
     // handleSubmit runs zod first: an invalid form never reaches the network
     const onSubmit = handleSubmit(async (values) => {
@@ -63,10 +66,13 @@ export function HireDialog({ serviceId }: { serviceId: string }) {
                             rows={5}
                             placeholder={t('placeholder')}
                             aria-invalid={!!errors.problemDescription}
-                            aria-describedby={errors.problemDescription ? 'problemDescription-error' : undefined}
+                            aria-describedby={errors.problemDescription ? 'problemDescription-error problemDescription-count' : 'problemDescription-count'}
                             {...register('problemDescription')}
                         />
-                        <FieldError id="problemDescription-error" message={errors.problemDescription?.message} />
+                        <div className="flex items-start gap-3">
+                            <FieldError id="problemDescription-error" message={errors.problemDescription?.message} />
+                            <CharCount id="problemDescription-count" length={problem.trim().length} max={PROBLEM_DESCRIPTION_MAX} />
+                        </div>
                     </div>
 
                     {errors.root?.message && (

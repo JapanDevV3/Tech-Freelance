@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
@@ -10,10 +10,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FieldError } from '@/components/ui/field-error';
+import { CharCount } from '@/components/ui/char-count';
 import { cn } from '@/lib/utils';
 import { SERVICE_CATEGORIES } from '@/lib/service-categories';
 import { applyServerErrors } from '@/lib/forms/apply-server-errors';
-import { profileSchema, type ProfileFormValues, type ProfileInput } from '@/lib/validations/technician';
+import { BIO_MAX, profileSchema, type ProfileFormValues, type ProfileInput } from '@/lib/validations/technician';
 
 const FORM_FIELDS = ['displayName', 'phone', 'serviceArea', 'experienceYears', 'skills', 'bio'] as const;
 
@@ -38,6 +39,8 @@ export function TechnicianProfileForm({ initial }: Props) {
         resolver: zodResolver(profileSchema),
         defaultValues: initial,
     });
+
+    const bio = useWatch({ control, name: 'bio' }) ?? '';
 
     const onSubmit = handleSubmit(async (values) => {
         setSaved(false);
@@ -168,9 +171,13 @@ export function TechnicianProfileForm({ initial }: Props) {
                     rows={4}
                     placeholder={t('bioPlaceholder')}
                     aria-invalid={!!errors.bio}
+                    aria-describedby="bio-count"
                     {...register('bio')}
                 />
-                <FieldError message={errors.bio?.message} />
+                <div className="flex items-start gap-3">
+                    <FieldError message={errors.bio?.message} />
+                    <CharCount id="bio-count" length={bio.trim().length} max={BIO_MAX} />
+                </div>
             </div>
 
             <FieldError message={errors.root?.message} />

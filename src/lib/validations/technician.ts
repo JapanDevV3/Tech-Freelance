@@ -7,6 +7,9 @@ const thaiPhone = z.string().trim()
     .transform((s) => s.replace(/[\s-]/g, ''))
     .refine((s) => s === '' || /^0\d{8,9}$/.test(s), 'phoneInvalid');
 
+// Shared with the bio character counter
+export const BIO_MAX = 500;
+
 export const profileSchema = z.object({
     displayName: z.string().trim().min(1, 'displayNameRequired').max(80, 'displayNameMax'),
     phone: thaiPhone,
@@ -17,7 +20,7 @@ export const profileSchema = z.object({
         .max(60, 'experienceInvalid')
         .nullable(),
     skills: z.array(z.enum(SERVICE_CATEGORIES)).max(SERVICE_CATEGORIES.length),
-    bio: z.string().trim().max(500, 'bioMax'),
+    bio: z.string().trim().max(BIO_MAX, 'bioMax'),
 })
     .strict();
 

@@ -11,9 +11,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { FieldError } from '@/components/ui/field-error';
+import { CharCount } from '@/components/ui/char-count';
 import { ImageDropzone } from '@/components/services/image-dropzone';
 import { SERVICE_CATEGORIES, SERVICE_DURATIONS } from '@/lib/service-categories';
-import { serviceFormSchema, type ServiceFormValues } from '@/lib/validations/service';
+import { SERVICE_DESCRIPTION_MAX, serviceFormSchema, type ServiceFormValues } from '@/lib/validations/service';
 import { uploadImage } from '@/lib/uploads/client';
 import { applyServerErrors, rootErrorKey } from '@/lib/forms/apply-server-errors';
 import type { serviceStatus } from '@/db/schema';
@@ -41,6 +42,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
 
     // useWatch (not watch()) — subscribes to one field and plays well with the React Compiler
     const mode = useWatch({ control, name: 'mode' });
+    const description = useWatch({ control, name: 'description' }) ?? '';
 
     // Base UI: a `null` item renders as the placeholder (trigger gets data-placeholder).
     // Verify against your @base-ui version.
@@ -164,8 +166,11 @@ export function ServiceForm({ service }: { service?: EditableService }) {
 
             <div className="grid gap-2">
                 <Label htmlFor="description">{t('description')}</Label>
-                <Textarea id="description" rows={5} placeholder={t('descriptionPlaceholder')} aria-invalid={!!errors.description} {...register('description')} />
-                <FieldError message={errors.description?.message} />
+                <Textarea id="description" rows={5} placeholder={t('descriptionPlaceholder')} aria-invalid={!!errors.description} aria-describedby="description-count" {...register('description')} />
+                <div className="flex items-start gap-3">
+                    <FieldError message={errors.description?.message} />
+                    <CharCount id="description-count" length={description.trim().length} max={SERVICE_DESCRIPTION_MAX} />
+                </div>
             </div>
 
             <div className="grid gap-2">
