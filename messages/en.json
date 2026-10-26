@@ -244,6 +244,7 @@
         "back": "Back to order",
         "title": "Payment",
         "subtitle": "Your money is held safely until the job is done",
+        "methodLabel": "Payment method",
         "methodCard": "Credit / debit card",
         "methodPromptpay": "PromptPay",
         "promptpayHint": "Scan the QR code with your banking app",

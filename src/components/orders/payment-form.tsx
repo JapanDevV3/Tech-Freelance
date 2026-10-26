@@ -6,8 +6,8 @@ import { useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { formatBaht } from '@/lib/format';
-import { cn } from '@/lib/utils';
 
 // No payment provider is wired up yet — this only simulates the Stripe-style
 // checkout UI and navigates to the success screen; nothing is charged.
@@ -25,21 +25,17 @@ export function PaymentForm({ orderId, amountBaht }: { orderId: string; amountBa
 
     return (
         <div>
-            <div className="mb-5 grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
-                {(['card', 'promptpay'] as const).map((m) => (
-                    <button
-                        key={m}
-                        type="button"
-                        onClick={() => setMethod(m)}
-                        className={cn(
-                            'rounded-md py-2 text-body font-medium transition-colors',
-                            method === m ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
-                        )}
-                    >
-                        {t(m === 'card' ? 'methodCard' : 'methodPromptpay')}
-                    </button>
-                ))}
-            </div>
+            <SegmentedControl
+                aria-label={t('methodLabel')}
+                size="lg"
+                value={method}
+                onValueChange={setMethod}
+                options={[
+                    { value: 'card', label: t('methodCard') },
+                    { value: 'promptpay', label: t('methodPromptpay') },
+                ]}
+                className="mb-5"
+            />
 
             {method === 'promptpay' ? (
                 <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border-strong py-10 text-center">

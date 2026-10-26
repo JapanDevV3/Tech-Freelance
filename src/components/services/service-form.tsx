@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { FieldError } from '@/components/ui/field-error';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { CharCount } from '@/components/ui/char-count';
 import { ImageDropzone } from '@/components/services/image-dropzone';
 import { SERVICE_CATEGORIES, SERVICE_DURATIONS } from '@/lib/service-categories';
@@ -51,7 +52,8 @@ export function ServiceForm({ service }: { service?: EditableService }) {
         ...SERVICE_CATEGORIES.map((c) => ({ value: c, label: t(`serviceCategory.${c}`) })),
     ];
     const durationItems = SERVICE_DURATIONS.map((d) => ({ value: d, label: t(`durationOptions.${d}`) }));
-    const modeItems = [{ value: 'remote', label: t('modeRemote') }, { value: 'onsite', label: t('modeOnsite') }];
+    // `as const` keeps the values typed as the schema's enum, not plain string
+    const modeOptions = [{ value: 'remote', label: t('modeRemote') }, { value: 'onsite', label: t('modeOnsite') }] as const;
 
     // Edit keeps the current status unless the user explicitly switch it.
     const isLive = service?.status === 'active';
@@ -145,14 +147,19 @@ export function ServiceForm({ service }: { service?: EditableService }) {
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="mode">{t('mode')}</Label>
+                {/* A group has no single control to point htmlFor at: name it by id instead */}
+                <Label id="mode-label">{t('mode')}</Label>
                 <Controller control={control} name="mode" render={({ field }) => (
-                    <Select value={field.value} onValueChange={(v) => field.onChange(v)} items={modeItems}>
-                        <SelectTrigger id="mode" ref={field.ref} onBlur={field.onBlur} className="w-full"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                            {modeItems.map((i) => <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
+                    <SegmentedControl
+                        aria-labelledby="mode-label"
+                        name={field.name}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        inputRef={field.ref}
+                        options={modeOptions}
+                        className="sm:max-w-sm"
+                    />
                 )} />
             </div>
 
