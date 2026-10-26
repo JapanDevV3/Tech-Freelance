@@ -7,7 +7,7 @@ export function ChatBubble({ message }: { message: ChatMessage }) {
         <div className={cn('flex', mine ? 'justify-end' : 'justify-start')}>
             <div
                 className={cn(
-                    'max-w-[80%] rounded-xl px-4 py-2.5 text-sm',
+                    'max-w-[80%] rounded-xl px-4 py-2.5 text-body',
                     mine ? 'bg-primary text-primary-foreground' : 'border border-border bg-card text-foreground',
                 )}
             >

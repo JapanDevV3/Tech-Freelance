@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
@@ -10,10 +10,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FieldError } from '@/components/ui/field-error';
+import { CharCount } from '@/components/ui/char-count';
 import { cn } from '@/lib/utils';
 import { SERVICE_CATEGORIES } from '@/lib/service-categories';
 import { applyServerErrors } from '@/lib/forms/apply-server-errors';
-import { profileSchema, type ProfileFormValues, type ProfileInput } from '@/lib/validations/technician';
+import { BIO_MAX, profileSchema, type ProfileFormValues, type ProfileInput } from '@/lib/validations/technician';
 
 const FORM_FIELDS = ['displayName', 'phone', 'serviceArea', 'experienceYears', 'skills', 'bio'] as const;
 
@@ -38,6 +39,8 @@ export function TechnicianProfileForm({ initial }: Props) {
         resolver: zodResolver(profileSchema),
         defaultValues: initial,
     });
+
+    const bio = useWatch({ control, name: 'bio' }) ?? '';
 
     const onSubmit = handleSubmit(async (values) => {
         setSaved(false);
@@ -88,7 +91,7 @@ export function TechnicianProfileForm({ initial }: Props) {
                     />
                     {errors.phone
                         ? <FieldError message={errors.phone.message} />
-                        : <p className="text-xs text-muted-foreground">{t('phonePrivateHint')}</p>}
+                        : <p className="text-small text-muted-foreground">{t('phonePrivateHint')}</p>}
                 </div>
 
                 <div className="grid content-start gap-2">
@@ -118,7 +121,7 @@ export function TechnicianProfileForm({ initial }: Props) {
                                 setValueAs: (v: unknown) => (v === '' || v == null ? null : Number(v)),
                             })}
                         />
-                        <span className="text-sm text-muted-foreground">{t('experienceUnit')}</span>
+                        <span className="text-body text-muted-foreground">{t('experienceUnit')}</span>
                     </div>
                     <FieldError message={errors.experienceYears?.message} />
                 </div>
@@ -144,7 +147,7 @@ export function TechnicianProfileForm({ initial }: Props) {
                                                 : [...field.value, category],
                                         )}
                                         className={cn(
-                                            'rounded-full border px-3 py-1 text-xs font-medium transition-colors',
+                                            'rounded-full border px-3 py-1 text-small font-medium transition-colors',
                                             selected
                                                 ? 'border-primary bg-accent-soft text-primary'
                                                 : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
@@ -157,7 +160,7 @@ export function TechnicianProfileForm({ initial }: Props) {
                         </div>
                     )}
                 />
-                <p className="text-xs text-muted-foreground">{t('skillsHint')}</p>
+                <p className="text-small text-muted-foreground">{t('skillsHint')}</p>
                 <FieldError message={errors.skills?.message} />
             </div>
 
@@ -168,9 +171,13 @@ export function TechnicianProfileForm({ initial }: Props) {
                     rows={4}
                     placeholder={t('bioPlaceholder')}
                     aria-invalid={!!errors.bio}
+                    aria-describedby="bio-count"
                     {...register('bio')}
                 />
-                <FieldError message={errors.bio?.message} />
+                <div className="flex items-start gap-3">
+                    <FieldError message={errors.bio?.message} />
+                    <CharCount id="bio-count" length={bio.trim().length} max={BIO_MAX} />
+                </div>
             </div>
 
             <FieldError message={errors.root?.message} />
@@ -178,7 +185,7 @@ export function TechnicianProfileForm({ initial }: Props) {
             <Button type="submit" disabled={isSubmitting || !isDirty} className="justify-self-start">
                 {isSubmitting ? t('saving') : t('save')}
             </Button>
-            {saved && !isDirty && <p className="text-sm text-primary">{t('saved')}</p>}
+            {saved && !isDirty && <p className="text-body text-primary">{t('saved')}</p>}
         </form>
     );
 }

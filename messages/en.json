@@ -1,6 +1,10 @@
 {
     "common": {
-        "appName": "computer-fix-hub"
+        "appName": "computer-fix-hub",
+        "charCount": "{count, number} / {max, number}",
+        "charCountLabel": "Characters",
+        "toggleTheme": "Toggle theme",
+        "close": "Close"
     },
     "auth": {
         "signIn": "Sign in",
@@ -87,7 +91,11 @@
         "profile": "Profile",
         "account": "My account",
         "signIn": "Sign in",
-        "signOut": "Sign out"
+        "signOut": "Sign out",
+        "mainNav": "Main",
+        "menu": "Menu",
+        "openMenu": "Open menu",
+        "accountMenu": "Account menu"
     },
     "home": {
         "heroTitle": "Find a computer repair & build technician you can trust",
@@ -177,7 +185,17 @@
         "editPageTitle": "Edit service",
         "update": "Save changes",
         "imagesRemoveExisting": "Remove image {index}",
-        "unpublish": "Move to draft"
+        "unpublish": "Move to draft",
+        "liveNotice": "This service is live. Changes show to customers as soon as you save.",
+        "previewTitle": "What customers see",
+        "previewHintPublic": "Shown in the service list · last saved version",
+        "previewHintHidden": "Not shown in the service list yet",
+        "summaryTitle": "Summary",
+        "summaryStatus": "Status",
+        "summaryCreated": "Listed",
+        "summaryUpdated": "Last edited",
+        "deleteTitle": "Delete service",
+        "deleteHint": "It will be removed from the service list. Existing orders are not affected."
     },
     "serviceFilters": {
         "filters": "Filters",
@@ -242,6 +260,7 @@
         "back": "Back to order",
         "title": "Payment",
         "subtitle": "Your money is held safely until the job is done",
+        "methodLabel": "Payment method",
         "methodCard": "Credit / debit card",
         "methodPromptpay": "PromptPay",
         "promptpayHint": "Scan the QR code with your banking app",
@@ -499,6 +518,18 @@
         "change": "Change photo",
         "uploading": "Uploading...",
         "hint": "JPG/PNG/WebP · max {sizeMb}MB"
+    },
+    "serviceStatus": {
+        "draft": "Draft",
+        "active": "Published",
+        "paused": "Paused",
+        "archived": "Archived"
+    },
+    "serviceNotFound": {
+        "title": "Service not found",
+        "description": "It may have been deleted, or the link is wrong.",
+        "browse": "Browse services",
+        "toDashboard": "Back to dashboard"
     },
     "serviceDelete": {
         "trigger": "Delete",

@@ -1,6 +1,10 @@
 {
     "common": {
-        "appName": "computer-fix-hub"
+        "appName": "computer-fix-hub",
+        "charCount": "{count, number} / {max, number}",
+        "charCountLabel": "จำนวนตัวอักษร",
+        "toggleTheme": "สลับธีม",
+        "close": "ปิด"
     },
     "auth": {
         "signIn": "เข้าสู่ระบบ",
@@ -87,7 +91,11 @@
         "profile": "โปรไฟล์",
         "account": "บัญชีของฉัน",
         "signIn": "เข้าสู่ระบบ",
-        "signOut": "ออกจากระบบ"
+        "signOut": "ออกจากระบบ",
+        "mainNav": "เมนูหลัก",
+        "menu": "เมนู",
+        "openMenu": "เปิดเมนู",
+        "accountMenu": "เมนูบัญชี"
     },
     "home": {
         "heroTitle": "หาช่างซ่อม/ประกอบคอมพิวเตอร์ที่ไว้ใจได้",
@@ -177,7 +185,17 @@
         "editPageTitle": "แก้ไขบริการ",
         "update": "บันทึกการแก้ไข",
         "imagesRemoveExisting": "ลบรูปที่ {index}",
-        "unpublish": "ย้ายเป็นฉบับร่าง"
+        "unpublish": "ย้ายเป็นฉบับร่าง",
+        "liveNotice": "บริการนี้เปิดรับงานอยู่ การแก้ไขจะแสดงต่อลูกค้าทันทีที่บันทึก",
+        "previewTitle": "ลูกค้าเห็นแบบนี้",
+        "previewHintPublic": "แสดงบนหน้ารวมบริการ · ฉบับที่บันทึกล่าสุด",
+        "previewHintHidden": "ยังไม่แสดงบนหน้ารวมบริการ",
+        "summaryTitle": "สรุปบริการ",
+        "summaryStatus": "สถานะ",
+        "summaryCreated": "ลงเมื่อ",
+        "summaryUpdated": "แก้ไขล่าสุด",
+        "deleteTitle": "ลบบริการ",
+        "deleteHint": "บริการจะถูกนำออกจากหน้ารวมบริการ งานที่มีอยู่แล้วจะไม่ได้รับผลกระทบ"
     },
     "serviceFilters": {
         "filters": "ตัวกรอง",
@@ -242,6 +260,7 @@
         "back": "กลับไปหน้าออเดอร์",
         "title": "ชำระเงิน",
         "subtitle": "เงินของคุณจะถูกพักไว้อย่างปลอดภัยจนกว่างานจะเสร็จ",
+        "methodLabel": "วิธีชำระเงิน",
         "methodCard": "บัตรเครดิต/เดบิต",
         "methodPromptpay": "พร้อมเพย์",
         "promptpayHint": "สแกน QR โค้ดด้วยแอปธนาคารของคุณ",
@@ -499,6 +518,18 @@
         "change": "เปลี่ยนรูป",
         "uploading": "กำลังอัปโหลด...",
         "hint": "JPG/PNG/WebP · ไม่เกิน {sizeMb}MB"
+    },
+    "serviceStatus": {
+        "draft": "ฉบับร่าง",
+        "active": "เผยแพร่แล้ว",
+        "paused": "หยุดชั่วคราว",
+        "archived": "เก็บถาวร"
+    },
+    "serviceNotFound": {
+        "title": "ไม่พบบริการนี้",
+        "description": "บริการนี้อาจถูกลบไปแล้ว หรือลิงก์ไม่ถูกต้อง",
+        "browse": "ดูบริการทั้งหมด",
+        "toDashboard": "กลับไปแดชบอร์ด"
     },
     "serviceDelete": {
         "trigger": "ลบ",

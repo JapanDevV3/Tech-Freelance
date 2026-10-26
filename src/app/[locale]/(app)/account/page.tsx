@@ -23,8 +23,8 @@ export default async function AccountPage({ params }: AccountPageProps) {
 
     return (
         <Container size="md" gutter="lg">
-            <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
+            <h1 className="text-h1 font-bold text-foreground">{t('title')}</h1>
+            <p className="mt-1 text-body text-muted-foreground">{t('subtitle')}</p>
 
             <div className="mt-6 rounded-xl border border-border bg-card p-5">
                 <div className="flex items-center gap-4">
@@ -33,7 +33,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
                     </Avatar>
                     <div>
                         <p className="font-semibold text-foreground">{name}</p>
-                        <p className="text-xs text-muted-foreground">{t('customerSince', { year: '2567' })}</p>
+                        <p className="text-small text-muted-foreground">{t('customerSince', { year: '2567' })}</p>
                     </div>
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-3">
@@ -44,14 +44,14 @@ export default async function AccountPage({ params }: AccountPageProps) {
             </div>
 
             <div className="mt-6 rounded-xl border border-border bg-card p-5">
-                <h2 className="mb-4 text-sm font-semibold text-foreground">{t('personalInfo')}</h2>
+                <h2 className="mb-4 text-body font-semibold text-foreground">{t('personalInfo')}</h2>
                 <AccountForm initial={{ name, email }} />
             </div>
 
             <div className="mt-6 flex items-center justify-between rounded-xl border border-border bg-card p-5">
                 <div>
-                    <p className="text-sm font-semibold text-foreground">{t('signOut')}</p>
-                    <p className="text-xs text-muted-foreground">{t('signOutHint')}</p>
+                    <p className="text-body font-semibold text-foreground">{t('signOut')}</p>
+                    <p className="text-small text-muted-foreground">{t('signOutHint')}</p>
                 </div>
                 <SignOutButton label={t('signOut')} />
             </div>

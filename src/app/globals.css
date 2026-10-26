@@ -27,6 +27,11 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -57,6 +62,23 @@
   --color-star: var(--star);
 }
 
+/* Type scale by role. Values match the app's original Tailwind sizes
+   (text-sm, text-xs, text-2xl …); retune the app by changing them here only.
+   rem, not px, so the scale follows the browser's font-size setting. */
+@theme {
+  --text-display: 2.25rem;     --text-display--line-height: 2.8125rem; /* 36/45 home hero */
+  --text-h1: 1.5rem;           --text-h1--line-height: 2rem;           /* 24/32 page title */
+  --text-h2: 1.125rem;         --text-h2--line-height: 1.75rem;        /* 18/28 section title */
+  --text-h3: 1rem;             --text-h3--line-height: 1.5rem;         /* 16/24 card title */
+  --text-body: 0.875rem;       --text-body--line-height: 1.25rem;      /* 14/20 body copy */
+  --text-label: 0.875rem;      --text-label--line-height: 1.25rem;     /* 14/20 form labels */
+  --text-small: 0.75rem;       --text-small--line-height: 1rem;        /* 12/16 meta, hints, controls */
+  --text-badge: 0.625rem;      --text-badge--line-height: 1rem;        /* 10/16 badges */
+  --text-price: 1.125rem;      --text-price--line-height: 1.75rem;     /* 18/28 card + row prices */
+  --text-stat: 1.5rem;         --text-stat--line-height: 2rem;         /* 24/32 stat tiles */
+  --text-price-lg: 1.875rem;   --text-price-lg--line-height: 2.25rem;  /* 30/36 headline amount */
+}
+
 :root {
   --background: oklch(0.971 0.005 78.3);
   --foreground: oklch(0.219 0.007 78.2);
@@ -73,6 +95,8 @@
   --accent: oklch(0.953 0.007 80.7);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
+  /* Label on a solid destructive fill — white is 4.8:1 on this red */
+  --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.912 0.011 76.6);
   --input: oklch(0.912 0.011 76.6);
   --ring: oklch(0.581 0.229 263.9);
@@ -100,6 +124,11 @@
   --hairline: oklch(0.942 0.009 78.3);
   --accent-soft: oklch(0.949 0.022 269.4);
   --star: oklch(0.671 0.123 76.5);
+  /* Status pairs (badge text on its soft fill) — both ≥4.6:1 */
+  --success: oklch(0.509 0.148 152.9);
+  --success-soft: oklch(0.953 0.021 158.6);
+  --warning: oklch(0.536 0.112 75.8);
+  --warning-soft: oklch(0.959 0.028 81.5);
 }
 
 .dark {
@@ -118,6 +147,8 @@
   --accent: oklch(0.261 0.008 84.6);
   --accent-foreground: oklch(0.953 0.009 84.6);
   --destructive: oklch(0.704 0.191 22.216);
+  /* Light red fill in dark mode: white fails (2.9:1), the page ground passes (6.3:1) */
+  --destructive-foreground: oklch(0.201 0.004 84.6);
   --border: oklch(0.307 0.008 75.3);
   --input: oklch(0.350 0.009 80.7);
   --ring: oklch(0.715 0.148 268.8);
@@ -144,6 +175,10 @@
   --hairline: oklch(0.278 0.006 78.2);
   --accent-soft: oklch(0.287 0.035 267.8);
   --star: oklch(0.750 0.130 78.0);
+  --success: oklch(0.804 0.165 157.0);
+  --success-soft: oklch(0.306 0.051 159.4);
+  --warning: oklch(0.782 0.140 83.3);
+  --warning-soft: oklch(0.313 0.052 85.7);
 }
 
 @layer base {

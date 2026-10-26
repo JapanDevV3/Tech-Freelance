@@ -36,13 +36,13 @@ export function OrderRow({ href, title, subtitle, price, awaitingLabel, status, 
                 )}
             </div>
             <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-foreground">{title}</p>
-                <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
+                <p className="truncate text-body font-semibold text-foreground">{title}</p>
+                <p className="truncate text-small text-muted-foreground">{subtitle}</p>
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1.5">
                 {status && statusLabel && <StatusBadge status={status} label={statusLabel} />}
-                {price?.kind === 'amount' && <span className="text-sm font-bold text-foreground">{formatBaht(price.amount)}</span>}
-                {price?.kind === 'awaiting' && <span className="text-xs text-muted-foreground">{awaitingLabel}</span>}
+                {price?.kind === 'amount' && <span className="text-body font-bold text-foreground">{formatBaht(price.amount)}</span>}
+                {price?.kind === 'awaiting' && <span className="text-small text-muted-foreground">{awaitingLabel}</span>}
             </div>
         </Link>
     );

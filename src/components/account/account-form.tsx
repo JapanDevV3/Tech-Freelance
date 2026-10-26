@@ -47,7 +47,7 @@ export function AccountForm({ initial }: Props) {
             <Button type="submit" disabled={saving} className="justify-self-start">
                 {saving ? t('saving') : t('save')}
             </Button>
-            {saved && <p className="text-sm text-primary">{t('saved')}</p>}
+            {saved && <p className="text-body text-primary">{t('saved')}</p>}
         </form>
     );
 }

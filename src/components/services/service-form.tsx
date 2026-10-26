@@ -11,9 +11,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { FieldError } from '@/components/ui/field-error';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import { CharCount } from '@/components/ui/char-count';
 import { ImageDropzone } from '@/components/services/image-dropzone';
 import { SERVICE_CATEGORIES, SERVICE_DURATIONS } from '@/lib/service-categories';
-import { serviceFormSchema, type ServiceFormValues } from '@/lib/validations/service';
+import { SERVICE_DESCRIPTION_MAX, serviceFormSchema, type ServiceFormValues } from '@/lib/validations/service';
 import { uploadImage } from '@/lib/uploads/client';
 import { applyServerErrors, rootErrorKey } from '@/lib/forms/apply-server-errors';
 import type { serviceStatus } from '@/db/schema';
@@ -41,6 +43,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
 
     // useWatch (not watch()) — subscribes to one field and plays well with the React Compiler
     const mode = useWatch({ control, name: 'mode' });
+    const description = useWatch({ control, name: 'description' }) ?? '';
 
     // Base UI: a `null` item renders as the placeholder (trigger gets data-placeholder).
     // Verify against your @base-ui version.
@@ -49,7 +52,8 @@ export function ServiceForm({ service }: { service?: EditableService }) {
         ...SERVICE_CATEGORIES.map((c) => ({ value: c, label: t(`serviceCategory.${c}`) })),
     ];
     const durationItems = SERVICE_DURATIONS.map((d) => ({ value: d, label: t(`durationOptions.${d}`) }));
-    const modeItems = [{ value: 'remote', label: t('modeRemote') }, { value: 'onsite', label: t('modeOnsite') }];
+    // `as const` keeps the values typed as the schema's enum, not plain string
+    const modeOptions = [{ value: 'remote', label: t('modeRemote') }, { value: 'onsite', label: t('modeOnsite') }] as const;
 
     // Edit keeps the current status unless the user explicitly switch it.
     const isLive = service?.status === 'active';
@@ -102,7 +106,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
                 <Label htmlFor="title">{t('name')}</Label>
                 <Input id="title" placeholder={t('namePlaceholder')} aria-invalid={!!errors.title} {...register('title')} />
                 {errors.title ? <FieldError message={errors.title.message} />
-                    : <p className="text-xs text-muted-foreground">{t('nameHint')}</p>}
+                    : <p className="text-small text-muted-foreground">{t('nameHint')}</p>}
             </div>
 
             <div className="grid gap-2">
@@ -143,14 +147,19 @@ export function ServiceForm({ service }: { service?: EditableService }) {
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="mode">{t('mode')}</Label>
+                {/* A group has no single control to point htmlFor at: name it by id instead */}
+                <Label id="mode-label">{t('mode')}</Label>
                 <Controller control={control} name="mode" render={({ field }) => (
-                    <Select value={field.value} onValueChange={(v) => field.onChange(v)} items={modeItems}>
-                        <SelectTrigger id="mode" ref={field.ref} onBlur={field.onBlur} className="w-full"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                            {modeItems.map((i) => <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
+                    <SegmentedControl
+                        aria-labelledby="mode-label"
+                        name={field.name}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        inputRef={field.ref}
+                        options={modeOptions}
+                        className="sm:max-w-sm"
+                    />
                 )} />
             </div>
 
@@ -164,8 +173,11 @@ export function ServiceForm({ service }: { service?: EditableService }) {
 
             <div className="grid gap-2">
                 <Label htmlFor="description">{t('description')}</Label>
-                <Textarea id="description" rows={5} placeholder={t('descriptionPlaceholder')} aria-invalid={!!errors.description} {...register('description')} />
-                <FieldError message={errors.description?.message} />
+                <Textarea id="description" rows={5} placeholder={t('descriptionPlaceholder')} aria-invalid={!!errors.description} aria-describedby="description-count" {...register('description')} />
+                <div className="flex items-start gap-3">
+                    <FieldError message={errors.description?.message} />
+                    <CharCount id="description-count" length={description.trim().length} max={SERVICE_DESCRIPTION_MAX} />
+                </div>
             </div>
 
             <div className="grid gap-2">
@@ -183,7 +195,7 @@ export function ServiceForm({ service }: { service?: EditableService }) {
                 <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t('saving') : primaryLabel}</Button>
                 <Button type="button" variant="outline" disabled={isSubmitting} onClick={save(secondary)}>{secondaryLabel}</Button>
             </div>
-            {savedAs && <p className="text-sm text-primary">{savedAs === 'draft' ? t('savedDraft') : t('saved')}</p>}
+            {savedAs && <p className="text-body text-primary">{savedAs === 'draft' ? t('savedDraft') : t('saved')}</p>}
         </form>
     );
 }

@@ -80,10 +80,10 @@ export function RegisterForm({ callbackPath }: RegisterFormProps) {
                                 role === r.value ? 'border-primary bg-accent-soft' : 'border-border hover:bg-accent',
                             )}
                         >
-                            <span className={cn('block text-sm font-semibold', role === r.value ? 'text-primary' : 'text-foreground')}>
+                            <span className={cn('block text-body font-semibold', role === r.value ? 'text-primary' : 'text-foreground')}>
                                 {r.title}
                             </span>
-                            <span className="mt-0.5 block text-xs text-muted-foreground">{r.desc}</span>
+                            <span className="mt-0.5 block text-small text-muted-foreground">{r.desc}</span>
                         </button>
                     ))}
                 </div>
@@ -92,14 +92,14 @@ export function RegisterForm({ callbackPath }: RegisterFormProps) {
             <div className="grid gap-2">
                 <Label htmlFor="name">{t('name')}</Label>
                 <Input id="name" autoComplete="name" placeholder={t('namePlaceholder')} {...register('name')} />
-                {errors.name && <p className="text-sm text-destructive">{tv(errors.name.message!)}</p>}
+                {errors.name && <p className="text-body text-destructive">{tv(errors.name.message!)}</p>}
             </div>
 
             <div className="grid gap-2">
                 <Label htmlFor="email">{t('email')}</Label>
                 <Input id="email" type="email" autoComplete="email" placeholder="you@email.com" {...register('email')} />
                 {errors.email && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-body text-destructive">
                         {/* server error 'emailTaken' lives in `auth`, zod keys in `validation` */}
                         {errors.email.message === 'emailTaken' ? t('emailTaken') : tv(errors.email.message!)}
                     </p>
@@ -110,23 +110,23 @@ export function RegisterForm({ callbackPath }: RegisterFormProps) {
                 <Label htmlFor="password">{t('password')}</Label>
                 <Input id="password" type="password" autoComplete="new-password" placeholder={t('passwordPlaceholder')} {...register('password')} />
                 {errors.password
-                    ? <p className="text-sm text-destructive">{tv(errors.password.message!)}</p>
-                    : <p className="text-xs text-muted-foreground">{t('passwordHint')}</p>}
+                    ? <p className="text-body text-destructive">{tv(errors.password.message!)}</p>
+                    : <p className="text-small text-muted-foreground">{t('passwordHint')}</p>}
             </div>
 
             <div className="grid gap-2">
                 <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
                 <Input id="confirmPassword" type="password" autoComplete="new-password" placeholder={t('confirmPasswordPlaceholder')} {...register('confirmPassword')} />
-                {errors.confirmPassword && <p className="text-sm text-destructive">{tv(errors.confirmPassword.message!)}</p>}
+                {errors.confirmPassword && <p className="text-body text-destructive">{tv(errors.confirmPassword.message!)}</p>}
             </div>
 
-            {errors.root && <p className="text-sm text-destructive">{t(errors.root.message!)}</p>}
+            {errors.root && <p className="text-body text-destructive">{t(errors.root.message!)}</p>}
 
             <Button type="submit" disabled={isSubmitting} className="w-full">
                 {isSubmitting ? t('creatingAccount') : t('createAccount')}
             </Button>
 
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-body text-muted-foreground">
                 {t('alreadyHaveAccount')}{' '}
                 <Link href={{ pathname: '/auth/login', query: callbackPath === DEFAULT_CALLBACK_PATH ? {} : { callbackUrl: callbackPath } }} className="font-medium text-primary hover:underline">
                     {t('signIn')}
