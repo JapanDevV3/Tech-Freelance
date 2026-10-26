@@ -4,6 +4,10 @@ import { DomainError } from '@/domain/errors';
 export type OrderStatus = (typeof orderStatus.enumValues)[number];
 export type OrderParty = 'customer' | 'technician';
 
+// Statuses where the customer's money has entered escrow and has not been returned.
+// `disputed` is left out until the dispute flow decides who keeps the money.
+export const FUNDED_STATUSES = ['paid', 'in_progress', 'completed', 'released'] as const satisfies readonly OrderStatus[];
+
 type Rule = { by: readonly OrderParty[]; from: readonly OrderStatus[]; to: OrderStatus };
 
 // Every status change is a named action: WHO may do it, FROM which states, TO which state.
