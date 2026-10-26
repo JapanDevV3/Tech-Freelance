@@ -22,7 +22,7 @@ export function StatusBadge({ status, label, className }: { status: OrderStatus;
     return (
         // `secondary` has no dark: background, so the tone's bg wins in both themes
         // (`outline` carried dark:bg-input/30, which overrode the tone in dark mode)
-        <Badge variant="secondary" className={cn('h-auto border-transparent px-2.5 py-1 text-[0.7rem] font-medium', TONE[status], className)}>
+        <Badge variant="secondary" className={cn('h-auto border-transparent px-2.5 py-1 text-small font-medium', TONE[status], className)}>
             {label}
         </Badge>
     );
