@@ -25,14 +25,14 @@ export default async function OrderDetailPage({ params }: Props) {
     const order = await getOrderForUser(session.user.id, orderId);
     if (!order) notFound(); // missing and "not yours" look identical
 
-    const [t, tStatus, tStep, tQuote, tDuration, format, tTech] = await Promise.all([
+    const [t, tStatus, tStep, tQuote, tDuration, format, tQuoteForm] = await Promise.all([
         getTranslations('orderDetail'),
         getTranslations('orderStatus'),
         getTranslations('orderTimeline'),
         getTranslations('quoteStatus'),
         getTranslations('serviceForm.durationOptions'),
         getFormatter(),
-        getTranslations('technicianOrderDetail'),
+        getTranslations('quoteForm'),
     ]);
 
     const party = order.viewerParty;
@@ -78,7 +78,7 @@ export default async function OrderDetailPage({ params }: Props) {
                 <div className="space-y-8">
                     {can.quote && (
                         <section className='rounded-xl border border-border bg-card p-5'>
-                            <h2 className='mb-4 text-body font-semibold text-foreground'>{tTech('quoteFormTitle')}</h2>
+                            <h2 className='mb-4 text-body font-semibold text-foreground'>{tQuoteForm('quoteFormTitle')}</h2>
                             <QuoteForm
                                 key={latestVersion} // a new version after refresh → remount with that version's defaults
                                 orderId={order.id}

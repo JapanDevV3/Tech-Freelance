@@ -2,14 +2,16 @@ import { db } from '@/db/client';
 import { orders, quotes, orderStatusEvents, technicianProfiles } from '@/db/schema';
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import { DomainError } from '@/domain/errors';
-import { assertCanPerform, type OrderParty, type OrderStatus } from '@/domain/order/state-machine';
+import { FUNDED_STATUSES, assertCanPerform, type OrderParty, type OrderStatus } from '@/domain/order/state-machine';
 import { isQuoteExpired, nextQuoteVersion } from '@/domain/order/quote-policy';
 import { getOrderableService } from '@/services/catalog.service';
 import { profileIdOf } from '@/services/technician.service';
 import type { CreateOrderInput, SendQuoteInput } from '@/lib/validations/order';
+import { statusesOf } from '@/lib/orders/status-groups';
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 const DAY_MS = 24 * 60 * 60 * 1000;
+export type OrderStats = { total: number; active: number; funded: number };
 
 function partyOf(o: { customerId: string; technicianUserId: string }, userId: string): OrderParty | null {
     if (o.customerId === userId) return 'customer';
@@ -130,11 +132,18 @@ export async function getOrderForUser(userId: string, orderId: string) {
     return viewerParty ? { ...order, viewerParty } : null;
 }
 
-export async function listMyOrders(userId: string, party: OrderParty) {
+function ownedBy(userId: string, party: OrderParty) {
+    return party === 'customer'
+        ? eq(orders.customerId, userId)
+        : inArray(orders.technicianId, profileIdOf(userId))
+
+}
+
+export async function listMyOrders(userId: string, party: OrderParty, { limit = 50 }: { limit?: number } = {}) {
     return db.query.orders.findMany({
-        where: party === 'customer' ? eq(orders.customerId, userId) : inArray(orders.technicianId, profileIdOf(userId)),
+        where: ownedBy(userId, party),
         orderBy: [desc(orders.createdAt)],
-        limit: 50, // keyset pagination later
+        limit, // keyset pagination later
         with: {
             service: { columns: { id: true, title: true } },
             technician: { columns: { displayName: true } },
@@ -142,4 +151,19 @@ export async function listMyOrders(userId: string, party: OrderParty) {
             quotes: { orderBy: [desc(quotes.version)], limit: 1, columns: { amount: true, version: true, status: true } },
         },
     });
+}
+
+// Aggregated in SQL so the numbers cover every order, not only the rows a list query returns.
+export async function getOrderStats(userId: string, party: OrderParty): Promise<OrderStats> {
+    const [row] = await db.select({
+        // count() and sum() return bigint; node-postgres hands bigint back as a string
+        total: sql<number>`count(*)`.mapWith(Number),
+        active: sql<number>`count(*) filter (where ${inArray(orders.status, statusesOf('active'))})`.mapWith(Number),
+        funded: sql<number>`coalesce(sum(${quotes.amount}) filter (where ${inArray(orders.status, FUNDED_STATUSES)}), 0)`.mapWith(Number),
+    })
+    .from(orders)
+    .leftJoin(quotes, eq(quotes.id, orders.acceptedQuoteId))
+    .where(ownedBy(userId, party));
+
+    return row; // an aggregate without GROUP BY always returns exactly one row
 }

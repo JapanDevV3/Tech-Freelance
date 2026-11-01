@@ -1,6 +1,7 @@
 {
     "common": {
-        "appName": "computer-fix-hub",
+        "appName": "TechLance",
+        "appDescription": "Computer repair and custom PC builds",
         "charCount": "{count, number} / {max, number}",
         "charCountLabel": "Characters",
         "toggleTheme": "Toggle theme",
@@ -50,10 +51,8 @@
             "myServices": "Listed services",
             "noServicesTitle": "No services listed yet",
             "noServicesSub": "Post a service so customers can find you",
-            "published": "Published",
             "incomingRequests": "Incoming requests",
             "noRequests": "No requests right now",
-            "decline": "Decline",
             "viewRequest": "View request",
             "edit": "Edit",
             "draft": "Draft"
@@ -63,7 +62,6 @@
             "subtitle": "Here's an overview of your jobs and services",
             "statInProgress": "In progress",
             "statSpent": "Total spent",
-            "statSaved": "Saved technicians",
             "quickSearch": "Search services",
             "quickOrders": "My orders",
             "quickFavorites": "Saved technicians",
@@ -71,14 +69,7 @@
             "viewAll": "View all",
             "recommended": "Recommended for you",
             "priceFrom": "From",
-            "by": "by",
-            "status": {
-                "awaiting_response": "Quote requested",
-                "quoted": "Quote received",
-                "awaiting_payment": "Awaiting payment",
-                "in_progress": "In progress",
-                "completed": "Completed"
-            }
+            "by": "by"
         }
     },
     "nav": {
@@ -220,10 +211,9 @@
     "account": {
         "title": "My account",
         "subtitle": "Manage your personal info and account settings",
-        "customerSince": "Customer · joined {year}",
+        "memberSince": "{role, select, technician {Technician} other {Customer}} · Member since {year}",
         "statHired": "Jobs hired",
         "statSpent": "Total spent",
-        "statSaved": "Saved technicians",
         "personalInfo": "Personal info",
         "name": "Full name",
         "phone": "Phone number",
@@ -371,12 +361,7 @@
         "disputed": "Dispute opened",
         "pending": "Pending"
     },
-    "technicianOrderDetail": {
-        "back": "Back to dashboard",
-        "customer": "Customer",
-        "opened": "Opened",
-        "chat": "Chat",
-        "customerBriefLabel": "Job details from the customer",
+    "quoteForm": {
         "quoteFormTitle": "Quote / edit offer",
         "price": "Price offered (THB)",
         "duration": "Duration",
@@ -384,21 +369,6 @@
         "noteToCustomer": "Note to customer",
         "notePlaceholder": "Explain the change or scope of work...",
         "sendQuote": "Send quote (v{version})",
-        "sent": "Sent",
-        "sentConfirmation": "Quote sent — waiting for the customer's response.",
-        "quoteHistory": "Quote history",
-        "summary": "Summary",
-        "status": {
-            "awaiting_response": "Quote requested",
-            "quoted": "Awaiting customer reply · v2",
-            "awaiting_payment": "Awaiting payment",
-            "in_progress": "In progress",
-            "completed": "Completed"
-        },
-        "youReceive": "Amount you'll receive",
-        "platformFee": "Platform fee ({percent}%)",
-        "net": "Net total",
-        "markDone": "Mark work as done",
         "validDays": "Quote valid for",
         "validDaysOption": "{count, plural, one {# day} other {# days}}",
         "revisionsLeft": "{count, plural, =0 {No revisions left} one {# revision left} other {# revisions left}}",
@@ -424,8 +394,6 @@
             "software": "Software",
             "other": "Other"
         },
-        "hireButton": "Hire this technician",
-        "askFirst": "Ask before hiring",
         "escrowNote": "Your money is held safely and only released once you confirm the job is done",
         "similarServices": "Similar services",
         "durationLabel": "Duration",

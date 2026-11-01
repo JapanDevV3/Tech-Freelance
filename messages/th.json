@@ -1,6 +1,7 @@
 {
     "common": {
-        "appName": "computer-fix-hub",
+        "appName": "TechLance",
+        "appDescription": "รับซ่อมและประกอบคอมพิวเตอร์",
         "charCount": "{count, number} / {max, number}",
         "charCountLabel": "จำนวนตัวอักษร",
         "toggleTheme": "สลับธีม",
@@ -50,10 +51,8 @@
             "myServices": "งานที่ลงไว้",
             "noServicesTitle": "ยังไม่มีบริการที่ลง",
             "noServicesSub": "ลงบริการเพื่อให้ลูกค้าหาคุณเจอ",
-            "published": "เผยแพร่แล้ว",
             "incomingRequests": "คำขอที่เข้ามา",
             "noRequests": "ยังไม่มีคำขอตอนนี้",
-            "decline": "ปฏิเสธ",
             "viewRequest": "ดูคำขอ",
             "edit": "แก้ไข",
             "draft": "ฉบับร่าง"
@@ -63,7 +62,6 @@
             "subtitle": "นี่คือภาพรวมงานและบริการของคุณ",
             "statInProgress": "กำลังดำเนินการ",
             "statSpent": "ใช้จ่ายทั้งหมด",
-            "statSaved": "ช่างที่บันทึกไว้",
             "quickSearch": "ค้นหาบริการ",
             "quickOrders": "ออเดอร์ของฉัน",
             "quickFavorites": "ช่างที่บันทึกไว้",
@@ -71,14 +69,7 @@
             "viewAll": "ดูทั้งหมด",
             "recommended": "แนะนำสำหรับคุณ",
             "priceFrom": "เริ่มต้น",
-            "by": "โดย",
-            "status": {
-                "awaiting_response": "ขอใบเสนอราคา",
-                "quoted": "เสนอราคาแล้ว",
-                "awaiting_payment": "รอชำระเงิน",
-                "in_progress": "กำลังทำงาน",
-                "completed": "เสร็จสิ้น"
-            }
+            "by": "โดย"
         }
     },
     "nav": {
@@ -220,10 +211,9 @@
     "account": {
         "title": "บัญชีของฉัน",
         "subtitle": "จัดการข้อมูลส่วนตัวและการตั้งค่าบัญชี",
-        "customerSince": "ลูกค้า · เข้าร่วมตั้งแต่ {year}",
+        "memberSince": "{role, select, technician {ช่าง} other {ลูกค้า}} · เข้าร่วมเมื่อ {year}",
         "statHired": "จ้างงานทั้งหมด",
         "statSpent": "ใช้จ่ายสะสม",
-        "statSaved": "ช่างที่บันทึกไว้",
         "personalInfo": "ข้อมูลส่วนตัว",
         "name": "ชื่อ-นามสกุล",
         "phone": "เบอร์โทร",
@@ -371,12 +361,7 @@
         "disputed": "เปิดข้อพิพาท",
         "pending": "รอดำเนินการ"
     },
-    "technicianOrderDetail": {
-        "back": "กลับไปแดชบอร์ด",
-        "customer": "ลูกค้า",
-        "opened": "เปิดออเดอร์",
-        "chat": "แชท",
-        "customerBriefLabel": "รายละเอียดงานจากลูกค้า",
+    "quoteForm": {
         "quoteFormTitle": "เสนอราคา / แก้ไขข้อเสนอ",
         "price": "ราคาที่เสนอ (บาท)",
         "duration": "ระยะเวลา",
@@ -384,21 +369,6 @@
         "noteToCustomer": "หมายเหตุถึงลูกค้า",
         "notePlaceholder": "อธิบายการเปลี่ยนแปลงหรือขอบเขตงาน...",
         "sendQuote": "ส่งใบเสนอราคา (v{version})",
-        "sent": "ส่งแล้ว ✓",
-        "sentConfirmation": "ส่งข้อเสนอแล้ว — รอลูกค้าตอบรับ",
-        "quoteHistory": "ประวัติการเสนอราคา",
-        "summary": "สรุปงาน",
-        "status": {
-            "awaiting_response": "ขอใบเสนอราคา",
-            "quoted": "รอลูกค้าตอบรับ · v2",
-            "awaiting_payment": "รอชำระเงิน",
-            "in_progress": "กำลังดำเนินการ",
-            "completed": "เสร็จสิ้น"
-        },
-        "youReceive": "ยอดที่จะได้รับ",
-        "platformFee": "ค่าธรรมเนียม ({percent}%)",
-        "net": "สุทธิ",
-        "markDone": "ทำเครื่องหมายว่าเสร็จ",
         "validDays": "ราคานี้ใช้ได้",
         "validDaysOption": "{count} วัน",
         "revisionsLeft": "{count, plural, =0 {แก้ราคาไม่ได้แล้ว} other {แก้ราคาได้อีก # ครั้ง}}",
@@ -424,8 +394,6 @@
             "software": "ซอฟต์แวร์",
             "other": "อื่นๆ"
         },
-        "hireButton": "จ้างช่างคนนี้",
-        "askFirst": "สอบถามก่อนจ้าง",
         "escrowNote": "เงินของคุณถูกพักไว้อย่างปลอดภัย จะโอนให้ช่างเมื่อคุณยืนยันว่างานเสร็จ",
         "similarServices": "บริการที่คล้ายกัน",
         "durationLabel": "ระยะเวลา",

@@ -33,7 +33,7 @@ type Props = {
 };
 
 export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Props) {
-    const t = useTranslations('technicianOrderDetail');
+    const t = useTranslations('quoteForm');
     const tDuration = useTranslations('serviceForm.durationOptions');
     const tErr = useTranslations('orderErrors');
     const router = useRouter();
@@ -66,15 +66,15 @@ export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Pro
                 <div className="grid gap-2">
                     <Label htmlFor="amountBaht">{t('price')}</Label>
                     {/* Required: valueAsNumber is right here — an empty box SHOULD fail as NaN */}
-                    <Input id="amountBaht" type="number" min="1" inputMode="decimal" aria-invalid={!!errors.amountBaht}
+                    <Input id="amountBaht" type="number" min="1" inputMode="decimal" aria-invalid={!!errors.amountBaht} aria-describedby={errors.amountBaht ? 'amountBaht-error' : undefined}
                         {...register('amountBaht', { valueAsNumber: true })} />
-                    <FieldError message={errors.amountBaht?.message} />
+                    <FieldError id="amountBaht-error" message={errors.amountBaht?.message} />
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="duration">{t('duration')}</Label>
                     <Controller control={control} name="duration" render={({ field, fieldState }) => (
                         <Select value={field.value ?? null} onValueChange={(v) => field.onChange(v ?? undefined)} items={durationItems}>
-                            <SelectTrigger id="duration" ref={field.ref} onBlur={field.onBlur} aria-invalid={fieldState.invalid} className="w-full">
+                            <SelectTrigger id="duration" ref={field.ref} onBlur={field.onBlur} aria-invalid={fieldState.invalid} aria-describedby={fieldState.invalid ? 'duration-error' : undefined} className="w-full">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -82,23 +82,23 @@ export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Pro
                             </SelectContent>
                         </Select>
                     )} />
-                    <FieldError message={errors.duration?.message} />
+                    <FieldError id="duration-error" message={errors.duration?.message} />
                 </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                     <Label htmlFor="revisionsIncluded">{t('revisions')}</Label>
-                    <Input id="revisionsIncluded" type="number" min="0" max="20" aria-invalid={!!errors.revisionsIncluded}
+                    <Input id="revisionsIncluded" type="number" min="0" max="20" aria-invalid={!!errors.revisionsIncluded} aria-describedby={errors.revisionsIncluded ? 'revisionsIncluded-error' : undefined}
                         {...register('revisionsIncluded', { setValueAs: optionalNumber })} />
-                    <FieldError message={errors.revisionsIncluded?.message} />
+                    <FieldError id="revisionsIncluded-error" message={errors.revisionsIncluded?.message} />
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="validDays">{t('validDays')}</Label>
                     {/* Select values are strings; the schema wants a number — convert at the boundary */}
                     <Controller control={control} name="validDays" render={({ field, fieldState }) => (
                         <Select value={field.value ? String(field.value) : null} onValueChange={(v) => field.onChange(v ? Number(v) : undefined)} items={dayItems}>
-                            <SelectTrigger id="validDays" ref={field.ref} onBlur={field.onBlur} aria-invalid={fieldState.invalid} className="w-full">
+                            <SelectTrigger id="validDays" ref={field.ref} onBlur={field.onBlur} aria-invalid={fieldState.invalid} className="w-full" aria-describedby={fieldState.invalid ? 'validDays-error' : undefined}>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -106,15 +106,15 @@ export function QuoteForm({ orderId, nextVersion, revisionsLeft, defaults }: Pro
                             </SelectContent>
                         </Select>
                     )} />
-                    <FieldError message={errors.validDays?.message} />
+                    <FieldError id="validDays-error" message={errors.validDays?.message} />
                 </div>
             </div>
 
             <div className="grid gap-2">
                 <Label htmlFor="note">{t('noteToCustomer')}</Label>
-                <Textarea id="note" rows={3} placeholder={t('notePlaceholder')} aria-invalid={!!errors.note} aria-describedby="note-count" {...register('note')} />
+                <Textarea id="note" rows={3} placeholder={t('notePlaceholder')} aria-invalid={!!errors.note} aria-describedby={[errors.note && 'note-error', 'note-count'].filter(Boolean).join(' ')} {...register('note')} />
                 <div className="flex items-start gap-3">
-                    <FieldError message={errors.note?.message} />
+                    <FieldError id="note-error" message={errors.note?.message} />
                     <CharCount id="note-count" length={note.trim().length} max={QUOTE_NOTE_MAX} />
                 </div>
             </div>

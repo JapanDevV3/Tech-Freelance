@@ -11,3 +11,4 @@ const TAB_STATUSES: Record<Exclude<OrderTab, 'all'>, readonly OrderStatus[]> = {
 
 export const isOrderTab = (v: unknown): v is OrderTab => ORDER_TABS.includes(v as OrderTab);
 export const inTab = (status: OrderStatus, tab: OrderTab) => tab === 'all' || TAB_STATUSES[tab].includes(status);
+export const statusesOf = (tab: Exclude<OrderTab, 'all'>) => TAB_STATUSES[tab];

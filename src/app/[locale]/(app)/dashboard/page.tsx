@@ -13,8 +13,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Search01Icon, ClipboardIcon, FavouriteIcon } from '@hugeicons/core-free-icons';
 import { requireSession } from '@/lib/auth-guard';
 import { MyServiceRow } from '@/components/services/my-service-row';
-import { listMyOrders } from '@/services/order.service';
-import { inTab } from '@/lib/orders/status-groups';
+import { getOrderStats, listMyOrders } from '@/services/order.service';
 import { getFormatter } from 'next-intl/server';
 import { rowPrice } from '@/lib/orders/row-price';
 
@@ -29,21 +28,15 @@ export default async function DashboardPage({ params }: DashboardProps) {
         : <CustomerDashboard userId={session.user.id} userName={session.user.name ?? ''} />;
 }
 
-// ---------------------------------------------------------------------------
-// Technician branch — mirrors the Framer "/dashboard" screen.
-// "My listed services" is real data (this technician's own active services).
-// "Incoming requests" has no backend yet, so it's mock data until job
-// requests exist as a real domain concept.
-// ---------------------------------------------------------------------------
 async function TechnicianDashboard({ userId, userName }: { userId: string; userName: string }) {
     const t = await getTranslations('dashboard.technician');
     const profile = await getMyProfile(userId);
     const myServices = profile
         ? (await listServicesByTechnician(profile.id))
         : [];
-    const myOrders = profile ? await listMyOrders(userId, 'technician') : [];
+    const [myOrders, stats] = profile ? await Promise.all([listMyOrders(userId, 'technician'), getOrderStats(userId, 'technician')]) : [[], null];
     const incomingRequests = myOrders.filter((o) => o.status === 'pending_quote').slice(0, 3);
-    const activeJobs = myOrders.filter((o) => inTab(o.status, 'active')).length;
+    const activeJobs = stats?.active ?? 0;
     const activeListings = myServices.filter((s) => s.status === 'active').length;
     const format = await getFormatter();
     const monthlyRevenue = 0;
@@ -105,20 +98,15 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
     );
 }
 
-// ---------------------------------------------------------------------------
-// Customer branch — mirrors the Framer "/home" screen. Recent orders and
-// saved-technician count are mock until orders/favorites have a backend;
-// recommended services reuse the real catalog.
-// ---------------------------------------------------------------------------
 async function CustomerDashboard({ userId, userName }: { userId: string, userName: string }) {
     const t = await getTranslations('dashboard.customer');
     const recommended = (await listActiveServices()).slice(0, 3);
-    const [myOrders, tStatus] = await Promise.all([listMyOrders(userId, 'customer'), getTranslations('orderStatus')]);
-    const recentOrders = myOrders.slice(0, 2);
-    const inProgressCount = myOrders.filter((o) => inTab(o.status, 'active')).length;
-    const totalSpent = myOrders
-        .filter((o) => ['paid', 'in_progress', 'completed', 'released'].includes(o.status))
-        .reduce((sum, o) => sum + (o.quotes.at(0)?.amount ?? 0), 0);
+    const [myOrders, stats, tStatus] = await Promise.all([
+        listMyOrders(userId, 'customer', { limit: 2 }), // only the two most recent are shown
+        getOrderStats(userId, 'customer'),
+        getTranslations('orderStatus'),
+    ]);
+    const recentOrders = myOrders;
 
     const quickLinks = [
         { href: '/services', icon: Search01Icon, label: t('quickSearch') },
@@ -131,10 +119,9 @@ async function CustomerDashboard({ userId, userName }: { userId: string, userNam
             <h1 className="text-h1 font-bold text-foreground">{t('greeting', { name: userName })}</h1>
             <p className="mt-1 text-body text-muted-foreground">{t('subtitle')}</p>
 
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <StatCard label={t('statInProgress')} value={String(inProgressCount)} />
-                <StatCard label={t('statSpent')} value={formatBaht(totalSpent)} />
-                <StatCard label={t('statSaved')} value="3" />
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <StatCard label={t('statInProgress')} value={String(stats.active)} />
+                <StatCard label={t('statSpent')} value={formatBaht(stats.funded)} />
             </div>
 
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">

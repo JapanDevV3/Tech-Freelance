@@ -1,4 +1,4 @@
-import { type ApiErrorBody } from "../forms/apply-server-errors";
+import type { ApiErrorBody } from "@/lib/forms/apply-server-errors";
 
 export type ApiResult<T> = | { ok: true, data: T } | { ok: false, status: number; code: string; body: ApiErrorBody };
 
