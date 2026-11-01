@@ -1,5 +1,3 @@
-
-
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { Container } from '@/components/layout/container';
 import { StatCard } from '@/components/ui/stat-card';

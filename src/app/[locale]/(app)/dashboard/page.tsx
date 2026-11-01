@@ -28,12 +28,6 @@ export default async function DashboardPage({ params }: DashboardProps) {
         : <CustomerDashboard userId={session.user.id} userName={session.user.name ?? ''} />;
 }
 
-// ---------------------------------------------------------------------------
-// Technician branch — mirrors the Framer "/dashboard" screen.
-// "My listed services" is real data (this technician's own active services).
-// "Incoming requests" has no backend yet, so it's mock data until job
-// requests exist as a real domain concept.
-// ---------------------------------------------------------------------------
 async function TechnicianDashboard({ userId, userName }: { userId: string; userName: string }) {
     const t = await getTranslations('dashboard.technician');
     const profile = await getMyProfile(userId);
@@ -104,11 +98,6 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
     );
 }
 
-// ---------------------------------------------------------------------------
-// Customer branch — mirrors the Framer "/home" screen. Recent orders and
-// saved-technician count are mock until orders/favorites have a backend;
-// recommended services reuse the real catalog.
-// ---------------------------------------------------------------------------
 async function CustomerDashboard({ userId, userName }: { userId: string, userName: string }) {
     const t = await getTranslations('dashboard.customer');
     const recommended = (await listActiveServices()).slice(0, 3);
@@ -117,7 +106,7 @@ async function CustomerDashboard({ userId, userName }: { userId: string, userNam
         getOrderStats(userId, 'customer'),
         getTranslations('orderStatus'),
     ]);
-    const recentOrders = myOrders.slice(0, 2);
+    const recentOrders = myOrders;
 
     const quickLinks = [
         { href: '/services', icon: Search01Icon, label: t('quickSearch') },
@@ -133,7 +122,6 @@ async function CustomerDashboard({ userId, userName }: { userId: string, userNam
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <StatCard label={t('statInProgress')} value={String(stats.active)} />
                 <StatCard label={t('statSpent')} value={formatBaht(stats.funded)} />
-                
             </div>
 
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">

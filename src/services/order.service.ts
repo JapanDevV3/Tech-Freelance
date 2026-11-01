@@ -132,7 +132,7 @@ export async function getOrderForUser(userId: string, orderId: string) {
     return viewerParty ? { ...order, viewerParty } : null;
 }
 
-export function ownedBy(userId: string, party: string) {
+function ownedBy(userId: string, party: OrderParty) {
     return party === 'customer'
         ? eq(orders.customerId, userId)
         : inArray(orders.technicianId, profileIdOf(userId))
