@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { nameField } from "./user";
 
 // Normalize once (trim + lowercase) THEN validate format.
 // Reused by register, login, and authorize so stored/looked-up emails always match.
@@ -21,7 +22,7 @@ export const loginSchema = z.object({
 });
 
 export const registerSchema = z.object({
-    name: z.string().trim().min(1, 'nameRequired').max(100, 'nameMax'),
+    name: nameField,
     email: emailField,
     password: newPasswordField, // bcrypt truncates > 72 bytes
     role: z.enum(['customer', 'technician']).default('customer'),
