@@ -9,25 +9,27 @@ import { formatBaht } from '@/lib/format';
 
 import { requireSession } from '@/lib/auth-guard';
 import { getOrderStats } from '@/services/order.service';
-import { getMemberSince } from '@/services/user.service';
+import { getMe } from '@/services/user.service';
 
 type AccountPageProps = { params: Promise<{ locale: string }> };
 
 export default async function AccountPage({ params }: AccountPageProps) {
     const { locale } = await params;
     const session = await requireSession(locale, '/account');
-
     const { id, role } = session.user;
-    const name = session.user.name ?? '';
-    const email = session.user.email ?? '';
 
     // Technicians track their numbers on the dashboard; these stats are customer-facing
-    const [t, format, memberSince, stats] = await Promise.all([
+    const [t, format, me, stats] = await Promise.all([
         getTranslations('account'),
         getFormatter(),
-        getMemberSince(id),
+        getMe(id),
         role === 'customer' ? getOrderStats(id, 'customer') : null,
     ]);
+
+    // Read from the DB, not the JWT: the session keeps the name it had at sign-in
+    const name = me?.name ?? '';
+    const email = me?.email ?? '';
+    const memberSince = me?.createdAt ?? null;
 
     return (
         <Container size="md" gutter="lg">

@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db/client';
 import { users } from '@/db/schema';
@@ -30,10 +31,14 @@ export async function setMyAvatar(userId: string, key: string) {
     if (oldKey && oldKey !== key) await storage.remove(oldKey);
 }
 
-export async function getMemberSince(userId: string) {
+// The signed-in user's own profile, read from the DB rather than the JWT: the session
+// keeps the name it had at sign-in. cache() makes it one query per request, however
+// many server components (layout + page) ask for it.
+export const getMe = cache(async (userId: string) => {
     const row = await db.query.users.findFirst({
         where: eq(users.id, userId),
-        columns: { createdAt: true },
+        // Explicit columns: never load passwordHash into objects that may reach a client component
+        columns: { name: true, email: true, avatarKey: true, createdAt: true },
     });
-    return row?.createdAt ?? null;
-}
+    return row ?? null;
+});

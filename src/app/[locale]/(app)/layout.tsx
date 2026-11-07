@@ -1,18 +1,18 @@
 import { auth } from '@/auth';
 import { Header, type HeaderUser } from '@/components/layout/header';
 import { getStorage } from '@/lib/storage';
-import { getMyAvatarKey } from '@/services/user.service';
+import { getMe } from '@/services/user.service';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
     const session = await auth();
-    // The avatar key is read from the DB, not stored in the JWT: a new upload then
-    // shows after the uploader's router.refresh(), instead of after the next sign-in.
-    const avatarKey = session ? await getMyAvatarKey(session.user.id) : null;
+    // Name and avatar are read from the DB, not the JWT: an edit then shows after
+    // router.refresh(), instead of after the next sign-in.
+    const me = session ? await getMe(session.user.id) : null;
     const user: HeaderUser = session
         ? {
-            name: session.user.name ?? '',
+            name: me?.name ?? '',
             role: session.user.role,
-            avatarUrl: avatarKey ? getStorage().publicUrl(avatarKey) : null,
+            avatarUrl: me?.avatarKey ? getStorage().publicUrl(me.avatarKey) : null,
         }
         : null;
 

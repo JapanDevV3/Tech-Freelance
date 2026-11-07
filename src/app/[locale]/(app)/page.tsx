@@ -6,11 +6,14 @@ import { Container } from '@/components/layout/container';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ServiceCard } from '@/components/services/service-card';
+import { getMe } from '@/services/user.service';
 
 export default async function HomePage() {
   // Server component: fetch data + translations here, pass primitives down.
   const t = await getTranslations("home");
   const session = await auth();
+  // Guests have no session; signed-in users get their current name from the DB, not the JWT
+  const me = session ? await getMe(session.user.id) : null;
   const services = (await listActiveServices()).slice(0, 6); // "popular" strip
 
   // ---- Derive a view-model from role ONCE, then render a single markup below ----
@@ -20,7 +23,7 @@ export default async function HomePage() {
 
   const hero = user
     ? {
-        title: t("welcomeTitle", { name: user.name ?? "" }),
+        title: t("welcomeTitle", { name: me?.name ?? "" }),
         subtitle: isTechnician ? t("heroTechSub") : t("heroCustomerSub"),
       }
     : { title: t("heroTitle"), subtitle: t("heroSubtitle") };
