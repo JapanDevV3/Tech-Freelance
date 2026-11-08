@@ -16,6 +16,7 @@ import { MyServiceRow } from '@/components/services/my-service-row';
 import { getOrderStats, listMyOrders } from '@/services/order.service';
 import { getFormatter } from 'next-intl/server';
 import { rowPrice } from '@/lib/orders/row-price';
+import { getMe } from '@/services/user.service';
 
 type DashboardProps = { params: Promise<{ locale: string }> };
 
@@ -23,9 +24,13 @@ export default async function DashboardPage({ params }: DashboardProps) {
     const { locale } = await params;
     const session = await requireSession(locale, '/dashboard');
 
+    // Same request as the layout's getMe → served from React cache, no second query
+    const me = await getMe(session.user.id);
+    const userName = me?.name ?? '';
+
     return session.user.role === 'technician'
-        ? <TechnicianDashboard userId={session.user.id} userName={session.user.name ?? ''} />
-        : <CustomerDashboard userId={session.user.id} userName={session.user.name ?? ''} />;
+        ? <TechnicianDashboard userId={session.user.id} userName={userName} />
+        : <CustomerDashboard userId={session.user.id} userName={userName} />;
 }
 
 async function TechnicianDashboard({ userId, userName }: { userId: string; userName: string }) {

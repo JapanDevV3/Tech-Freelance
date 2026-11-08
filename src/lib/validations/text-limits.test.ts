@@ -5,6 +5,7 @@ import {
     cancelOrderSchema, createOrderSchema, sendQuoteSchema,
 } from './order';
 import { BIO_MAX, profileSchema } from './technician';
+import { NAME_MAX, nameField } from './user';
 
 // The forms' <CharCount> turns red at `trimmed length > *_MAX`. These tests pin
 // the schemas to the same rule, so the counter and validation can't drift apart.
@@ -13,6 +14,7 @@ const cases: [string, z.ZodType, number][] = [
     ['quote note', sendQuoteSchema.shape.note, QUOTE_NOTE_MAX],
     ['cancel reason', cancelOrderSchema.shape.reason, CANCEL_REASON_MAX],
     ['bio', profileSchema.shape.bio, BIO_MAX],
+    ['name', nameField, NAME_MAX],
 ];
 
 describe.each(cases)('%s length limit', (_name, schema, max) => {

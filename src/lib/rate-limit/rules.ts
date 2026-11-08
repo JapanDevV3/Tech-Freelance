@@ -9,6 +9,7 @@ export const RATE_LIMITS = {
     updateService: { limit: 30, windowSec: 60 * 60 },
     createOrder: { limit: 20, windowSec: 60 * 60 },
     sendQuote: { limit: 30, windowSec: 60 * 60 },
+    updateMe: { limit: 20, windowSec: 60 * 60 },
 } as const satisfies Record<string, RateLimitRule>;
 
 export type RateLimitName = keyof typeof RATE_LIMITS;
