@@ -5,6 +5,7 @@ import { users } from '@/db/schema';
 import { getStorage } from '@/lib/storage';
 import { isOwnedKey } from '@/lib/uploads/keys';
 import { UPLOAD_PURPOSES } from '@/lib/uploads/constants';
+import type { UpdateMeInput } from '@/lib/validations/user';
 
 export async function getMyAvatarKey(userId: string) {
     const row = await db.query.users.findFirst({
@@ -42,3 +43,18 @@ export const getMe = cache(async (userId: string) => {
     });
     return row ?? null;
 });
+
+// PATCH semantics: list every writable field explicitly — never spread `input` into set().
+// updateMeSchema (.strict) is the first guard against mass assignment; this is the second.
+// Drizzle skips keys whose value is undefined, so fields the client didn't send stay untouched.
+export async function updateMe(userId: string, input: UpdateMeInput) {
+    const [row] = await db
+        .update(users)
+        .set({ name: input.name, updatedAt: new Date() })
+        .where(eq(users.id, userId))
+        // Explicit columns again: a bare returning() would hand back passwordHash too
+        .returning({ name: users.name, email: users.email });
+
+    // No row: the session points at a user that no longer exists
+    return row ?? null;
+}
