@@ -5,6 +5,10 @@ on:
     branches: [master, develop]
   pull_request:
 
+# Least privilege: CI only needs to read the code
+permissions:
+  contents: read
+
 # A newer push to the same branch cancels the older, now-irrelevant run
 concurrency:
   group: ci-${{ github.ref }}
