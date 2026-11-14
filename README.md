@@ -1,113 +1,152 @@
-# 🛠️ Tech-Freelance
+# Tech-Freelance
 
-> A freelance marketplace connecting customers with independent technicians for computer repair, assembly, and remote support.
+> A freelance marketplace that connects people who have computer problems with independent technicians, so they can get help without carrying their machine to a repair shop.
 
 ![Status](https://img.shields.io/badge/status-in%20development-yellow)
-![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js_16-000000?logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL_16-4169E1?logo=postgresql&logoColor=white)
+![CI](https://github.com/JapanDevV3/Tech-Freelance/actions/workflows/ci.yaml/badge.svg)
 
-> 🚧 **This project is under active development.** Features are being built incrementally — see the [progress checklist](#-features) and [roadmap](#-roadmap) below.
+> 🚧 **Personal learning project, under active development.** The core marketplace flow works end to end; payments and chat are being built next. A live demo will be added once the payment flow is finished.
 
-**🔗 Live Demo:** _coming soon_ &nbsp;·&nbsp; **🎥 Demo Video:** _coming soon_
+<!-- Add when ready:
+**🔗 Live demo:** https://your-domain · **🎥 Demo video:** https://...
 
-<!-- Uncomment once deployed
-**Test accounts** (Stripe runs in test mode)
-| Role | Email | Password |
-|------|-------|----------|
-| Customer | customer@demo.com | demo1234 |
-| Technician | tech@demo.com | demo1234 |
-
-![Home page](docs/screenshots/home.png)
+![Services](docs/screenshots/services.png)
+![Order flow](docs/screenshots/order.png)
+![Dashboard](docs/screenshots/dashboard.png)
 -->
 
 ---
 
 ## 📌 Problem & Solution
 
-**Problem:** When a computer breaks, it's hard to find a trustworthy technician. Pricing is often unclear, and people usually have to carry their machine to a shop.
+**Problem:** When a computer breaks, it is hard to find a technician you can trust. Prices are often unclear, and most people have to take their machine to a shop.
 
-**Solution:** Customers post a job, technicians submit offers, both sides communicate through real-time chat, and payment is held in escrow until the job is confirmed complete. The platform is **remote-support first**, so many issues can be solved without an on-site visit.
+**Solution:** Technicians list their services (remote or on-site). A customer picks a service and requests a job, the technician sends a quote, and the customer accepts it. Every step of the order is tracked, and the platform is **remote-support first**, so many problems can be solved without a visit.
 
 ## ✨ Features
 
-- [x] Authentication with separate **Customer** and **Technician** roles
-- [ ] Job posting and technician bidding
-- [ ] Real-time chat via WebSocket
-- [ ] Escrow payments with **Stripe Connect** — technicians are paid once the customer confirms completion
-- [ ] Ratings and reviews
-- [ ] Technician dashboard (earnings, active jobs)
+**Working now**
+- [x] Registration and login with separate **Customer** and **Technician** roles
+- [x] Account settings with avatar upload
+- [x] Technician profile and service management (create, edit, soft-delete, image gallery)
+- [x] Service catalog with search, category filters and sorting
+- [x] Order flow: request a job → technician sends a quote (versioned, re-quote allowed) → customer accepts, or either side cancels
+- [x] Order timeline built from an audit log of every status change
+- [x] Customer and technician dashboards with order statistics computed in SQL
+- [x] Thai / English interface, light and dark themes
 
-<!-- Tick [x] only for features that are actually working -->
+**In progress**
+- [ ] Payments with **Omise** (escrow-style: money is released to the technician after the customer confirms the job)
+
+**Planned**
+- [ ] Real-time chat between customer and technician
+- [ ] Ratings and reviews
+- [ ] Public technician profiles and saved technicians (UI exists, still on mock data)
+- [ ] Email notifications, admin panel
 
 ## 🧰 Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui |
-| Backend | Next.js Route Handlers / Server Actions, WebSocket |
-| Database | PostgreSQL (Neon / Supabase), Drizzle ORM |
-| Payments | Stripe Connect (test mode) |
-| DevOps | Docker, GitHub Actions, Vercel |
+| Frontend | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, shadcn/ui, React Hook Form, next-intl |
+| Backend | REST API on Next.js Route Handlers (Node.js runtime), service and domain layers, Zod |
+| Auth | Auth.js v5 (credentials, JWT sessions), bcrypt |
+| Database | PostgreSQL 16, Drizzle ORM with SQL migrations |
+| Security | Rate limiting (in-memory or Upstash Redis), role-based guards |
+| Testing | Vitest |
+| DevOps | Docker (multi-stage), Docker Compose, Caddy (automatic HTTPS), GitHub Actions |
 
 ## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
-  U[Browser] --> N[Next.js App]
-  N --> DB[(PostgreSQL)]
-  N --> S[Stripe Connect]
-  S -- webhooks --> N
-  N <--> WS[WebSocket Server]
+  U[Browser] --> C[Caddy<br/>HTTPS]
+  C --> P[Next.js pages<br/>App Router]
+  C --> A["REST API<br/>/api/v1 route handlers"]
+  P --> S[Service layer]
+  A --> S
+  S --> D[Domain rules<br/>order state machine]
+  S --> DB[(PostgreSQL)]
 ```
 
-Database schema: _ERD coming soon_ (`docs/erd.png`)
+```
+src/
+├─ app/            # pages ([locale]) and REST API (api/v1)
+├─ services/       # use cases: auth, catalog, orders, technician, user
+├─ domain/         # pure business rules (order state machine, quote policy) + unit tests
+├─ db/             # Drizzle schema and migrations
+└─ lib/            # validation (Zod), API helpers, rate limiting, storage
+```
+
+**Database** — 7 tables: `users`, `technician_profiles`, `services`, `service_images`, `orders`, `quotes`, `order_status_events`.
 
 ## 💡 Technical Highlights
 
-<!-- Fill these in as you build — explain the problem, your approach, and why -->
-- **Escrow payment flow** — Stripe Connect with webhook handling, including idempotency to prevent duplicate processing.
-- **Real-time chat** — _TBD_
-- **Role-based access control** — _TBD_
-- **CI/CD** — lint, type-check, and build run on every pull request via GitHub Actions.
+- **Order state machine** — every status change is a named action that says *who* may do it, *from* which states and *to* which state (`src/domain/order/state-machine.ts`). The role is checked before the state, so an error never reveals where another user's order is.
+- **Safe concurrent updates** — actions on the same order run inside a transaction that locks the row with `SELECT … FOR UPDATE`, so two requests cannot change one order at the same time. Partial unique indexes and check constraints in PostgreSQL act as a second safety net (for example, only one active quote per order), and a violation becomes an HTTP 409.
+- **Audit trail** — status changes and their audit events are written in the same transaction, so the order timeline is always consistent with the order.
+- **Consistent API errors** — one error handler maps validation (Zod), domain and database errors to clear HTTP status codes (400, 401, 403, 404, 409).
+- **Authentication & abuse protection** — Auth.js with JWT sessions; API routes return 401/403 instead of redirecting; login is rate-limited by IP and by email, and write endpoints have their own limits.
+- **CI** — every push and pull request runs lint (zero warnings), type-check, unit tests, migrations on a fresh PostgreSQL database, and a production build.
+- **Production setup** — multi-stage Docker image, a one-shot migration container, PostgreSQL bound to localhost only, and Caddy for automatic HTTPS. See [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 20+
-- PostgreSQL (local, Docker, or Neon/Supabase)
-- Stripe account (test mode)
+- Node.js 22 (see `.nvmrc`)
+- Docker (for PostgreSQL), or your own PostgreSQL 16
 
-### Installation
+### Run locally
 
 ```bash
 git clone https://github.com/JapanDevV3/Tech-Freelance.git
 cd Tech-Freelance
-cp .env.example .env.local   # fill in DATABASE_URL, STRIPE_SECRET_KEY, etc.
+cp .env.example .env
+# set DATABASE_URL=postgres://cfh:cfh_local_pw@localhost:5432/computer_fix_hub
+# set AUTH_SECRET (e.g. `openssl rand -base64 32`), STORAGE_DRIVER=local, RATE_LIMIT_DRIVER=memory
+
+docker compose up -d      # starts PostgreSQL only
 npm install
+npm run db:migrate
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-Add once available:
-npm run db:migrate
-docker compose up -d
+Or run everything in Docker with hot reload: `docker compose --profile dev up --build`.
 
+### Useful scripts
+
+| Command | What it does |
+|---------|--------------|
+| `npm run dev` | Start the dev server |
+| `npm run test` | Run unit tests (Vitest) |
+| `npm run typecheck` | Type-check the project |
+| `npm run lint` | Lint |
+| `npm run db:generate` | Generate a migration from schema changes |
+| `npm run db:migrate` | Apply migrations |
+| `npm run db:studio` | Open Drizzle Studio |
+
+### API
+
+A Postman collection and a local environment are in [`postman/`](postman/).
 
 ## 🗺️ Roadmap
 
-- [ ] Core MVP: auth, job posting, bidding
+- [x] Auth, roles, account settings
+- [x] Technician services and catalog
+- [x] Order and quote lifecycle
+- [x] CI pipeline and Docker production setup
+- [ ] Omise payments (escrow-style)
 - [ ] Real-time chat
-- [ ] Stripe Connect escrow payments
-- [ ] Reviews and technician dashboard
-- [ ] Docker setup and CI pipeline
-- [ ] Deploy to Vercel
-- [ ] Email notifications
-- [ ] On-site appointment booking
-- [ ] Admin panel
+- [ ] Reviews and public technician profiles
+- [ ] Deploy a live demo with seed data and test accounts
+- [ ] Email notifications and admin panel
 
 ## 👤 Author
 
-**Nattasit Sukprasert (Japan)** — Full-stack Developer, Bangkok
-[LinkedIn](https://linkedin.com/in/nattasit-sukprasert) · [Email](mailto:develop0131997@gmail.com)
+**Nattasit Sukprasert (Japan)** — Full-Stack Developer, Bangkok
+[LinkedIn](https://linkedin.com/in/nattasit-sukprasert) · [GitHub](https://github.com/JapanDevV3)

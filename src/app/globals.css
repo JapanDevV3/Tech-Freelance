@@ -114,7 +114,7 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  /* ---- extended tokens (TechLance) ---- */
+  /* ---- extended tokens (Tech-Freelance) ---- */
   --surface: oklch(1 0 0);
   --sunken: oklch(0.953 0.007 80.7);
   --field: oklch(0.982 0.003 84.6);
@@ -165,7 +165,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-  /* ---- extended tokens (TechLance) ---- */
+  /* ---- extended tokens (Tech-Freelance) ---- */
   --surface: oklch(0.235 0.006 91.6);
   --sunken: oklch(0.261 0.008 84.6);
   --field: oklch(0.250 0.004 48.6);

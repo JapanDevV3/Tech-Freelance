@@ -1,6 +1,6 @@
 {
     "common": {
-        "appName": "TechLance",
+        "appName": "Tech-Freelance",
         "appDescription": "Computer repair and custom PC builds",
         "charCount": "{count, number} / {max, number}",
         "charCountLabel": "Characters",

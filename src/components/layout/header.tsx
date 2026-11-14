@@ -43,7 +43,7 @@ export function Header({ user }: { user: HeaderUser }) {
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-body font-bold text-primary-foreground">
                         T
                     </span>
-                    <span className="text-lg font-bold tracking-tight text-foreground">TechLance</span>
+                    <span className="text-lg font-bold tracking-tight text-foreground">Tech-Freelance</span>
                 </Link>
 
                 {/* nav: inline from lg up; below that it lives in <MobileNav> */}
