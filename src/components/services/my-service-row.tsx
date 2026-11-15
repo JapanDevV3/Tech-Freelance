@@ -14,8 +14,8 @@ export function MyServiceRow({ service }: Props) {
     const t = useTranslations('dashboard.technician');
     return (
         <div className="flex items-center gap-4 border-b border-hairline px-1 py-4 last:border-b-0">
-            <div className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-sunken">
-                {service.coverUrl && <Image src={service.coverUrl} alt="" fill sizes="48px" className="object-cover" />}
+            <div className="relative aspect-video w-24 shrink-0 overflow-hidden rounded-lg bg-sunken">
+                {service.coverUrl && <Image src={service.coverUrl} alt={service.title} fill sizes="64px" quality={85} className="object-cover" />}
             </div>
             <div className="min-w-0 flex-1">
                 <Link href={`/services/${service.id}`} className="block truncate text-body font-semibold text-foreground hover:underline">

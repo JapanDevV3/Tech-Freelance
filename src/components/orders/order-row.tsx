@@ -24,13 +24,14 @@ export function OrderRow({ href, title, subtitle, price, awaitingLabel, status, 
             href={href}
             className="flex items-center gap-4 border-b border-hairline px-1 py-4 transition-colors last:border-b-0 hover:bg-accent/40"
         >
-            <div className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-sunken">
+            <div className="relative aspect-video w-24 shrink-0 overflow-hidden rounded-lg bg-sunken">
                 {coverUrl && (
                     <Image
                         src={coverUrl}
                         alt={title}
                         fill
-                        sizes="48px"
+                        sizes="64px"
+                        quality={85}
                         className="object-cover"
                     />
                 )}
