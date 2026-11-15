@@ -12,11 +12,9 @@
 
 <!-- Add when ready:
 **🔗 Live demo:** https://your-domain · **🎥 Demo video:** https://...
-
-![Services](docs/screenshots/services.png)
-![Order flow](docs/screenshots/order.png)
-![Dashboard](docs/screenshots/dashboard.png)
 -->
+
+![Tech-Freelance home page](docs/screenshots/home.png)
 
 ---
 
@@ -46,6 +44,16 @@
 - [ ] Ratings and reviews
 - [ ] Public technician profiles and saved technicians (UI exists, still on mock data)
 - [ ] Email notifications, admin panel
+
+## 📸 Screenshots
+
+| Service catalog | Customer dashboard |
+|---|---|
+| ![Service catalog with search and filters](docs/screenshots/services.png) | ![Customer dashboard](docs/screenshots/customer_dashboard.png) |
+| **Order: customer view** | **Order: technician view** |
+| ![Order timeline and accepted quote, customer view](docs/screenshots/order_customer.png) | ![Order timeline and accepted quote, technician view](docs/screenshots/order_tech.png) |
+| **Technician dashboard** | |
+| ![Technician dashboard with listed services and incoming requests](docs/screenshots/tech_dashboard.png) | |
 
 ## 🧰 Tech Stack
 
