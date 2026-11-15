@@ -1,6 +1,6 @@
 {
     "common": {
-        "appName": "Tech-Freelance",
+        "appName": "Tech Freelance",
         "appDescription": "รับซ่อมและประกอบคอมพิวเตอร์",
         "charCount": "{count, number} / {max, number}",
         "charCountLabel": "จำนวนตัวอักษร",

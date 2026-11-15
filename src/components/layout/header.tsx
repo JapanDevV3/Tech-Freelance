@@ -14,6 +14,7 @@ export type HeaderUser = { name: string; role: UserRole; avatarUrl: string | nul
 
 export function Header({ user }: { user: HeaderUser }) {
     const t = useTranslations('nav');
+    const tcommon = useTranslations('common');
     const pathname = usePathname();
 
     const links: Omit<NavItem, 'active'>[] = [
@@ -43,7 +44,7 @@ export function Header({ user }: { user: HeaderUser }) {
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-body font-bold text-primary-foreground">
                         T
                     </span>
-                    <span className="text-lg font-bold tracking-tight text-foreground">Tech-Freelance</span>
+                    <span className="text-lg font-bold tracking-tight text-foreground">{tcommon('appName')}</span>
                 </Link>
 
                 {/* nav: inline from lg up; below that it lives in <MobileNav> */}
