@@ -8,6 +8,7 @@ import { getOrderableService } from '@/services/catalog.service';
 import { profileIdOf } from '@/services/technician.service';
 import type { CreateOrderInput, SendQuoteInput } from '@/lib/validations/order';
 import { statusesOf } from '@/lib/orders/status-groups';
+import { getStorage } from '@/lib/storage';
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -140,17 +141,37 @@ function ownedBy(userId: string, party: OrderParty) {
 }
 
 export async function listMyOrders(userId: string, party: OrderParty, { limit = 50 }: { limit?: number } = {}) {
-    return db.query.orders.findMany({
+    const rows = await db.query.orders.findMany({
         where: ownedBy(userId, party),
         orderBy: [desc(orders.createdAt)],
-        limit, // keyset pagination later
+        limit,
         with: {
-            service: { columns: { id: true, title: true } },
+            service: {
+                columns: { id: true, title: true },
+                with: {
+                    images: {
+                        columns: { storageKey: true },
+                        orderBy: (img, { asc }) => [asc(img.position)],
+                        limit: 1, // position 0 = cover
+                    },
+                },
+            },
             technician: { columns: { displayName: true } },
             customer: { columns: { name: true } },
             quotes: { orderBy: [desc(quotes.version)], limit: 1, columns: { amount: true, version: true, status: true } },
         },
     });
+
+    // Turn storage keys into URLs here, so pages never touch the storage driver
+    const storage = getStorage();
+    return rows.map(({ service, ...order }) => ({
+        ...order,
+        service: {
+            id: service.id,
+            title: service.title,
+            coverUrl: service.images[0] ? storage.publicUrl(service.images[0].storageKey) : null,
+        },
+    }));
 }
 
 // Aggregated in SQL so the numbers cover every order, not only the rows a list query returns.
@@ -161,9 +182,9 @@ export async function getOrderStats(userId: string, party: OrderParty): Promise<
         active: sql<number>`count(*) filter (where ${inArray(orders.status, statusesOf('active'))})`.mapWith(Number),
         funded: sql<number>`coalesce(sum(${quotes.amount}) filter (where ${inArray(orders.status, FUNDED_STATUSES)}), 0)`.mapWith(Number),
     })
-    .from(orders)
-    .leftJoin(quotes, eq(quotes.id, orders.acceptedQuoteId))
-    .where(ownedBy(userId, party));
+        .from(orders)
+        .leftJoin(quotes, eq(quotes.id, orders.acceptedQuoteId))
+        .where(ownedBy(userId, party));
 
     return row; // an aggregate without GROUP BY always returns exactly one row
 }

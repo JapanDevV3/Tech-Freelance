@@ -56,10 +56,10 @@ async function TechnicianDashboard({ userId, userName }: { userId: string; userN
                 <Link href="/technician/services/new" className={buttonVariants()}>{t('postNew')}</Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <div className="grid grid-cols-3 gap-3 lg:grid-cols-3">
                 <StatCard label={t('statRevenue')} value={formatBaht(monthlyRevenue)} hint={t('statRevenueHint')} hintTone="positive" />
                 <StatCard label={t('statJobs')} value={String(activeJobs)} hint={t('statJobsHint')} hintTone="positive" />
-                <StatCard label={t('statRating')} value="4.9" hint={t('statRatingHint', { count: 37 })} />
+                {/* <StatCard label={t('statRating')} value="-" hint={t('statRatingHint', { count: 0 })} /> */}
                 <StatCard label={t('statListings')} value={String(activeListings)} hint={t('statListingsHint')} />
             </div>
 
@@ -158,7 +158,8 @@ async function CustomerDashboard({ userId, userName }: { userId: string, userNam
                             subtitle={`${t('by')} ${order.technician.displayName}`}
                             price={rowPrice(order.status, order.quotes.at(0) ?? null)}
                             awaitingLabel={tStatus('customer.pending_quote')}
-                            status={order.status} statusLabel={tStatus(`customer.${order.status}`)} />
+                            status={order.status} statusLabel={tStatus(`customer.${order.status}`)}
+                            coverUrl={order.service.coverUrl} />
                     ))}
                 </div>
             </section>
